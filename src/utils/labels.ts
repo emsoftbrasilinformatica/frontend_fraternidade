@@ -12,6 +12,7 @@ export default {
       toolbar: {
         searchTooltip: 'Pesquisar',
         searchPlaceholder: 'Pesquisar',
+        nRowsSelected: '{0} linha(s) selecionada(s)',
       },
       header: {
         actions: 'Ações',
