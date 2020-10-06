@@ -58,34 +58,36 @@ const New: React.FC<NewHomeProps> = ({
   const classes = useStyles();
 
   return (
-    <Zoom>
-      <Card className={classes.root}>
-        <CardMedia
-          component="img"
-          alt={title}
-          height="140"
-          image={image}
-          title={title}
-        />
-        <CardContent className={classes.card}>
-          <Typography gutterBottom variant="h5" component="h2">
-            {title}
-          </Typography>
-          <Typography variant="body2" component="p">
-            {description}
-          </Typography>
-          <div style={{ fontSize: 14, textAlign: 'right', marginTop: 8 }}>
-            {date}
-          </div>
-        </CardContent>
-        <CardActions className={classes.cardActions}>
-          <Link className={classes.linkCard} to={`/noticias/${link}`}>
-            LER MAIS
-            <FiArrowRightCircle className={classes.iconLink} />
-          </Link>
-        </CardActions>
-      </Card>
-    </Zoom>
+    <div style={{ flex: 1 }}>
+      <Zoom>
+        <Card className={classes.root}>
+          <CardMedia
+            component="img"
+            alt={title}
+            height="140"
+            image={image}
+            title={title}
+          />
+          <CardContent className={classes.card}>
+            <Typography gutterBottom variant="h5" component="h2">
+              {title}
+            </Typography>
+            <Typography variant="body2" component="p">
+              {description}
+            </Typography>
+            <div style={{ fontSize: 14, textAlign: 'right', marginTop: 8 }}>
+              {date}
+            </div>
+          </CardContent>
+          <CardActions className={classes.cardActions}>
+            <Link className={classes.linkCard} to={`/noticias/${link}`}>
+              LER MAIS
+              <FiArrowRightCircle className={classes.iconLink} />
+            </Link>
+          </CardActions>
+        </Card>
+      </Zoom>
+    </div>
   );
 };
 

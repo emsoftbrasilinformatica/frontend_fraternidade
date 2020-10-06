@@ -54,7 +54,7 @@ const Sessions: React.FC = () => {
 
   return (
     <>
-      <BasePage title="Sessões" backLink="/app/sessoes">
+      <BasePage title="Sessões">
         <Container style={{ marginTop: 32 }}>
           <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
