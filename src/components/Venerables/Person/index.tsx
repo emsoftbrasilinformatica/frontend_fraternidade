@@ -6,35 +6,17 @@ interface PersonProps {
   image: string;
   name: string;
   occupation: string;
-  jewel: string | undefined;
 }
 
 const Person: React.FC<PersonProps> = ({
   name,
   image,
   occupation,
-  jewel,
   ...rest
 }) => {
   return (
     <Container>
       <Card>
-        {jewel && (
-          <div
-            style={{
-              position: 'absolute',
-              top: '5px',
-              left: '5px',
-              width: 42,
-              height: 42,
-              backgroundImage: `url("${jewel}")`,
-              backgroundPosition: 'center',
-              backgroundSize: 'cover',
-              backgroundRepeat: 'no-repeat',
-            }}
-          />
-        )}
-
         <div
           style={{
             backgroundImage: `url(${image})`,
@@ -46,8 +28,6 @@ const Person: React.FC<PersonProps> = ({
             backgroundPosition: 'center',
           }}
         />
-        {/* <img src={image} alt={name} />
-        </div> */}
         <h1 style={{ textAlign: 'center', paddingTop: 20 }}>{name}</h1>
         <div>{occupation}</div>
       </Card>

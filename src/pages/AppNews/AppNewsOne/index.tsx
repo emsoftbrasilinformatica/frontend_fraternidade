@@ -8,6 +8,8 @@ import { BiBookContent } from 'react-icons/bi';
 import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
 import { useParams, useHistory } from 'react-router-dom';
+import { FaCalendarDay } from 'react-icons/fa';
+import { format } from 'date-fns';
 import BasePage from '../../../components/BasePage';
 import Card from '../../../components/Card';
 import Dropzone from '../../../components/Dropzone';
@@ -18,12 +20,14 @@ import { useToast } from '../../../hooks/toast';
 import getValidationErrors from '../../../utils/getValidationErrors';
 import { useAuth } from '../../../hooks/auth';
 import Loading from '../../../components/Loading';
+import DatePicker from '../../../components/DatePicker';
 
 interface News {
   title: string;
   subtitle: string;
   content: string;
   image_url: string;
+  date: Date;
 }
 
 interface params {
@@ -47,6 +51,7 @@ const AppNewsOne: React.FC = () => {
 
         const schema = Yup.object().shape({
           title: Yup.string().required('Título obrigatória'),
+          date: Yup.string().nullable().required('Data é obrigatória'),
           subtitle: Yup.string().required('Subtítulo é obrigatório'),
           content: Yup.string().required('Conteúdo é obrigatório'),
         });
@@ -71,6 +76,10 @@ const AppNewsOne: React.FC = () => {
 
         formData.append('user_id', user.id);
         formData.append('title', title);
+        formData.append(
+          'date',
+          format(new Date(data.date), 'yyyy-MM-dd HH:mm'),
+        );
         formData.append('subtitle', subtitle);
         formData.append('content', content);
         formData.append('image', selectedFile);
@@ -82,7 +91,7 @@ const AppNewsOne: React.FC = () => {
         }
 
         setLoading(false);
-        history.push('/app/noticias');
+        history.push('/app/cad/noticias');
         addToast({
           type: 'success',
           title: 'Notícia cadastrada com sucesso!',
@@ -112,7 +121,10 @@ const AppNewsOne: React.FC = () => {
       setLoading(true);
       api.get(`/news/show/${params.id}`).then(res => {
         const news: News = res.data;
-        setEditNews(news);
+        setEditNews({
+          ...news,
+          date: new Date(news.date),
+        });
 
         fetch(news.image_url)
           .then(response => response.blob())
@@ -128,7 +140,7 @@ const AppNewsOne: React.FC = () => {
   return (
     <BasePage
       title={params.id ? 'Editar Notícia' : 'Nova Notícia'}
-      backLink="/app/noticias"
+      backLink="/app/cad/noticias"
     >
       {loading ? (
         <Loading />
@@ -159,6 +171,15 @@ const AppNewsOne: React.FC = () => {
                       icon={MdTitle}
                       label="Título"
                       placeholder="Digite o título da notícia"
+                    />
+                  </Grid>
+                  <Grid item md={12}>
+                    <DatePicker
+                      name="date"
+                      label="Data"
+                      dateFormat="dd/MM/yyyy"
+                      icon={FaCalendarDay}
+                      placeholderText="Selecione a data"
                     />
                   </Grid>
                   <Grid item md={12}>

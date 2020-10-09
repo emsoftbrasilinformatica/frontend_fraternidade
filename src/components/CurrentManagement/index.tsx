@@ -1,10 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
 
 import { Container } from '@material-ui/core';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+
+import userDefault from '../../assets/user-default.png';
+import backgroundManagement from '../../assets/background-management.png';
+import orador from '../../assets/orador_silver.png';
+import veneravel from '../../assets/vm_silver.png';
+import primeiroVigilante from '../../assets/primeiro_vigilante_silver.png';
+import segundoVigilante from '../../assets/segundo_vigilante_silver.png';
+import tesoureiro from '../../assets/tesoureiro_silver.png';
+import chanceler from '../../assets/chanceler_silver.png';
+import secretario from '../../assets/secretario_silver.png';
 
 import Person from './Person';
 
@@ -18,6 +28,8 @@ interface ManagementMember {
   };
   administrative_function: {
     description: string;
+    order: number;
+    admin: boolean;
   };
 }
 
@@ -28,6 +40,8 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     sectionAnchor: {
       position: 'relative',
+      backgroundColor: '#0f5e9e',
+      backgroundImage: `url(${backgroundManagement})`,
     },
     anchor: {
       position: 'absolute',
@@ -43,7 +57,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     titleText: {
       position: 'relative',
-      color: '#631925',
+      color: '#fff',
     },
     imgContent: {
       width: '100%',
@@ -68,12 +82,30 @@ const useStyles = makeStyles((theme: Theme) =>
 const CurrentManagement: React.FC = () => {
   const classes = useStyles();
   const [members, setMembers] = useState<ManagementMember[]>([]);
+  const jewels = [
+    { order: 1, image: veneravel },
+    { order: 2, image: primeiroVigilante },
+    { order: 3, image: segundoVigilante },
+    { order: 4, image: orador },
+    { order: 5, image: secretario },
+    { order: 6, image: tesoureiro },
+    { order: 7, image: chanceler },
+  ];
 
   useEffect(() => {
     api.get('/managements/show/current').then(res => {
       setMembers(res.data.management_members);
     });
   }, []);
+
+  const orderedMembers = useMemo(() => {
+    return members.sort((a, b) => {
+      if (a.administrative_function.order > b.administrative_function.order) {
+        return 1;
+      }
+      return -1;
+    });
+  }, [members]);
 
   return (
     <section className={classes.sectionAnchor}>
@@ -87,7 +119,7 @@ const CurrentManagement: React.FC = () => {
           <Carousel
             additionalTransfrom={0}
             arrows
-            autoPlay
+            // autoPlay
             autoPlaySpeed={3000}
             centerMode={false}
             className={classes.carrousel}
@@ -132,14 +164,29 @@ const CurrentManagement: React.FC = () => {
             slidesToSlide={1}
             swipeable
           >
-            {members.map(member => (
-              <Person
-                key={member.user.id}
-                name={member.user.name}
-                occupation={member.administrative_function.description}
-                image={member.user.avatar_url}
-              />
-            ))}
+            {orderedMembers.map(member => {
+              if (member.administrative_function.admin) {
+                return (
+                  <Person
+                    key={member.user.id}
+                    name={member.user.name}
+                    occupation={member.administrative_function.description}
+                    image={
+                      member.user.avatar_url
+                        ? member.user.avatar_url
+                        : userDefault
+                    }
+                    jewel={
+                      jewels.find(
+                        jewel =>
+                          jewel.order === member.administrative_function.order,
+                      )?.image
+                    }
+                  />
+                );
+              }
+              return null;
+            })}
           </Carousel>
         </Container>
       </div>

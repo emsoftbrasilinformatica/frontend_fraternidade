@@ -49,7 +49,7 @@ const SessionItem: React.FC<Props> = ({
       </div>
       <div className="contentIcon">
         <Tooltip title="Editar" placement="top" arrow>
-          <Link to={`/app/sessao/${id}`}>
+          <Link to={`/app/cad/sessao/${id}`}>
             <FiEdit size={40} />
           </Link>
         </Tooltip>
@@ -60,7 +60,7 @@ const SessionItem: React.FC<Props> = ({
             placement="top"
             arrow
           >
-            <Link to={`/app/presencas-sessao/${id}`}>
+            <Link to={`/app/cad/presencas-sessao/${id}`}>
               <FiCheckCircle size={40} />
             </Link>
           </Tooltip>

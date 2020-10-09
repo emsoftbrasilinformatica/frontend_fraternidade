@@ -3,7 +3,7 @@ import { shade } from 'polished';
 
 export const Content = styled.div`
   header {
-    background: #631925;
+    background: #0f5e9e;
     position: fixed;
     top: 0; /* Stick it to the top */
     max-height: 70px;

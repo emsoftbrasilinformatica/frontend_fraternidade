@@ -14,6 +14,7 @@ interface NewsData {
   subtitle: string;
   image_url: string;
   created_at: Date;
+  date: Date;
   formattedDate: string;
 }
 
@@ -61,7 +62,7 @@ const News: React.FC = () => {
 
   const formattedNews = useMemo(() => {
     return news.map(oneNews => {
-      const dateToBeFormatted = new Date(oneNews.created_at);
+      const dateToBeFormatted = new Date(oneNews.date);
       return {
         ...oneNews,
         formattedDate: format(dateToBeFormatted, 'dd/MM/yyyy'),

@@ -42,7 +42,8 @@ const useStyles = makeStyles({
   content: {
     letterSpacing: 1,
     marginTop: 8,
-    textAlign: 'left',
+    whiteSpace: 'pre-line',
+    textAlign: 'justify',
   },
   topTitle: {
     background: '#6d1e2bb8',
@@ -87,6 +88,7 @@ const NewsDetail: React.FC = () => {
 
   useEffect(() => {
     api.get(`/news/show/${params.id}`).then(res => {
+      console.log(res.data.content);
       setNews(res.data);
     });
     handleScrollToTop();
@@ -117,7 +119,7 @@ const NewsDetail: React.FC = () => {
         </Grid>
         <Grid container spacing={2}>
           <Grid item className={classes.content}>
-            <p className={classes.contentPart}>{news?.content}</p>
+            <div className={classes.contentPart}>{news?.content}</div>
           </Grid>
         </Grid>
         <button

@@ -165,7 +165,7 @@ const Session: React.FC = () => {
         }
 
         setLoading(false);
-        history.push('/app/sessoes');
+        history.push('/app/cad/sessoes');
         addToast({
           type: 'success',
           title: 'Sessão agendada com sucesso',
@@ -195,7 +195,7 @@ const Session: React.FC = () => {
   return (
     <BasePage
       title={params.id ? 'Editar Sessão' : 'Nova Sessão'}
-      backLink="/app/sessoes"
+      backLink="/app/cad/sessoes"
     >
       {loading ? (
         <Loading />

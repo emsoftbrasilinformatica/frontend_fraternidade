@@ -10,14 +10,14 @@ export default createGlobalStyle`
   }
 
   body{
-    background: #ccc !important;
+    background: #F1F1E6 !important;
     -webkit-font-smoothing: antialiased;
     /*padding-top: 70px;*/
   }
 
   body, input, button{
     font-family: 'Roboto', sans-serif;
-    font-size: 16px;
+    font-size: 16px !important;
   }
 
   h1, h2, h3, h4, h5, h6, strong{

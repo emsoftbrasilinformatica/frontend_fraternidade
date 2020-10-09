@@ -173,7 +173,7 @@ const Management: React.FC = () => {
           users: managementMemberToBeCreated,
         });
 
-        history.push('/app/gestoes');
+        history.push('/app/cad/gestoes');
         setLoading(false);
         addToast({
           type: 'success',
@@ -262,7 +262,7 @@ const Management: React.FC = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <BasePage title="Editar Gestão" backLink="/app/gestoes">
+      <BasePage title="Editar Gestão" backLink="/app/cad/gestoes">
         {loading ? (
           <Loading />
         ) : (

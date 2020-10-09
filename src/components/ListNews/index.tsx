@@ -13,6 +13,7 @@ interface News {
   image_url: string;
   id: string;
   created_at: Date;
+  date: Date;
 }
 
 const useStyles = makeStyles(theme =>
@@ -73,7 +74,7 @@ const ListNews: React.FC = () => {
 
   const formattedNews = useMemo(() => {
     return currentNews.map(oneNews => {
-      const dateToBeFormatted = new Date(oneNews.created_at);
+      const dateToBeFormatted = new Date(oneNews.date);
       return {
         ...oneNews,
         formattedDate: format(dateToBeFormatted, 'dd/MM/yyyy'),

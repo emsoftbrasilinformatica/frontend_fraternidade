@@ -15,8 +15,11 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'center',
     },
     container: {
-      minHeight: '150px',
-      backgroundColor: '#9a9a9a',
+      minHeight: '270px',
+      backgroundColor: '#0d47a1',
+      padding: '16px 16px',
+      borderBottomLeftRadius: '50% 40%',
+      borderBottomRightRadius: '50% 40%',
     },
     logoGob: {
       height: '125px',
@@ -33,7 +36,7 @@ const Links: React.FC = () => {
   const classes = useStyles();
 
   return (
-    <section>
+    <section style={{ overflow: 'hidden' }}>
       <div className={classes.container}>
         <Container>
           <Grid container spacing={2}>

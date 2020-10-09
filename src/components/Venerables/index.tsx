@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 
 import { Container } from '@material-ui/core';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
-import Fundacao from '../../assets/fundacao.jpg';
-import Fundadores from '../../assets/fundadores.jpg';
+import background from '../../assets/background-venerables.png';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -15,12 +13,13 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     sectionAnchor: {
       position: 'relative',
-      background: '#6d1e2bb8',
-      color: '#FFF',
+      backgroundImage: `url("${background}")`,
+      backgroundColor: '#F1F1E6',
+      color: '#2d2d2d',
     },
     anchor: {
       position: 'absolute',
-      top: -70,
+      top: -69,
     },
     container: {
       padding: '25px 0',
@@ -32,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     titleText: {
       position: 'relative',
-      color: '#FFF',
+      color: '#2d2d2d',
     },
     imgContent: {
       width: '100%',
@@ -64,8 +63,6 @@ const Venerables: React.FC = () => {
     window.addEventListener('resize', () => {
       setWidth(window.innerWidth);
       setHeight(window.innerHeight);
-      // console.log(`width: ${width}`);
-      // console.log(`height: ${height}`);
     });
   }, [height, width]);
 
@@ -77,26 +74,6 @@ const Venerables: React.FC = () => {
           <div className={classes.title}>
             <h1 className={classes.titleText}>Veneráveis</h1>
           </div>
-
-          <Carousel
-            showArrows
-            swipeable
-            dynamicHeight
-            emulateTouch
-            infiniteLoop
-            /* autoPlay */
-            showStatus={false}
-            showThumbs={false}
-            width={width > 650 ? '50%' : '100%'}
-            className={classes.mainCarousel}
-          >
-            <div>
-              <img src={Fundacao} alt="teste" />
-            </div>
-            <div>
-              <img src={Fundadores} alt="teste1" />
-            </div>
-          </Carousel>
         </Container>
       </div>
     </section>

@@ -43,9 +43,13 @@ import {
   FaSignOutAlt,
   FaExclamationTriangle,
   FaNewspaper,
+  FaCalendar,
+  FaFileContract,
 } from 'react-icons/fa';
+import { MdGroupWork } from 'react-icons/md';
 
 import { useHistory } from 'react-router-dom';
+import { FiType } from 'react-icons/fi';
 import logoMaconaria from '../../assets/maconaria.jpg';
 
 import { useAuth } from '../../hooks/auth';
@@ -146,6 +150,13 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingLeft: theme.spacing(4),
       borderBottom: '1px solid #e0e0e0',
     },
+    nestedThird: {
+      paddingLeft: theme.spacing(6),
+      borderBottom: '1px solid #e0e0e0',
+    },
+    collapseSecondLevel: {
+      paddingLeft: 32,
+    },
   }),
 );
 
@@ -216,56 +227,65 @@ const BasePage: React.FC<ViewProps> = ({ children, title, backLink }) => {
               <ListItemLink
                 className={classes.nested}
                 icon={<SupervisedUserCircle />}
-                to="/app/usuarios"
+                to="/app/cad/usuarios"
                 primary="Usuários"
               />
               <ListItemLink
                 className={classes.nested}
                 icon={<Lock />}
-                to="/app/palavra-semestral"
+                to="/app/cad/palavra-semestral"
                 primary="Palavra Semestral"
               />
               <ListItemLink
                 className={classes.nested}
                 icon={<AccountTree />}
-                to="/app/gestoes"
+                to="/app/cad/gestoes"
                 primary="Gestões"
               />
               <ListItemLink
                 className={classes.nested}
                 icon={<FaNewspaper style={{ fontSize: '1.5rem' }} />}
-                to="/app/noticias"
+                to="/app/cad/noticias"
                 primary="Notícias"
               />
-            </List>
-          </Collapse>
-
-          <ListItem button onClick={handleOpenCollapseSessoesClick}>
-            <ListItemIcon>
-              <AssignmentIcon />
-            </ListItemIcon>
-            <ListItemText primary="Sessões" />
-            {openCollapseSessoes ? <ExpandLess /> : <ExpandMore />}
-          </ListItem>
-          <Collapse
-            in={openCollapseSessoes}
-            timeout="auto"
-            unmountOnExit
-            style={{ borderTop: '1px solid #e0e0e0' }}
-          >
-            <List component="div" disablePadding>
               <ListItemLink
                 className={classes.nested}
-                icon={<SupervisedUserCircle />}
-                to="/app/sessoes"
-                primary="Agendamento"
+                icon={<FaFileContract style={{ fontSize: '1.5rem' }} />}
+                to="/app/cad/estatutos"
+                primary="Estatutos"
               />
-              <ListItemLink
-                className={classes.nested}
-                icon={<Lock />}
-                to="/app/tipos-sessao"
-                primary="Tipos de Sessões"
-              />
+              <ListItem
+                button
+                className={classes.collapseSecondLevel}
+                onClick={handleOpenCollapseSessoesClick}
+              >
+                <ListItemIcon>
+                  <MdGroupWork style={{ fontSize: '1.5rem' }} />
+                </ListItemIcon>
+                <ListItemText primary="Sessões" />
+                {openCollapseSessoes ? <ExpandLess /> : <ExpandMore />}
+              </ListItem>
+              <Collapse
+                in={openCollapseSessoes}
+                timeout="auto"
+                unmountOnExit
+                style={{ borderTop: '1px solid #e0e0e0' }}
+              >
+                <List component="div" disablePadding>
+                  <ListItemLink
+                    className={classes.nestedThird}
+                    icon={<FaCalendar style={{ fontSize: '1.5rem' }} />}
+                    to="/app/cad/sessoes"
+                    primary="Agendamento"
+                  />
+                  <ListItemLink
+                    className={classes.nestedThird}
+                    icon={<FiType style={{ fontSize: '1.5rem' }} />}
+                    to="/app/cad/tipos-sessao"
+                    primary="Tipos de Sessões"
+                  />
+                </List>
+              </Collapse>
             </List>
           </Collapse>
         </>

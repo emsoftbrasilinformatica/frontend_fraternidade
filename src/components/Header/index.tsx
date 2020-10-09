@@ -79,22 +79,6 @@ const Header: React.FC = () => {
               História
             </HashLink>
             <HashLink
-              className={hash === '#fundacao' ? 'active' : ''}
-              to="/#fundacao"
-              smooth
-              onClick={handleToggleNav}
-            >
-              Fundação
-            </HashLink>
-            <HashLink
-              className={hash === '#fundadores' ? 'active' : ''}
-              to="/#fundadores"
-              smooth
-              onClick={handleToggleNav}
-            >
-              Fundadores
-            </HashLink>
-            <HashLink
               className={hash === '#gestao' ? 'active' : ''}
               to="/#gestao"
               smooth

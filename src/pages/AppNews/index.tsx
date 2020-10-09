@@ -26,7 +26,7 @@ import { Button, ArroundButton } from './styles';
 interface News {
   id: string;
   title: string;
-  created_at: string;
+  date: string;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -140,8 +140,8 @@ const AppNews: React.FC = () => {
               columns={[
                 { title: 'Título', field: 'title' },
                 {
-                  title: 'Data de Criação',
-                  field: 'created_at',
+                  title: 'Data da Notícia',
+                  field: 'date',
                   type: 'date',
                 },
               ]}

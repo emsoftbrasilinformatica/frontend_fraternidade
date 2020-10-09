@@ -467,7 +467,7 @@ const User: React.FC = () => {
         } else {
           await api.post('/users', user);
         }
-        history.push('/app/usuarios');
+        history.push('/app/cad/usuarios');
 
         addToast({
           type: 'success',
@@ -977,7 +977,7 @@ const User: React.FC = () => {
     <ThemeProvider theme={theme}>
       <BasePage
         title={params.id ? 'Editar Usuário' : 'Novo Usuário'}
-        backLink="/app/usuarios"
+        backLink="/app/cad/usuarios"
       >
         <Container>
           <Form ref={formRef} initialData={editUser} onSubmit={handleSubmit}>

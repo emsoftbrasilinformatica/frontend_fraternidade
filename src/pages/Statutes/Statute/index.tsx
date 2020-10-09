@@ -1,0 +1,206 @@
+/* eslint-disable react/require-default-props */
+/* eslint-disable array-callback-return */
+import React, { useState, useRef, useCallback, useEffect } from 'react';
+
+import { Container, Grid } from '@material-ui/core';
+import { useParams, useHistory } from 'react-router-dom';
+import * as Yup from 'yup';
+
+import { Form } from '@unform/web';
+import { FormHandles } from '@unform/core';
+
+import BasePage from '../../../components/BasePage';
+import Loading from '../../../components/Loading';
+import { useAuth } from '../../../hooks/auth';
+import { useToast } from '../../../hooks/toast';
+import getValidationErrors from '../../../utils/getValidationErrors';
+import api from '../../../services/api';
+import Card from '../../../components/Card';
+import Input from '../../../components/Input';
+import Button from '../../../components/Button';
+import Select from '../../../components/Select';
+import InputFile from '../../../components/InputFile';
+import { ArroundButton } from './styles';
+
+interface params {
+  id: string;
+}
+
+interface Statute {
+  id?: string;
+  description: string;
+  degree: SelectData;
+  file: File;
+}
+
+interface SelectData {
+  value?: string | number | undefined | null;
+  label?: string;
+}
+
+interface OptionsData {
+  id: string;
+  description: string;
+  value: string;
+  label: string;
+}
+
+const Statute: React.FC = () => {
+  const [loading, setLoading] = useState(false);
+  const params: params = useParams();
+  const [degrees, setDegrees] = useState<OptionsData[]>([]);
+  const history = useHistory();
+  // const [selectedFile, setSelectedFile] = useState<File>();
+  const formRef = useRef<FormHandles>(null);
+  const { addToast } = useToast();
+  const { user } = useAuth();
+
+  const handleSubmit = useCallback(
+    async data => {
+      try {
+        formRef.current?.setErrors({});
+
+        const schema = Yup.object().shape({
+          description: Yup.string().required('Descrição obrigatória'),
+          degree: Yup.string().required('Grau é obrigatório'),
+        });
+
+        await schema.validate(data, {
+          abortEarly: false,
+        });
+
+        if (!data.file) {
+          addToast({
+            type: 'error',
+            title: 'Selecione um arquivo!',
+          });
+        }
+
+        console.log(data);
+
+        setLoading(true);
+
+        const formData = new FormData();
+
+        const { description, degree, file } = data;
+
+        formData.append('user_id', user.id);
+        formData.append('description', description);
+        formData.append('degree_id', degree);
+        formData.append('file', file);
+
+        if (params.id) {
+          await api.put(`/statutes/${params.id}`, formData);
+        } else {
+          await api.post('/statutes', formData);
+        }
+
+        setLoading(false);
+        history.push('/app/cad/estatutos');
+        addToast({
+          type: 'success',
+          title: 'Estatuto cadastrada com sucesso!',
+        });
+      } catch (err) {
+        if (err instanceof Yup.ValidationError) {
+          const errors = getValidationErrors(err);
+
+          formRef.current?.setErrors(errors);
+
+          return;
+        }
+        setLoading(false);
+        // disparar toast
+        addToast({
+          type: 'error',
+          title: 'Erro no cadastro',
+          description: 'Ocorreu um erro ao fazer cadastro, tente novamente.',
+        });
+      }
+    },
+    [addToast, history, params.id, user.id],
+  );
+
+  useEffect(() => {
+    api.get(`/statutes/${params.id}`).then(res => {
+      let fileCreated: File;
+      fetch(res.data.file_url)
+        .then(response => response.blob())
+        .then(blob => {
+          const nameFile: string = res.data.file;
+          const nameEditted = nameFile.slice(
+            nameFile.indexOf('-') + 1,
+            nameFile.length,
+          );
+          fileCreated = new File([blob], nameEditted);
+          formRef.current?.setData({
+            degree: {
+              value: res.data.degree_id,
+              label: res.data.degree.description,
+            },
+            description: res.data.description,
+            file: fileCreated,
+          });
+        });
+    });
+  }, [params.id]);
+
+  useEffect(() => {
+    api.get('/degrees').then(response => {
+      const options: OptionsData[] = response.data;
+      options.map(opt => {
+        opt.label = opt.description;
+        opt.value = opt.id;
+      });
+      setDegrees(options);
+    });
+  }, []);
+
+  return (
+    <BasePage
+      title={params.id ? 'Editar Estatuto' : 'Novo Estatuto'}
+      backLink="/app/cad/estatutos"
+    >
+      {loading ? (
+        <Loading />
+      ) : (
+        <Container>
+          <Form ref={formRef} onSubmit={handleSubmit}>
+            <ArroundButton>
+              <Button type="submit">SALVAR</Button>
+            </ArroundButton>
+            <Card title="Estatuto">
+              <Grid container spacing={2}>
+                <Grid item xs={12} md={4}>
+                  <Input
+                    name="description"
+                    label="Descrição"
+                    placeholder="Digite a descrição"
+                  />
+                </Grid>
+                <Grid item xs={12} md={4}>
+                  <Select
+                    name="degree"
+                    label="Grau"
+                    placeholder="Selecione o grau"
+                    options={degrees}
+                  />
+                </Grid>
+                <Grid
+                  item
+                  xs={12}
+                  md={4}
+                  style={{ display: 'flex', alignItems: 'center' }}
+                >
+                  <InputFile label="Selecione o arquivo" name="file" />
+                </Grid>
+              </Grid>
+            </Card>
+          </Form>
+        </Container>
+      )}
+    </BasePage>
+  );
+};
+
+export default Statute;
