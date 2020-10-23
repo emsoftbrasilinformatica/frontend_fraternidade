@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 
 import { useHistory } from 'react-router-dom';
 import DayPicker, { DayModifiers } from 'react-day-picker';
@@ -17,15 +17,22 @@ interface Session {
   number: string;
   session_type: {
     description: string;
-  };
-  degree: {
-    description: string;
+    degree: {
+      description: string;
+    };
+    type: string;
   };
 }
 
 const Sessions: React.FC = () => {
   const [sessions, setSessions] = useState<Session[]>([]);
+  const [monthSessions, setMonthSessions] = useState<Session[]>([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [currentMonth, setCurrentMonth] = useState(new Date());
+
+  const handleMonthChange = useCallback((month: Date) => {
+    setCurrentMonth(month);
+  }, []);
   const history = useHistory();
 
   const handleDateChange = useCallback((day: Date, modifiers: DayModifiers) => {
@@ -48,6 +55,25 @@ const Sessions: React.FC = () => {
       });
   }, [selectedDate]);
 
+  useEffect(() => {
+    api
+      .get('/sessions/month', {
+        params: {
+          year: currentMonth.getFullYear(),
+          month: currentMonth.getMonth() + 1,
+        },
+      })
+      .then(res => {
+        setMonthSessions(res.data);
+      });
+  }, [currentMonth]);
+
+  const sessionsInMonth: Date[] = useMemo(() => {
+    return monthSessions.map(session => {
+      return new Date(session.date);
+    });
+  }, [monthSessions]);
+
   const handleAddSession = useCallback(() => {
     history.push('sessao');
   }, [history]);
@@ -61,7 +87,7 @@ const Sessions: React.FC = () => {
               <ArroundButton>
                 <button type="button" onClick={handleAddSession}>
                   Adicionar Sessão
-                  <AddCircle style={{ color: '#631925' }} />
+                  <AddCircle style={{ color: '#0f5e9e' }} />
                 </button>
               </ArroundButton>
               <Calendar>
@@ -69,8 +95,10 @@ const Sessions: React.FC = () => {
                   weekdaysShort={['D', 'S', 'T', 'Q', 'Q', 'S', 'S']}
                   modifiers={{
                     available: { daysOfWeek: [1, 2, 3, 4, 5] },
+                    haveSession: sessionsInMonth,
                   }}
                   onDayClick={handleDateChange}
+                  onMonthChange={handleMonthChange}
                   selectedDays={selectedDate}
                   months={[
                     'Janeiro',
@@ -94,8 +122,11 @@ const Sessions: React.FC = () => {
                 <SessionItem
                   key={session.id}
                   date={session.date}
-                  degree={session.degree.description}
-                  session_type={session.session_type.description}
+                  degree={session.session_type.degree.description}
+                  session_type={`${session.session_type.type.substring(
+                    0,
+                    1,
+                  )} - ${session.session_type.description}`}
                   number={session.number}
                   id={session.id}
                 />

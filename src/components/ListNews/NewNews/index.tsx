@@ -29,11 +29,12 @@ const useStyles = makeStyles({
     marginBottom: 32,
   },
   card: {
-    background: '#915963',
+    background: '#0f5e9e',
     color: '#FFF',
+    height: 170,
   },
   cardActions: {
-    background: shade(0.25, '#915963'),
+    background: shade(0.25, '#0f5e9e'),
     display: 'flex',
     justifyContent: 'center',
   },
@@ -47,10 +48,11 @@ const useStyles = makeStyles({
     marginLeft: 8,
   },
   bgCardMedia: {
-    height: '200px',
+    height: '250px',
     backgroundRepeat: 'no-repeat',
-    backgroundSize: 'cover',
+    backgroundSize: 'contain',
     backgroundPosition: 'center',
+    backgroundColor: '#0f5e9e',
     transition: 'all .5s',
     '&:hover': {
       transform: 'scale(1.1)',
@@ -73,7 +75,9 @@ const NewTop: React.FC<NewTopProps> = ({
       <CardMedia>
         <div
           className={classes.bgCardMedia}
-          style={{ backgroundImage: `url('${image}')` }}
+          style={{
+            backgroundImage: `url('${image}')`,
+          }}
         />
       </CardMedia>
       <CardContent className={classes.card}>

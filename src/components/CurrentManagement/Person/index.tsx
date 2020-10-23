@@ -37,7 +37,7 @@ const Person: React.FC<PersonProps> = ({
 
         <div
           style={{
-            backgroundImage: `url(${image})`,
+            backgroundImage: `url('${image}')`,
             borderRadius: '50%',
             width: 150,
             height: 150,
@@ -50,6 +50,7 @@ const Person: React.FC<PersonProps> = ({
         </div> */}
         <h1 style={{ textAlign: 'center', paddingTop: 20 }}>{name}</h1>
         <div>{occupation}</div>
+        {console.log(image)}
       </Card>
     </Container>
   );

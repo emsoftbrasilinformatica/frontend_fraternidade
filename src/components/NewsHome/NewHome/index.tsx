@@ -28,22 +28,34 @@ const useStyles = makeStyles({
     maxWidth: 345,
   },
   card: {
-    background: '#915963',
-    color: '#FFF',
+    background: '#f1c543',
+    color: '#1c537e',
+    height: 170,
   },
   cardActions: {
-    background: shade(0.25, '#915963'),
+    background: shade(0.25, '#f1c543'),
     display: 'flex',
     justifyContent: 'center',
   },
   linkCard: {
-    color: '#FFF',
+    color: '#1c537e',
     textDecoration: 'none',
     display: 'flex',
     alignItems: 'center',
   },
   iconLink: {
     marginLeft: 8,
+  },
+  bgCardMedia: {
+    height: '250px',
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: 'contain',
+    backgroundPosition: 'center',
+    backgroundColor: '#f1c543',
+    transition: 'all .5s',
+    '&:hover': {
+      transform: 'scale(1.1)',
+    },
   },
 });
 
@@ -61,13 +73,14 @@ const New: React.FC<NewHomeProps> = ({
     <div style={{ flex: 1 }}>
       <Zoom>
         <Card className={classes.root}>
-          <CardMedia
-            component="img"
-            alt={title}
-            height="140"
-            image={image}
-            title={title}
-          />
+          <CardMedia>
+            <div
+              className={classes.bgCardMedia}
+              style={{
+                backgroundImage: `url('${image}')`,
+              }}
+            />
+          </CardMedia>
           <CardContent className={classes.card}>
             <Typography gutterBottom variant="h5" component="h2">
               {title}

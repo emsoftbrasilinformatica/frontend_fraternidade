@@ -9,14 +9,14 @@ export const Container = styled.div`
   margin-top: 32px;
   box-shadow: 4px 6px 19px -6px rgba(0, 0, 0, 0.75);
   flex-direction: column;
-  border: 2px solid #631925;
+  border: 2px solid #0f5e9e;
 
   .card-header {
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 8px;
-    color: #631925;
+    color: #0f5e9e;
     letter-spacing: 2px;
 
     .title {
@@ -29,6 +29,6 @@ export const Container = styled.div`
   }
 
   hr {
-    border: 2px solid #631925;
+    border: 2px solid #0f5e9e;
   }
 `;

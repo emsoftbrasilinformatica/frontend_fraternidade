@@ -51,7 +51,15 @@ import {
   FaBezierCurve,
 } from 'react-icons/fa';
 
-import { Container, Grid, Box, AppBar, Tabs, Tab } from '@material-ui/core';
+import {
+  Container,
+  Grid,
+  Box,
+  AppBar,
+  Tabs,
+  Tab,
+  CircularProgress,
+} from '@material-ui/core';
 import {
   Info as InfoIcon,
   Contacts as ContactsIcon,
@@ -287,10 +295,10 @@ const useStyles = makeStyles((theme: Theme) => ({
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: '#631925',
+      main: '#0f5e9e',
     },
     secondary: {
-      main: '#631925',
+      main: '#0f5e9e',
     },
   },
 });
@@ -307,11 +315,12 @@ const User: React.FC = () => {
     { value: 'O-', label: 'O-' },
   ];
   const optionsCivilStatus = [
-    { value: 'Solteiro', label: 'Solteiro' },
     { value: 'Casado', label: 'Casado' },
-    { value: 'Viúvo', label: 'Viúvo' },
-    { value: 'Separado judicialmente', label: 'Separado judicialmente' },
     { value: 'Divorciado', label: 'Divorciado' },
+    { value: 'Separado judicialmente', label: 'Separado judicialmente' },
+    { value: 'Solteiro', label: 'Solteiro' },
+    { value: 'União Estável', label: 'União Estável' },
+    { value: 'Viúvo', label: 'Viúvo' },
   ];
   const optionsTypeAddress = [
     { value: 'Comercial', label: 'Comercial' },
@@ -337,6 +346,8 @@ const User: React.FC = () => {
   const [editUser, setEditUser] = useState<UserFormData | undefined>();
   const [idAddress, setIdAddress] = useState<number>(-1);
   const [idDependent, setIdDependent] = useState<number>(-1);
+  const [userForm, setUserForm] = useState<CreateUserFormData>();
+  const [saveLoading, setSaveLoading] = useState(false);
 
   const handleChange = (
     event: React.ChangeEvent<{}>,
@@ -376,6 +387,8 @@ const User: React.FC = () => {
         await schema.validate(data, {
           abortEarly: false,
         });
+
+        setSaveLoading(true);
 
         const contact: ContactFormData = {
           cell_phone: formRef.current?.getFieldValue('cell_phone'),
@@ -467,6 +480,7 @@ const User: React.FC = () => {
         } else {
           await api.post('/users', user);
         }
+        setSaveLoading(false);
         history.push('/app/cad/usuarios');
 
         addToast({
@@ -487,6 +501,7 @@ const User: React.FC = () => {
           return;
         }
 
+        setSaveLoading(false);
         console.log(err);
         // disparar toast
         addToast({
@@ -606,92 +621,113 @@ const User: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    if (userForm) {
+      if (userForm.adresses) {
+        const userAdresses: Address[] = userForm.adresses;
+        setAddresses(userAdresses);
+      }
+
+      if (userForm.dependents) {
+        const userDependents: Dependent[] = userForm.dependents.map(dep => {
+          return {
+            name_dependent: dep.name,
+            date_of_birth_dependent: dep.date_of_birth,
+            gender_id: dep.gender_id,
+            gender: genders.find(gen => gen.id === dep.gender_id)?.description,
+            kinship_id: dep.kinship_id,
+            kinship: kinships.find(kin => kin.id === dep.kinship_id)
+              ?.description,
+          };
+        });
+        setDependents(userDependents);
+      }
+    }
+  }, [genders, kinships, userForm]);
+
+  useEffect(() => {
     if (params.id) {
       setLoading(true);
-      api.get(`/users/${params.id}`).then(res => {
-        const user: CreateUserFormData = res.data;
+      api
+        .get(`/users/${params.id}`)
+        .then(res => {
+          const user: CreateUserFormData = res.data;
 
-        const userToBeEdited: UserFormData = {
-          name: user.name,
-          email: user.email,
-          cim: user.cim,
-          cpf: user.cpf,
-          avatar_url: user.avatar_url,
-          date_of_birth: user.date_of_birth
-            ? new Date(user.date_of_birth)
-            : null,
-          degree_id: { value: user.degree_id, label: user.degree?.description },
-          blood_type: { value: user.blood_type, label: user.blood_type },
-          naturalness_uf_id: {
-            value: user.naturalness_uf_id,
-            label: user.naturalness_uf,
-          },
-          naturalness_city_id: {
-            value: user.naturalness_city_id,
-            label: user.naturalness_city,
-          },
-          civil_status: { value: user.civil_status, label: user.civil_status },
-          mother: user.mother,
-          father: user.father,
-          rg_number: user.rg_number,
-          rg_uf_id: { value: user.rg_uf_id, label: user.rg_uf },
-          rg_date_of_issue: user.rg_date_of_issue
-            ? new Date(user.rg_date_of_issue)
-            : null,
-          rg_issuing_body: user.rg_issuing_body,
-          company: user.company,
-          company_telephone: user.company_telephone,
-          telephone:
-            user.contacts && user.contacts[0] ? user.contacts[0].telephone : '',
-          cell_phone:
-            user.contacts && user.contacts[0]
-              ? user.contacts[0].cell_phone
-              : '',
-          whatsapp:
-            user.contacts && user.contacts[0] ? user.contacts[0].whatsapp : '',
-        };
-        if (user.adresses) {
-          const userAdresses: Address[] = user.adresses;
-          setAddresses(userAdresses);
-        }
+          const userToBeEdited: UserFormData = {
+            name: user.name,
+            email: user.email,
+            cim: user.cim,
+            cpf: user.cpf,
+            avatar_url: user.avatar_url,
+            date_of_birth: user.date_of_birth
+              ? new Date(user.date_of_birth)
+              : null,
+            degree_id: {
+              value: user.degree_id,
+              label: user.degree?.description,
+            },
+            blood_type: { value: user.blood_type, label: user.blood_type },
+            naturalness_uf_id: {
+              value: user.naturalness_uf_id,
+              label: user.naturalness_uf,
+            },
+            naturalness_city_id: {
+              value: user.naturalness_city_id,
+              label: user.naturalness_city,
+            },
+            civil_status: {
+              value: user.civil_status,
+              label: user.civil_status,
+            },
+            mother: user.mother,
+            father: user.father,
+            rg_number: user.rg_number,
+            rg_uf_id: { value: user.rg_uf_id, label: user.rg_uf },
+            rg_date_of_issue: user.rg_date_of_issue
+              ? new Date(user.rg_date_of_issue)
+              : null,
+            rg_issuing_body: user.rg_issuing_body,
+            company: user.company,
+            company_telephone: user.company_telephone,
+            telephone:
+              user.contacts && user.contacts[0]
+                ? user.contacts[0].telephone
+                : '',
+            cell_phone:
+              user.contacts && user.contacts[0]
+                ? user.contacts[0].cell_phone
+                : '',
+            whatsapp:
+              user.contacts && user.contacts[0]
+                ? user.contacts[0].whatsapp
+                : '',
+          };
 
-        if (user.dependents) {
-          const userDependents: Dependent[] = user.dependents.map(dep => {
-            return {
-              name_dependent: dep.name,
-              date_of_birth_dependent: dep.date_of_birth,
-              gender_id: dep.gender_id,
-              gender: genders.find(gen => gen.id === dep.gender_id)
-                ?.description,
-              kinship_id: dep.kinship_id,
-              kinship: kinships.find(kin => kin.id === dep.kinship_id)
-                ?.description,
-            };
-          });
-          setDependents(userDependents);
-        }
-        axios
-          .get<CityRes[]>(
-            `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${userToBeEdited.naturalness_uf_id?.value}/municipios`,
-          )
-          .then(data => {
-            const cities = data.data.map(city => {
-              const cityData = {
-                id: city.id,
-                nome: city.nome,
-                value: city.id,
-                label: city.nome,
-              };
+          setUserForm(user);
 
-              return cityData;
+          axios
+            .get<CityRes[]>(
+              `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${userToBeEdited.naturalness_uf_id?.value}/municipios`,
+            )
+            .then(data => {
+              const cities = data.data.map(city => {
+                const cityData = {
+                  id: city.id,
+                  nome: city.nome,
+                  value: city.id,
+                  label: city.nome,
+                };
+
+                return cityData;
+              });
+              setCitiesNaturalness(cities);
             });
-            setCitiesNaturalness(cities);
-          });
-        setEditUser(userToBeEdited);
-        setLoading(false);
-      });
+          setEditUser(userToBeEdited);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     }
-  }, [params.id, genders, kinships]);
+  }, [params.id]);
 
   const handleAddAddress = useCallback(() => {
     // console.log(
@@ -982,7 +1018,13 @@ const User: React.FC = () => {
         <Container>
           <Form ref={formRef} initialData={editUser} onSubmit={handleSubmit}>
             <ArroundButton>
-              <Button type="submit">SALVAR</Button>
+              <Button type="submit" disabled={!!saveLoading}>
+                {saveLoading ? (
+                  <CircularProgress style={{ color: '#FFF' }} />
+                ) : (
+                  'SALVAR'
+                )}
+              </Button>
             </ArroundButton>
             <div className={classes.root}>
               <AppBar position="static" className={classes.topTab}>
@@ -1343,7 +1385,7 @@ const User: React.FC = () => {
                       zIndex: 0,
                     },
                   }}
-                  style={{ marginTop: 16, border: '2px solid #631925' }}
+                  style={{ marginTop: 16, border: '2px solid #0f5e9e' }}
                   actions={[
                     rowData => ({
                       icon: () => <Edit />,
@@ -1452,7 +1494,7 @@ const User: React.FC = () => {
                       zIndex: 0,
                     },
                   }}
-                  style={{ marginTop: 16, border: '2px solid #631925' }}
+                  style={{ marginTop: 16, border: '2px solid #0f5e9e' }}
                   actions={[
                     rowData => ({
                       icon: () => <Edit />,

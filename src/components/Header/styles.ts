@@ -9,7 +9,7 @@ export const Content = styled.div`
     max-height: 70px;
     width: 100vw;
     padding: 10px 0;
-    z-index: 1;
+    z-index: 10;
 
     display: grid;
     grid-template-areas: 'logo nav';

@@ -1,5 +1,6 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
+import Resizer from 'react-image-file-resizer';
 import { FiUpload } from 'react-icons/fi';
 import { Container } from './styles';
 
@@ -10,13 +11,39 @@ interface Props {
 
 const Dropzone: React.FC<Props> = ({ onFileUploaded, initialFile }) => {
   const [selectedFileUrl, setSelectedFileUrl] = useState('');
+
+  const resizeFile = (file: File): Promise<string> =>
+    new Promise(resolve => {
+      Resizer.imageFileResizer(
+        file,
+        850,
+        850,
+        'JPEG',
+        90,
+        0,
+        uri => {
+          resolve(uri as string);
+        },
+        'base64',
+      );
+    });
+
   const onDrop = useCallback(
-    acceptedFiles => {
+    async acceptedFiles => {
       const file = acceptedFiles[0];
 
-      const fileUrl = URL.createObjectURL(file);
-      setSelectedFileUrl(fileUrl);
-      onFileUploaded(file);
+      const resizedFile = await resizeFile(file);
+
+      fetch(resizedFile)
+        .then(response => response.blob())
+        .then(blob => {
+          const fileResized = new File([blob], file.name, {
+            type: 'image/jpeg',
+          });
+
+          setSelectedFileUrl(resizedFile);
+          onFileUploaded(fileResized);
+        });
     },
     [onFileUploaded],
   );

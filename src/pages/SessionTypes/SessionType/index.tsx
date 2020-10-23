@@ -11,7 +11,6 @@ import { FormHandles } from '@unform/core';
 
 import BasePage from '../../../components/BasePage';
 import Loading from '../../../components/Loading';
-import { useAuth } from '../../../hooks/auth';
 import { useToast } from '../../../hooks/toast';
 import getValidationErrors from '../../../utils/getValidationErrors';
 import api from '../../../services/api';
@@ -19,23 +18,16 @@ import Card from '../../../components/Card';
 import Input from '../../../components/Input';
 import Button from '../../../components/Button';
 import Select from '../../../components/Select';
-import InputFile from '../../../components/InputFile';
 import { ArroundButton } from './styles';
 
 interface params {
   id: string;
 }
 
-interface Statute {
-  id?: string;
+interface DataForm {
   description: string;
-  degree: SelectData;
-  file: File;
-}
-
-interface SelectData {
-  value?: string | number | undefined | null;
-  label?: string;
+  degree_id: string;
+  type: string;
 }
 
 interface OptionsData {
@@ -45,16 +37,19 @@ interface OptionsData {
   label: string;
 }
 
-const Statute: React.FC = () => {
+const SessionType: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [saveLoading, setSaveLoading] = useState(false);
   const params: params = useParams();
   const [degrees, setDegrees] = useState<OptionsData[]>([]);
   const history = useHistory();
-  // const [selectedFile, setSelectedFile] = useState<File>();
   const formRef = useRef<FormHandles>(null);
   const { addToast } = useToast();
-  const { user } = useAuth();
+  const types = [
+    { label: 'Magna', value: 'Magna' },
+    { label: 'Ordinária', value: 'Ordinária' },
+    { label: 'Pública', value: 'Pública' },
+  ];
 
   const handleSubmit = useCallback(
     async data => {
@@ -64,43 +59,34 @@ const Statute: React.FC = () => {
         const schema = Yup.object().shape({
           description: Yup.string().required('Descrição obrigatória'),
           degree: Yup.string().required('Grau é obrigatório'),
+          type: Yup.string().required('Tipo é obrigatório'),
         });
 
         await schema.validate(data, {
           abortEarly: false,
         });
 
-        if (!data.file) {
-          addToast({
-            type: 'error',
-            title: 'Selecione um arquivo!',
-          });
-        }
-
-        console.log(data);
-
         setSaveLoading(true);
 
-        const formData = new FormData();
+        const { description, degree, type } = data;
 
-        const { description, degree, file } = data;
-
-        formData.append('user_id', user.id);
-        formData.append('description', description);
-        formData.append('degree_id', degree);
-        formData.append('file', file);
+        const dataForm: DataForm = {
+          description,
+          degree_id: degree,
+          type,
+        };
 
         if (params.id) {
-          await api.put(`/statutes/${params.id}`, formData);
+          await api.put(`/session-types/${params.id}`, dataForm);
         } else {
-          await api.post('/statutes', formData);
+          await api.post('/session-types', dataForm);
         }
 
         setSaveLoading(false);
-        history.push('/app/cad/estatutos');
+        history.push('/app/cad/tipos-sessao');
         addToast({
           type: 'success',
-          title: 'Estatuto cadastrada com sucesso!',
+          title: 'Tipo de sessão cadastrado com sucesso!',
         });
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
@@ -119,38 +105,29 @@ const Statute: React.FC = () => {
         });
       }
     },
-    [addToast, history, params.id, user.id],
+    [addToast, history, params.id],
   );
 
   useEffect(() => {
+    console.log('chamou');
     if (params.id) {
+      console.log('entrou');
       setLoading(true);
-      api
-        .get(`/statutes/${params.id}`)
-        .then(res => {
-          let fileCreated: File;
-          fetch(res.data.file_url)
-            .then(response => response.blob())
-            .then(blob => {
-              const nameFile: string = res.data.file;
-              const nameEditted = nameFile.slice(
-                nameFile.indexOf('-') + 1,
-                nameFile.length,
-              );
-              fileCreated = new File([blob], nameEditted);
-              formRef.current?.setData({
-                degree: {
-                  value: res.data.degree_id,
-                  label: res.data.degree.description,
-                },
-                description: res.data.description,
-                file: fileCreated,
-              });
-            });
-        })
-        .finally(() => {
-          setLoading(false);
+      api.get(`/session-types/${params.id}`).then(res => {
+        setLoading(false);
+        formRef.current?.setData({
+          degree: {
+            value: res.data.degree_id,
+            label: res.data.degree.description,
+          },
+          description: res.data.description,
+          type: {
+            value: res.data.type,
+            label: res.data.type,
+          },
         });
+        console.log(formRef.current);
+      });
     }
   }, [params.id]);
 
@@ -167,8 +144,8 @@ const Statute: React.FC = () => {
 
   return (
     <BasePage
-      title={params.id ? 'Editar Estatuto' : 'Novo Estatuto'}
-      backLink="/app/cad/estatutos"
+      title={params.id ? 'Editar Tipo de Sessão' : 'Novo Tipo de Sessão'}
+      backLink="/app/cad/tipos-sessao"
     >
       {loading ? (
         <Loading />
@@ -184,7 +161,7 @@ const Statute: React.FC = () => {
                 )}
               </Button>
             </ArroundButton>
-            <Card title="Estatuto">
+            <Card title="Tipo de Sessão">
               <Grid container spacing={2}>
                 <Grid item xs={12} md={4}>
                   <Input
@@ -195,19 +172,19 @@ const Statute: React.FC = () => {
                 </Grid>
                 <Grid item xs={12} md={4}>
                   <Select
+                    name="type"
+                    label="Tipo"
+                    placeholder="Selecione o tipo"
+                    options={types}
+                  />
+                </Grid>
+                <Grid item xs={12} md={4}>
+                  <Select
                     name="degree"
                     label="Grau"
                     placeholder="Selecione o grau"
                     options={degrees}
                   />
-                </Grid>
-                <Grid
-                  item
-                  xs={12}
-                  md={4}
-                  style={{ display: 'flex', alignItems: 'center' }}
-                >
-                  <InputFile label="Selecione o arquivo" name="file" />
                 </Grid>
               </Grid>
             </Card>
@@ -218,4 +195,4 @@ const Statute: React.FC = () => {
   );
 };
 
-export default Statute;
+export default SessionType;

@@ -55,7 +55,7 @@ const Statutes: React.FC = () => {
           <ArroundButton>
             <Button type="button" onClick={handleAddStatute}>
               Adicionar Estatuto
-              <AddCircle style={{ color: '#631925' }} />
+              <AddCircle style={{ color: '#0f5e9e' }} />
             </Button>
           </ArroundButton>
           <MaterialTable
@@ -67,7 +67,7 @@ const Statutes: React.FC = () => {
             ]}
             data={[...data]}
             options={{ pageSize: 10 }}
-            style={{ marginTop: 16, border: '2px solid #631925' }}
+            style={{ marginTop: 16, border: '2px solid #0f5e9e' }}
             actions={[
               rowData => ({
                 icon: () => <Edit style={{ color: '#1976d2' }} />,

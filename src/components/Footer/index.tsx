@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 import { FaMapMarkerAlt, FaEnvelope } from 'react-icons/fa';
 import { FiArrowRight } from 'react-icons/fi';
 
-import LogoFooter from '../../assets/logofooter.png';
+import LogoFooter from '../../assets/novaFlamula.png';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -16,8 +16,9 @@ const useStyles = makeStyles((theme: Theme) =>
       left: 0,
       bottom: 0,
       width: '100%',
-      backgroundColor: '#a5a395',
-      minHeight: '325px',
+      backgroundColor: '#0e3a5d',
+      minHeight: '360px',
+      paddingTop: 32,
       display: 'flex',
       justifyContent: 'flex-end',
       boxShadow: '0 -6px 8px 0 rgba(0, 0, 0, 0.3)',
@@ -44,16 +45,17 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     link: {
       textDecoration: 'none',
-      color: '#000',
+      color: '#FFF',
       '&:hover': {
         opacity: 0.5,
       },
     },
     titleFooter: {
       fontSize: '24px',
+      color: '#FFF',
       marginBottom: '8px',
       position: 'relative',
-      borderBottom: '3px solid #000',
+      borderBottom: '3px solid #FFF',
     },
     address: {
       fontSize: 16,
@@ -63,6 +65,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     iconFooter: {
       marginRight: 8,
+      color: '#FFF',
     },
     imgFooter: {
       width: 'auto',
@@ -154,6 +157,8 @@ const Footer: React.FC = () => {
                 <p>
                   Praça São José nº 52, Centro
                   <br />
+                  Caixa Postal nº 151
+                  <br />
                   São Sebastião do Paraíso - MG
                   <br />
                   CEP: 37950-000
@@ -164,9 +169,9 @@ const Footer: React.FC = () => {
               <FaEnvelope className={classes.iconFooter} size={30} />
               <a
                 className={classes.link}
-                href="mailto:contato@caminhoeluz.com.br"
+                href="mailto:fcl3216@fraternidadecaminhoeluz.org.br"
               >
-                contato@caminhoeluz.com.br
+                fcl3216@fraternidadecaminhoeluz.org.br
               </a>
             </div>
           </Grid>

@@ -37,7 +37,7 @@ import Input from '../../components/Input';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     modalTitle: {
-      background: '#631925',
+      background: '#0f5e9e',
       color: '#FFF',
       flex: '0 0 auto',
       margin: 0,
@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginRight: 8,
     },
     modalActions: {
-      background: '#631925',
+      background: '#0f5e9e',
     },
     nested: {
       paddingLeft: theme.spacing(4),
@@ -182,7 +182,7 @@ const Managements: React.FC = () => {
             <ArroundButton>
               <Button type="button" onClick={handleClickOpen}>
                 Adicionar Gestão
-                <AddCircle style={{ color: '#631925' }} />
+                <AddCircle style={{ color: '#0f5e9e' }} />
               </Button>
             </ArroundButton>
             <MaterialTable
@@ -200,7 +200,7 @@ const Managements: React.FC = () => {
                 { title: 'Ano Final', field: 'last_year' },
               ]}
               data={[...data]}
-              style={{ marginTop: 16, border: '2px solid #631925' }}
+              style={{ marginTop: 16, border: '2px solid #0f5e9e' }}
               actions={[
                 rowData => ({
                   icon: () => <Edit style={{ color: '#1976d2' }} />,
@@ -210,7 +210,7 @@ const Managements: React.FC = () => {
                 rowData => ({
                   icon: () => (
                     <PowerSettingsNew
-                      style={{ color: rowData.active ? '#c53030' : '#28a745' }}
+                      style={{ color: rowData.active ? '#28a745' : '#c53030' }}
                     />
                   ),
                   onClick: () => handleChangeStatus(rowData),

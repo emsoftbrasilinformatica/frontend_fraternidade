@@ -80,7 +80,7 @@ const Users: React.FC = () => {
           <ArroundButton>
             <Button type="button" onClick={handleAddUser}>
               Adicionar Usuário
-              <AddCircle style={{ color: '#631925' }} />
+              <AddCircle style={{ color: '#0f5e9e' }} />
             </Button>
           </ArroundButton>
           <MaterialTable
@@ -106,7 +106,7 @@ const Users: React.FC = () => {
             ]}
             data={[...data]}
             options={{ pageSize: 10 }}
-            style={{ marginTop: 16, border: '2px solid #631925' }}
+            style={{ marginTop: 16, border: '2px solid #0f5e9e' }}
             actions={[
               rowData => ({
                 icon: () => <Edit style={{ color: '#1976d2' }} />,
@@ -116,7 +116,7 @@ const Users: React.FC = () => {
               rowData => ({
                 icon: () => (
                   <PowerSettingsNew
-                    style={{ color: rowData.active ? '#c53030' : '#28a745' }}
+                    style={{ color: rowData.active ? '#28a745' : '#c53030' }}
                   />
                 ),
 

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Container } from '@material-ui/core';
+import { CircularProgress, Container } from '@material-ui/core';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import MaterialTable from 'material-table';
 import { useParams, useHistory } from 'react-router-dom';
@@ -15,6 +15,7 @@ interface User {
   id: string;
   name: string;
   cim: number;
+  active: boolean;
   degree: {
     description: string;
     order: number;
@@ -31,10 +32,11 @@ interface Session {
   number: string;
   session_type: {
     description: string;
-  };
-  degree: {
-    description: string;
-    order: number;
+    type: string;
+    degree: {
+      description: string;
+      order: number;
+    };
   };
 }
 
@@ -51,10 +53,10 @@ interface params {
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: '#631925',
+      main: '#0f5e9e',
     },
     secondary: {
-      main: '#631925',
+      main: '#0f5e9e',
     },
   },
 });
@@ -64,6 +66,7 @@ const Presences: React.FC = () => {
   const [session, setSession] = useState<Session>();
   const [sessionPresences, setSessionPresences] = useState<Presence[]>([]);
   const [loading, setLoading] = useState(false);
+  const [saveLoading, setSaveLoading] = useState(false);
   const params: params = useParams();
   const { addToast } = useToast();
   const history = useHistory();
@@ -94,19 +97,22 @@ const Presences: React.FC = () => {
 
   const usersCanBePresence = useMemo(() => {
     const usersPass = users.filter(user => {
-      if (session?.session_type.description.includes('M - ')) {
-        if (
-          user.degree.order === session.degree.order ||
-          user.degree.order === session.degree.order - 1
-        ) {
+      if (user.active) {
+        if (session?.session_type.type === 'Magna') {
+          if (
+            user.degree.order >= session.session_type.degree.order ||
+            user.degree.order === session.session_type.degree.order - 1
+          ) {
+            return user;
+          }
+        } else if (session?.session_type.type === 'Ordinária') {
+          if (user.degree.order >= session?.session_type.degree.order) {
+            return user;
+          }
+        } else {
           return user;
         }
-      } else if (session?.session_type.description.includes('O - ')) {
-        if (user.degree.order === session?.degree.order) {
-          return user;
-        }
-      } else {
-        return user;
+        return undefined;
       }
       return undefined;
     });
@@ -124,7 +130,7 @@ const Presences: React.FC = () => {
 
   const handleSavePresences = useCallback(async () => {
     try {
-      setLoading(true);
+      setSaveLoading(true);
       const presences: Presence[] = usersCanBePresence.map(user => {
         return {
           presence: user.tableData.checked,
@@ -135,7 +141,7 @@ const Presences: React.FC = () => {
 
       await api.post('/session-presences', { presences });
 
-      setLoading(false);
+      setSaveLoading(false);
 
       history.push('/app/cad/sessoes');
       addToast({
@@ -144,7 +150,7 @@ const Presences: React.FC = () => {
         description: '',
       });
     } catch (err) {
-      setLoading(false);
+      setSaveLoading(false);
       addToast({
         type: 'error',
         title: 'Erro no cadastro',
@@ -161,12 +167,24 @@ const Presences: React.FC = () => {
         ) : (
           <Container>
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <Button onClick={handleSavePresences} type="button">
-                SALVAR
+              <Button
+                type="submit"
+                disabled={!!saveLoading}
+                onClick={handleSavePresences}
+              >
+                {saveLoading ? (
+                  <CircularProgress style={{ color: '#FFF' }} />
+                ) : (
+                  'SALVAR'
+                )}
               </Button>
             </div>
             <Card
-              title={`Número: ${session?.number} | Tipo: ${session?.session_type.description} | ${session?.degree.description}`}
+              title={`Número: ${
+                session?.number
+              } | Tipo: ${session?.session_type.type.substring(0, 1)} - ${
+                session?.session_type.description
+              } | ${session?.session_type.degree.description}`}
             >
               <MaterialTable
                 title="Lista de presença"
@@ -179,10 +197,14 @@ const Presences: React.FC = () => {
                     title: 'CIM',
                     field: 'cim',
                   },
+                  {
+                    title: 'Grau',
+                    field: 'degree.description',
+                  },
                 ]}
                 style={{
                   marginTop: 16,
-                  border: '2px solid #631925',
+                  border: '2px solid #0f5e9e',
                 }}
                 data={usersCanBePresence}
                 localization={labels.materialTable.localization}

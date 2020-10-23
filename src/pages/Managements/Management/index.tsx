@@ -16,7 +16,15 @@ import {
   DesktopMac as AdminFuncIcon,
   DesktopAccessDisabled as NotAdminFuncIcon,
 } from '@material-ui/icons';
-import { Container, Grid, Box, AppBar, Tabs, Tab } from '@material-ui/core';
+import {
+  Container,
+  Grid,
+  Box,
+  AppBar,
+  Tabs,
+  Tab,
+  CircularProgress,
+} from '@material-ui/core';
 import { useParams, useHistory } from 'react-router-dom';
 
 import { Form } from '@unform/web';
@@ -121,10 +129,10 @@ const useStyles = makeStyles((theme: Theme) => ({
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: '#631925',
+      main: '#0f5e9e',
     },
     secondary: {
-      main: '#631925',
+      main: '#0f5e9e',
     },
   },
 });
@@ -137,6 +145,7 @@ const Management: React.FC = () => {
   const { addToast } = useToast();
   const [value, setValue] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [saveLoading, setSaveLoading] = useState(false);
   const [management, setManagement] = useState<Management>();
   const [managementMembers, setManagementMembers] = useState<
     ManagementMember[]
@@ -158,7 +167,7 @@ const Management: React.FC = () => {
 
   const handleSubmit = useCallback(
     async data => {
-      setLoading(true);
+      setSaveLoading(true);
       try {
         const managementMemberToBeCreated: ManagementMember[] = managementMembers.map(
           member => {
@@ -174,16 +183,16 @@ const Management: React.FC = () => {
         });
 
         history.push('/app/cad/gestoes');
-        setLoading(false);
+        setSaveLoading(false);
         addToast({
           type: 'success',
           title: 'Membros da gestão cadastrados com sucesso!',
         });
       } catch (err) {
-        setLoading(false);
+        setSaveLoading(false);
         addToast({
           type: 'error',
-          title: 'Erro ao cadastrar membeos da gestão, tente novamente!',
+          title: 'Erro ao cadastrar membros da gestão, tente novamente!',
         });
       }
     },
@@ -273,7 +282,13 @@ const Management: React.FC = () => {
               onSubmit={handleSubmit}
             >
               <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <Button type="submit">SALVAR</Button>
+                <Button type="submit" disabled={!!saveLoading}>
+                  {saveLoading ? (
+                    <CircularProgress style={{ color: '#FFF' }} />
+                  ) : (
+                    'SALVAR'
+                  )}
+                </Button>
               </div>
               <Card title="Informações da Gestão">
                 <Grid container spacing={2}>
@@ -342,7 +357,7 @@ const Management: React.FC = () => {
                       },
                     ]}
                     data={dataTable}
-                    style={{ marginTop: 16, border: '2px solid #631925' }}
+                    style={{ marginTop: 16, border: '2px solid #0f5e9e' }}
                     options={{
                       headerStyle: {
                         zIndex: 0,
@@ -432,7 +447,7 @@ const Management: React.FC = () => {
                       },
                     ]}
                     data={dataTableNotAdmin}
-                    style={{ marginTop: 16, border: '2px solid #631925' }}
+                    style={{ marginTop: 16, border: '2px solid #0f5e9e' }}
                     options={{
                       headerStyle: {
                         zIndex: 0,

@@ -35,9 +35,14 @@ const useStyles = makeStyles(theme =>
       justifyContent: 'center',
     },
     pagination: {
-      backgroundColor: '#915963',
+      backgroundColor: '#0f5e9e',
+      color: '#FFF',
       borderRadius: '20px',
       padding: '10px',
+
+      '& .MuiPaginationItem-root': {
+        color: '#FFF',
+      },
     },
   }),
 );

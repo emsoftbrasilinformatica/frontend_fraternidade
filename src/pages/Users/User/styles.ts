@@ -7,7 +7,7 @@ export const Title = styled.div`
   flex: 1;
   width: 100%;
   justify-content: center;
-  color: #631925;
+  color: #0f5e9e;
   font-size: 32px;
   margin-bottom: 8px;
   letter-spacing: 2px;
@@ -57,7 +57,7 @@ export const AvatarInput = styled.div`
     position: absolute;
     width: 48px;
     height: 48px;
-    background: #631925;
+    background: #0f5e9e;
     border-radius: 50%;
     left: 54%;
     bottom: 0;
@@ -80,7 +80,7 @@ export const AvatarInput = styled.div`
     }
 
     &:hover {
-      background: ${shade(0.2, '#631925')};
+      background: ${shade(0.2, '#0f5e9e')};
     }
   }
 `;

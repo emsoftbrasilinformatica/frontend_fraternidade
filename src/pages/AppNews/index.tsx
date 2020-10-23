@@ -32,7 +32,7 @@ interface News {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     modalTitle: {
-      background: '#631925',
+      background: '#0f5e9e',
       color: '#FFF',
       flex: '0 0 auto',
       margin: 0,
@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginRight: 8,
     },
     modalActions: {
-      background: '#631925',
+      background: '#0f5e9e',
     },
     nested: {
       paddingLeft: theme.spacing(4),
@@ -131,7 +131,7 @@ const AppNews: React.FC = () => {
             <ArroundButton>
               <Button type="button" onClick={handleAddNews}>
                 Adicionar Notícia
-                <AddCircle style={{ color: '#631925' }} />
+                <AddCircle style={{ color: '#0f5e9e' }} />
               </Button>
             </ArroundButton>
             <MaterialTable
@@ -146,7 +146,7 @@ const AppNews: React.FC = () => {
                 },
               ]}
               data={[...data]}
-              style={{ marginTop: 16, border: '2px solid #631925' }}
+              style={{ marginTop: 16, border: '2px solid #0f5e9e' }}
               actions={[
                 rowData => ({
                   icon: () => <Edit style={{ color: '#1976d2' }} />,

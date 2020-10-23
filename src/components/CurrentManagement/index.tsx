@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme: Theme) =>
       top: -70,
     },
     container: {
-      padding: '25px 0',
+      padding: '30px 0 80px',
     },
     title: {
       display: 'flex',
@@ -119,7 +119,7 @@ const CurrentManagement: React.FC = () => {
           <Carousel
             additionalTransfrom={0}
             arrows
-            // autoPlay
+            autoPlay
             autoPlaySpeed={3000}
             centerMode={false}
             className={classes.carrousel}

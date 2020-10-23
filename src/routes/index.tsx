@@ -22,6 +22,7 @@ import Managements from '../pages/Managements';
 import Management from '../pages/Managements/Management';
 
 import SessionTypes from '../pages/SessionTypes';
+import SessionType from '../pages/SessionTypes/SessionType';
 import Sessions from '../pages/Sessions';
 import Session from '../pages/Sessions/Session';
 import Presences from '../pages/Sessions/Presences';
@@ -50,6 +51,7 @@ const Routes: React.FC = () => (
     <Route path="/app/cad/sessoes" component={Sessions} isPrivate />
     <Route path="/app/cad/sessao/:id?" component={Session} isPrivate />
     <Route path="/app/cad/tipos-sessao" component={SessionTypes} isPrivate />
+    <Route path="/app/cad/tipo-sessao/:id?" component={SessionType} isPrivate />
     <Route
       path="/app/cad/presencas-sessao/:id"
       component={Presences}

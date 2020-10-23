@@ -8,7 +8,7 @@ export const Button = styled.button`
   justify-content: center;
   padding: 8px;
   background: #fff;
-  border: 2px solid #631925;
+  border: 2px solid #0f5e9e;
   font-weight: 500;
 
   svg {

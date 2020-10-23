@@ -12,7 +12,7 @@ export const ArroundButton = styled.div`
     justify-content: center;
     padding: 8px;
     background: #fff;
-    border: 2px solid #631925;
+    border: 2px solid #0f5e9e;
     font-weight: 500;
     flex: 1;
     margin-bottom: 16px;
@@ -32,7 +32,7 @@ export const Calendar = styled.aside`
 
   .DayPicker-wrapper {
     padding-bottom: 0;
-    background: #6d1e2bb8;
+    background: #6b9ec7;
     border-radius: 10px;
   }
 
@@ -42,13 +42,20 @@ export const Calendar = styled.aside`
   }
 
   .DayPicker-NavButton {
-    color: #6d1e2bb8 !important;
+    color: #6b9ec7 !important;
   }
 
   .DayPicker-NavButton--prev {
     right: auto;
     left: 1.5em;
     margin-right: 0;
+    background-color: #fff;
+    border-radius: 5px;
+  }
+
+  .DayPicker-NavButton--next {
+    background-color: #fff;
+    border-radius: 5px;
   }
 
   .DayPicker-Month {
@@ -58,7 +65,7 @@ export const Calendar = styled.aside`
     padding: 8px;
     background-color: #fff;
     border-radius: 0 0 10px 10px;
-    border: 3px solid #6d1e2bb8;
+    border: 3px solid #6b9ec7;
   }
 
   .DayPicker-Caption {
@@ -77,14 +84,20 @@ export const Calendar = styled.aside`
   }
 
   .DayPicker-Day--available:not(.DayPicker-Day--outside) {
-    background: #6d1e2bb8;
+    background: #6b9ec7;
+    border-radius: 10px;
+    color: #fff;
+  }
+
+  .DayPicker-Day--haveSession:not(.DayPicker-Day--outside) {
+    background: #5a9f55;
     border-radius: 10px;
     color: #fff;
   }
 
   .DayPicker:not(.DayPicker--interactionDisabled)
     .DayPicker-Day:not(.DayPicker-Day--disabled):not(.DayPicker-Day--selected):not(.DayPicker-Day--outside):hover {
-    background: ${shade(0.2, '#6d1e2bb8')};
+    background: ${shade(0.2, '#6b9ec7')};
   }
 
   .DayPicker-Day--today {
@@ -92,12 +105,12 @@ export const Calendar = styled.aside`
   }
 
   .DayPicker-Day--disabled {
-    color: #6d1e2bb8 !important;
+    color: #6b9ec7 !important;
     background: transparent !important;
   }
 
   .DayPicker-Day--selected {
-    background: #631925 !important;
+    background: #0f5e9e !important;
     border-radius: 10px;
     color: #fff !important;
   }

@@ -21,11 +21,20 @@ const useStyles = makeStyles((theme: Theme) =>
       borderBottomLeftRadius: '50% 40%',
       borderBottomRightRadius: '50% 40%',
     },
+    divContainer: {
+      display: 'flex',
+      flexDirection: 'column',
+      color: '#FFF',
+      fontWeight: 'bold',
+      alignItems: 'center',
+    },
     logoGob: {
+      paddingTop: 16,
       height: '125px',
       width: 'auto',
     },
     logoGobMG: {
+      paddingTop: 16,
       height: '130px',
       width: 'auto',
     },
@@ -42,28 +51,34 @@ const Links: React.FC = () => {
           <Grid container spacing={2}>
             <Grid item className={classes.root} xs={12} sm={6}>
               <Fade left>
-                <a
-                  href="https://www.gob.org.br/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <img className={classes.logoGob} src={Gob} alt="Logo GOB" />
-                </a>
+                <div className={classes.divContainer}>
+                  Federada ao
+                  <a
+                    href="https://www.gob.org.br/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <img className={classes.logoGob} src={Gob} alt="Logo GOB" />
+                  </a>
+                </div>
               </Fade>
             </Grid>
             <Grid item className={classes.root} xs={12} sm={6}>
               <Fade right>
-                <a
-                  href="https://www.gobmg.org.br/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <img
-                    className={classes.logoGobMG}
-                    src={GobMG}
-                    alt="Logo GOB-MG"
-                  />
-                </a>
+                <div className={classes.divContainer}>
+                  Filiada ao
+                  <a
+                    href="https://www.gobmg.org.br/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <img
+                      className={classes.logoGobMG}
+                      src={GobMG}
+                      alt="Logo GOB-MG"
+                    />
+                  </a>
+                </div>
               </Fade>
             </Grid>
           </Grid>

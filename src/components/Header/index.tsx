@@ -7,7 +7,7 @@ import { HashLink } from 'react-router-hash-link';
 // import { Link as HashLink } from 'react-scroll';
 
 import { Content } from './styles';
-import Maconaria from '../../assets/maconaria.jpg';
+import Maconaria from '../../assets/esquadro_compasso.png';
 
 const Header: React.FC = () => {
   const { pathname, hash } = useLocation();
@@ -27,7 +27,7 @@ const Header: React.FC = () => {
   }, []);
 
   const handleLogin = useCallback(() => {
-    history.push('app/login');
+    history.push('/app/login');
   }, [history]);
   // console.log(`${pathname} ------ ${hash}`);
   const handleMediaQueryChange = (mediaQuery: any): void => {

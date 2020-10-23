@@ -11,7 +11,7 @@ export const Label = styled.label`
   display: flex;
   align-items: center;
   margin: 0 0 5px 8px;
-  color: #631925;
+  color: #0f5e9e;
 
   svg {
     margin-right: 8px;
@@ -21,10 +21,10 @@ export const Label = styled.label`
 export const Container = styled.div<ContainerProps>`
   background: #fff;
   border-radius: 10px;
-  border: 3px solid #63192575;
+  border: 3px solid #6b9ec7;
   padding: 16px;
   width: 100%;
-  color: #63192575;
+  color: #6b9ec7;
 
   display: flex;
   align-items: center;
@@ -43,18 +43,18 @@ export const Container = styled.div<ContainerProps>`
   ${props =>
     props.isFocused &&
     css`
-      color: #631925;
-      border-color: #631925;
+      color: #0f5e9e;
+      border-color: #0f5e9e;
     `}
 
   input {
     flex: 1;
     background: transparent;
     border: 0;
-    color: #631925;
+    color: #0f5e9e;
 
     &::placeholder {
-      color: #63192575;
+      color: #6b9ec7;
     }
   }
 

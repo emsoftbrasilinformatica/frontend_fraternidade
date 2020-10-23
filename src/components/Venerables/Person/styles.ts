@@ -6,17 +6,17 @@ export const Container = styled.div`
 `;
 
 export const Card = styled.div`
-  background: #f1c543;
+  background: #0f5e9e;
   max-width: 200px;
   min-width: 200px;
-  min-height: 296px;
+  min-height: 340px;
   display: flex;
   justify-content: center;
   flex-direction: column;
   align-items: center;
   padding: 10px;
-  border-radius: 10px 95px 10px 10px;
-  color: #1c537e;
+  border-radius: 10px;
+  color: #fff;
   position: relative;
 
   /* img {
@@ -25,4 +25,16 @@ export const Card = styled.div`
     border-radius: 50%;
     box-shadow: 0px 0px 10px -1px rgba(0, 0, 0, 0.75);
   } */
+`;
+
+export const Button = styled.button`
+  margin-top: 8px;
+  border-radius: 10px;
+  outline: none;
+  border: 3px solid #fff;
+  padding: 5px;
+  background: none;
+  font-weight: bold;
+  color: #fff;
+  width: 115px;
 `;

@@ -10,7 +10,6 @@ import { useToast } from '../../hooks/toast';
 import { Container, Content, AnimationContainer, Background } from './styles';
 
 import getValidationErrors from '../../utils/getValidationErrors';
-import logoImg from '../../assets/maconaria.jpg';
 
 import Input from '../../components/Input';
 import Button from '../../components/Button';
@@ -73,7 +72,7 @@ const SignIn: React.FC = () => {
     <Container>
       <Content>
         <AnimationContainer>
-          <img src={logoImg} alt="Fraternidade Caminho e Luz" />
+          {/* <img src={logoImg} alt="Fraternidade Caminho e Luz" /> */}
 
           <Form ref={formRef} onSubmit={handleSubmit}>
             <h1>Faça seu login</h1>
@@ -85,18 +84,18 @@ const SignIn: React.FC = () => {
               placeholder="Digite seu CIM"
             />
             <Input
-              name="semiannual_word"
-              icon={FiKey}
-              type="password"
-              label="Palavra Semestral"
-              placeholder="Digite a Palavra Semestral"
-            />
-            <Input
               name="password"
               icon={FiLock}
               type="password"
               label="Senha"
               placeholder="Digite sua senha"
+            />
+            <Input
+              name="semiannual_word"
+              icon={FiKey}
+              type="password"
+              label="Palavra Semestral"
+              placeholder="Digite a Palavra Semestral"
             />
 
             <Button type="submit">Entrar</Button>

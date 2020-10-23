@@ -50,7 +50,7 @@ import { MdGroupWork } from 'react-icons/md';
 
 import { useHistory } from 'react-router-dom';
 import { FiType } from 'react-icons/fi';
-import logoMaconaria from '../../assets/maconaria.jpg';
+import logoMaconaria from '../../assets/esquadro_compasso.png';
 
 import { useAuth } from '../../hooks/auth';
 
@@ -71,7 +71,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
     },
     appBar: {
-      background: '#631925 ',
+      background: '#0f5e9e ',
       transition: theme.transitions.create(['margin', 'width'], {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
@@ -129,7 +129,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginLeft: 0,
     },
     modalTitle: {
-      background: '#631925',
+      background: '#0f5e9e',
       color: '#FFF',
       flex: '0 0 auto',
       margin: 0,
@@ -144,7 +144,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginRight: 8,
     },
     modalActions: {
-      background: '#631925',
+      background: '#0f5e9e',
     },
     nested: {
       paddingLeft: theme.spacing(4),

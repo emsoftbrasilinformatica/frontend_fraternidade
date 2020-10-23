@@ -7,6 +7,8 @@ import { format } from 'date-fns';
 import New from './NewHome';
 
 import api from '../../services/api';
+import background from '../../assets/background-venerables.png';
+import { Section } from './styles';
 
 interface NewsData {
   id: string;
@@ -25,7 +27,9 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     sectionAnchor: {
       position: 'relative',
-      marginBottom: 32,
+      backgroundImage: `url("${background}")`,
+      backgroundColor: '#0f5e9e',
+      padding: 40,
     },
     anchor: {
       position: 'absolute',
@@ -41,7 +45,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     titleText: {
       position: 'relative',
-      color: '#631925',
+      color: '#FFF',
     },
     cardPosition: {
       display: 'flex',
@@ -71,7 +75,7 @@ const News: React.FC = () => {
   }, [news]);
 
   return (
-    <section className={classes.sectionAnchor}>
+    <Section>
       <span id="news" className={classes.anchor} />
       <div className={classes.container}>
         <Container>
@@ -99,7 +103,7 @@ const News: React.FC = () => {
           </Grid>
         </Container>
       </div>
-    </section>
+    </Section>
   );
 };
 

@@ -11,7 +11,7 @@ export const Label = styled.label`
   display: flex;
   align-items: center;
   margin: 0 0 5px 8px;
-  color: #631925;
+  color: #0f5e9e;
 
   svg {
     margin-right: 8px;
@@ -22,7 +22,7 @@ export const Container = styled(ReactSelect)<ContainerProps>`
   margin-bottom: 8px;
   .react-select__control {
     border-radius: 10px;
-    border: 3px solid #63192575;
+    border: 3px solid #6b9ec7;
     padding: 8px;
 
     ${props =>
@@ -32,25 +32,25 @@ export const Container = styled(ReactSelect)<ContainerProps>`
       `}
 
     &:hover {
-      border: 3px solid #63192575;
+      border: 3px solid #6b9ec7;
     }
   }
 
   .react-select__control--is-focused {
-    border: 3px solid #631925;
+    border: 3px solid #0f5e9e;
     box-shadow: none;
 
     &:hover {
-      border: 3px solid #631925;
+      border: 3px solid #0f5e9e;
     }
   }
 
   .react-select__placeholder {
-    color: #63192575;
+    color: #6b9ec7;
   }
 
   .react-select__single-value {
-    color: #631925;
+    color: #0f5e9e;
   }
 `;
 
