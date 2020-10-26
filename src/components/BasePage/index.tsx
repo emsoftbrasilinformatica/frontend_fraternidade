@@ -19,7 +19,6 @@ import BackIcon from '@material-ui/icons/ArrowBack';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import DashboardIcon from '@material-ui/icons/Dashboard';
-import AssignmentIcon from '@material-ui/icons/Assignment';
 import {
   Dialog,
   DialogActions,
@@ -27,29 +26,10 @@ import {
   DialogContent,
   DialogContentText,
   Button,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Collapse,
 } from '@material-ui/core';
-import {
-  SupervisedUserCircle,
-  Lock,
-  AccountTree,
-  ExpandLess,
-  ExpandMore,
-} from '@material-ui/icons';
-import {
-  FaSignOutAlt,
-  FaExclamationTriangle,
-  FaNewspaper,
-  FaCalendar,
-  FaFileContract,
-} from 'react-icons/fa';
-import { MdGroupWork } from 'react-icons/md';
+import { FaSignOutAlt, FaExclamationTriangle } from 'react-icons/fa';
 
 import { useHistory } from 'react-router-dom';
-import { FiType } from 'react-icons/fi';
 import logoMaconaria from '../../assets/esquadro_compasso.png';
 
 import { useAuth } from '../../hooks/auth';
@@ -57,6 +37,7 @@ import { useAuth } from '../../hooks/auth';
 import { ContainerImg } from './styles';
 
 import ListItemLink from '../ListItemLink';
+import Menu from '../Menu';
 
 interface ViewProps {
   title: string;
@@ -165,20 +146,8 @@ const BasePage: React.FC<ViewProps> = ({ children, title, backLink }) => {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
-  const [openCollapseCadastros, setOpenCollapseCadastros] = React.useState(
-    false,
-  );
-  const [openCollapseSessoes, setOpenCollapseSessoes] = React.useState(false);
   const history = useHistory();
   const { signOut, user } = useAuth();
-
-  const handleOpenCollapseCadastrosClick = (): void => {
-    setOpenCollapseCadastros(!openCollapseCadastros);
-  };
-
-  const handleOpenCollapseSessoesClick = (): void => {
-    setOpenCollapseSessoes(!openCollapseSessoes);
-  };
 
   const handleDrawerOpen = (): void => {
     setOpen(true);
@@ -205,94 +174,6 @@ const BasePage: React.FC<ViewProps> = ({ children, title, backLink }) => {
 
     history.push('/');
   }, [signOut, history]);
-
-  const permissaoCadastros = (): React.ReactNode => {
-    if (user.administrative_function?.description === 'Venerável') {
-      return (
-        <>
-          <ListItem button onClick={handleOpenCollapseCadastrosClick}>
-            <ListItemIcon>
-              <AssignmentIcon />
-            </ListItemIcon>
-            <ListItemText primary="Cadastros" />
-            {openCollapseCadastros ? <ExpandLess /> : <ExpandMore />}
-          </ListItem>
-          <Collapse
-            in={openCollapseCadastros}
-            timeout="auto"
-            unmountOnExit
-            style={{ borderTop: '1px solid #e0e0e0' }}
-          >
-            <List component="div" disablePadding>
-              <ListItemLink
-                className={classes.nested}
-                icon={<SupervisedUserCircle />}
-                to="/app/cad/usuarios"
-                primary="Usuários"
-              />
-              <ListItemLink
-                className={classes.nested}
-                icon={<Lock />}
-                to="/app/cad/palavra-semestral"
-                primary="Palavra Semestral"
-              />
-              <ListItemLink
-                className={classes.nested}
-                icon={<AccountTree />}
-                to="/app/cad/gestoes"
-                primary="Gestões"
-              />
-              <ListItemLink
-                className={classes.nested}
-                icon={<FaNewspaper style={{ fontSize: '1.5rem' }} />}
-                to="/app/cad/noticias"
-                primary="Notícias"
-              />
-              <ListItemLink
-                className={classes.nested}
-                icon={<FaFileContract style={{ fontSize: '1.5rem' }} />}
-                to="/app/cad/estatutos"
-                primary="Estatutos"
-              />
-              <ListItem
-                button
-                className={classes.collapseSecondLevel}
-                onClick={handleOpenCollapseSessoesClick}
-              >
-                <ListItemIcon>
-                  <MdGroupWork style={{ fontSize: '1.5rem' }} />
-                </ListItemIcon>
-                <ListItemText primary="Sessões" />
-                {openCollapseSessoes ? <ExpandLess /> : <ExpandMore />}
-              </ListItem>
-              <Collapse
-                in={openCollapseSessoes}
-                timeout="auto"
-                unmountOnExit
-                style={{ borderTop: '1px solid #e0e0e0' }}
-              >
-                <List component="div" disablePadding>
-                  <ListItemLink
-                    className={classes.nestedThird}
-                    icon={<FaCalendar style={{ fontSize: '1.5rem' }} />}
-                    to="/app/cad/sessoes"
-                    primary="Agendamento"
-                  />
-                  <ListItemLink
-                    className={classes.nestedThird}
-                    icon={<FiType style={{ fontSize: '1.5rem' }} />}
-                    to="/app/cad/tipos-sessao"
-                    primary="Tipos de Sessões"
-                  />
-                </List>
-              </Collapse>
-            </List>
-          </Collapse>
-        </>
-      );
-    }
-    return <div />;
-  };
   return (
     <>
       <div className={classes.root}>
@@ -403,7 +284,7 @@ const BasePage: React.FC<ViewProps> = ({ children, title, backLink }) => {
               to="/app/dashboard"
               primary="Dashboard"
             />
-            {permissaoCadastros()}
+            <Menu administrativeFunction={user.administrative_function} />
           </List>
         </Drawer>
         <main

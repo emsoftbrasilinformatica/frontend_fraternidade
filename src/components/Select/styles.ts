@@ -12,6 +12,7 @@ export const Label = styled.label`
   align-items: center;
   margin: 0 0 5px 8px;
   color: #0f5e9e;
+  font-weight: bold;
 
   svg {
     margin-right: 8px;

@@ -31,6 +31,7 @@ interface DecodeToken {
 interface AdminstrativeFunction {
   id: string;
   description: string;
+  admin: boolean;
 }
 
 interface AuthContextData {

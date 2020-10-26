@@ -103,7 +103,7 @@ const Person: React.FC<PersonProps> = ({
       <Card>
         <div
           style={{
-            backgroundImage: `url(${image})`,
+            backgroundImage: `url("${image}")`,
             borderRadius: '50%',
             width: 150,
             height: 150,

@@ -26,6 +26,15 @@ interface User {
   };
 }
 
+interface UserRequest {
+  id: string;
+  degree: {
+    description: string;
+    order: number;
+  };
+  presence: boolean;
+}
+
 interface Session {
   id: string;
   date: Date;
@@ -131,15 +140,15 @@ const Presences: React.FC = () => {
   const handleSavePresences = useCallback(async () => {
     try {
       setSaveLoading(true);
-      const presences: Presence[] = usersCanBePresence.map(user => {
+      const usersRequest: UserRequest[] = usersCanBePresence.map(user => {
         return {
+          id: user.id,
+          degree: user.degree,
           presence: user.tableData.checked,
-          user_id: user.id,
-          session_id: session?.id,
         };
       });
 
-      await api.post('/session-presences', { presences });
+      await api.post('/session-presences', { session, users: usersRequest });
 
       setSaveLoading(false);
 
