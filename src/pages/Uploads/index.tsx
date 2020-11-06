@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import MaterialTable from 'material-table';
 import {
   Container,
   Dialog,
@@ -11,22 +10,28 @@ import {
   Divider,
 } from '@material-ui/core';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import { FaDownload, FaExclamationTriangle } from 'react-icons/fa';
 import { Edit, AddCircle, Delete } from '@material-ui/icons';
-import { FaExclamationTriangle } from 'react-icons/fa';
-
+import MaterialTable from 'material-table';
 import { useHistory } from 'react-router-dom';
+import { Button, ArroundButton } from './styles';
+
 import BasePage from '../../components/BasePage';
 import labels from '../../utils/labels';
 import api from '../../services/api';
-import { useToast } from '../../hooks/toast';
 import Loading from '../../components/Loading';
+import { useToast } from '../../hooks/toast';
 
-import { Button, ArroundButton } from './styles';
+import { useAuth } from '../../hooks/auth';
 
-interface News {
+interface Upload {
   id: string;
-  title: string;
-  date: string;
+  description: string;
+  file: string;
+  file_url: string;
+  administrative_function: {
+    description: string;
+  };
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -56,105 +61,124 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-const AppNews: React.FC = () => {
-  const [data, setData] = useState<News[]>([]);
-  const [openDialog, setOpenDialog] = useState(false);
-  const [idToBeDeleted, setIdToBeDeleted] = useState('');
+const Uploads: React.FC = () => {
+  const [data, setData] = useState<Upload[]>([]);
   const [loading, setLoading] = useState(false);
-  const { addToast } = useToast();
+  const [idToBeDeleted, setIdToBeDeleted] = useState('');
+  const [openDialog, setOpenDialog] = useState(false);
+  const { user } = useAuth();
   const history = useHistory();
   const classes = useStyles();
-
-  const deleteNews = useCallback((rowData: any): void => {
-    setIdToBeDeleted(rowData.id);
-    setOpenDialog(true);
-  }, []);
-
-  const handleClose = useCallback((): void => {
-    setOpenDialog(false);
-  }, []);
+  const { addToast } = useToast();
 
   useEffect(() => {
     setLoading(true);
+    let url;
+    if (user.administrative_function?.description === 'Venerável') {
+      url = '/uploads';
+    } else {
+      url = `/uploads/administrative_function/${user.administrative_function?.id}`;
+    }
     api
-      .get('/news')
+      .get(url)
       .then(response => {
         setData(response.data);
       })
       .finally(() => {
         setLoading(false);
       });
-  }, []);
+  }, [user.administrative_function]);
 
-  const editNews = useCallback(
+  const editUpload = useCallback(
     rowData => {
-      history.push(`noticia/${rowData.id}`);
+      history.push(`upload/${rowData.id}`);
     },
     [history],
   );
 
-  const handleAddNews = useCallback(() => {
-    history.push('noticia');
+  const deleteUpload = useCallback((rowData: any): void => {
+    setIdToBeDeleted(rowData.id);
+    setOpenDialog(true);
+  }, []);
+
+  const generateDownload = useCallback((rowData: any): void => {
+    const element = document.createElement('a');
+    element.href = rowData.file_url;
+    element.download = rowData.file;
+    element.target = '_blank';
+    element.click();
+  }, []);
+
+  const handleAddUpload = useCallback(() => {
+    history.push('upload');
   }, [history]);
 
-  const handleDeleteNews = useCallback(async () => {
+  const handleClose = useCallback((): void => {
+    setOpenDialog(false);
+  }, []);
+
+  const handleDeleteUpload = useCallback(async () => {
     setOpenDialog(false);
     setLoading(true);
-    const res = await api.delete(`/news/${idToBeDeleted}`);
+    const res = await api.delete(`/uploads/${idToBeDeleted}`);
 
     if (res.status === 204) {
-      const newsUpdated = data.filter(news => news.id !== idToBeDeleted);
+      const uploadsUpdated = data.filter(upload => upload.id !== idToBeDeleted);
 
-      setData(newsUpdated);
+      setData(uploadsUpdated);
       setLoading(false);
       setIdToBeDeleted('');
       addToast({
         type: 'success',
-        title: 'Notícia excluída com sucesso',
+        title: 'Upload excluído com sucesso',
       });
     } else {
       setLoading(false);
       addToast({
         type: 'error',
-        title: 'Falha ao excluir notícia, tente novamente.',
+        title: 'Falha ao excluir upload, tente novamente.',
       });
     }
   }, [idToBeDeleted, addToast, data]);
 
   return (
-    <BasePage title="Notícias">
+    <BasePage title="Uploads">
       {loading ? (
         <Loading />
       ) : (
         <>
           <Container>
             <ArroundButton>
-              <Button type="button" onClick={handleAddNews}>
-                Adicionar Notícia
+              <Button type="button" onClick={handleAddUpload}>
+                Adicionar Upload
                 <AddCircle style={{ color: '#0f5e9e' }} />
               </Button>
             </ArroundButton>
             <MaterialTable
-              title="Listagem de Notícias"
+              title="Listagem de Uploads"
               localization={labels.materialTable.localization}
               columns={[
-                { title: 'Título', field: 'title' },
+                { title: 'Descriçao', field: 'description' },
                 {
-                  title: 'Data da Notícia',
-                  field: 'date',
-                  type: 'date',
+                  title: 'Função Administrativa',
+                  field: 'administrative_function.description',
                 },
               ]}
               data={[...data]}
               style={{ marginTop: 16, border: '2px solid #0f5e9e' }}
               actions={[
                 rowData => ({
+                  icon: () => <FaDownload style={{ color: '#25b922' }} />,
+                  onClick: () => generateDownload(rowData),
+                }),
+                rowData => ({
                   icon: () => <Edit style={{ color: '#1976d2' }} />,
-                  onClick: () => editNews(rowData),
+                  onClick: () => editUpload(rowData),
+                  tooltip: 'Editar',
                 }),
                 rowData => ({
                   icon: () => <Delete style={{ color: '#c53030' }} />,
-                  onClick: () => deleteNews(rowData),
+                  onClick: () => deleteUpload(rowData),
                 }),
               ]}
             />
@@ -175,7 +199,7 @@ const AppNews: React.FC = () => {
                 className={classes.modalContent}
                 id="alert-dialog-description"
               >
-                Deseja realmente excluir a notícia?
+                Deseja realmente excluir o upload?
               </DialogContentText>
             </DialogContent>
             <Divider />
@@ -185,7 +209,7 @@ const AppNews: React.FC = () => {
               </ButtonMT>
               <ButtonMT
                 className="buttonConfirm"
-                onClick={handleDeleteNews}
+                onClick={handleDeleteUpload}
                 autoFocus
               >
                 Confirmar
@@ -198,4 +222,4 @@ const AppNews: React.FC = () => {
   );
 };
 
-export default AppNews;
+export default Uploads;

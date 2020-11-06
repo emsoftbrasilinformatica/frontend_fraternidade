@@ -70,23 +70,23 @@ import {
 } from '@material-ui/icons';
 import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
-import { useParams, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import MaterialTable from 'material-table';
 import { TiSortNumerically } from 'react-icons/ti';
-import BasePage from '../../../components/BasePage';
+import BasePage from '../../components/BasePage';
 import { Title, ArroundButton, AvatarInput } from './styles';
-import labels from '../../../utils/labels';
+import labels from '../../utils/labels';
 
-import Input from '../../../components/Input';
-import InputHidden from '../../../components/InputHidden';
-import DatePicker from '../../../components/DatePicker';
-import Loading from '../../../components/Loading';
-import Select from '../../../components/Select';
-import api from '../../../services/api';
-import InputMask from '../../../components/InputMask';
-import Button from '../../../components/Button';
-import { useToast } from '../../../hooks/toast';
-import getValidationErrors from '../../../utils/getValidationErrors';
+import Input from '../../components/Input';
+import InputHidden from '../../components/InputHidden';
+import DatePicker from '../../components/DatePicker';
+import Loading from '../../components/Loading';
+import Select from '../../components/Select';
+import api from '../../services/api';
+import InputMask from '../../components/InputMask';
+import Button from '../../components/Button';
+import { useToast } from '../../hooks/toast';
+import getValidationErrors from '../../utils/getValidationErrors';
 import {
   OptionsData,
   UFData,
@@ -101,11 +101,8 @@ import {
   Dependent,
   CreateUserFormData,
   UserFormData,
-} from '../../../utils/interfaces';
-
-interface params {
-  id: string;
-}
+} from '../../utils/interfaces';
+import { useAuth } from '../../hooks/auth';
 
 function TabPanel(props: TabPanelProps): any {
   const { children, value, index, ...other } = props;
@@ -159,7 +156,7 @@ const theme = createMuiTheme({
   },
 });
 
-const User: React.FC = () => {
+const Profile: React.FC = () => {
   const optionsBloodTypes = [
     { value: 'A+', label: 'A+' },
     { value: 'A-', label: 'A-' },
@@ -183,7 +180,6 @@ const User: React.FC = () => {
     { value: 'Residencial', label: 'Residencial' },
   ];
   const formRef = useRef<FormHandles>(null);
-  const params: params = useParams();
   const [degrees, setDegrees] = useState<OptionsData[]>([]);
   const [kinships, setKinships] = useState<OptionsData[]>([]);
   const [genders, setGenders] = useState<OptionsData[]>([]);
@@ -204,6 +200,7 @@ const User: React.FC = () => {
   const [idDependent, setIdDependent] = useState<number>(-1);
   const [userForm, setUserForm] = useState<CreateUserFormData>();
   const [saveLoading, setSaveLoading] = useState(false);
+  const { user } = useAuth();
 
   const handleChange = (
     event: React.ChangeEvent<{}>,
@@ -219,9 +216,6 @@ const User: React.FC = () => {
 
         const schema = Yup.object().shape({
           name: Yup.string().required('Nome obrigatório'),
-          password: params.id
-            ? Yup.string()
-            : Yup.string().required('Senha obrigatória'),
           email: Yup.string()
             .required('Email obrigatório')
             .email('Digite um email válido'),
@@ -290,7 +284,7 @@ const User: React.FC = () => {
           },
         );
 
-        const user: CreateUserFormData = {
+        const userCreated: CreateUserFormData = {
           name: data.name,
           email: data.email ? data.email : undefined,
           password: data.password,
@@ -336,22 +330,14 @@ const User: React.FC = () => {
           dependents: dependentsToBeCreate,
         };
 
-        if (params.id) {
-          await api.put(`/users/${params.id}`, user);
-        } else {
-          await api.post('/users', user);
-        }
+        await api.put(`/users/${user.id}`, userCreated);
+
         setSaveLoading(false);
-        history.push('/app/cad/usuarios');
+        history.push('/app/dashboard');
 
         addToast({
           type: 'success',
-          title: `Usuário ${
-            params.id ? 'atualizado' : 'cadastrado'
-          } com sucesso.`,
-          description: `O usuário ${user.name} foi ${
-            params.id ? 'atualizado' : 'cadastrado'
-          } com sucesso!`,
+          title: `Perfil atualizado com sucesso!`,
         });
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
@@ -368,19 +354,20 @@ const User: React.FC = () => {
         addToast({
           type: 'error',
           title: 'Erro no cadastro',
-          description: 'Ocorreu um erro ao fazer cadastro, tente novamente.',
+          description:
+            'Ocorreu um erro ao atualizar o perfil, tente novamente.',
         });
       }
     },
     [
       addToast,
-      params.id,
       citiesNaturalness,
       ufsNaturalness,
       ufsRG,
       addresses,
       dependents,
       history,
+      user.id,
     ],
   );
 
@@ -506,94 +493,95 @@ const User: React.FC = () => {
   }, [genders, kinships, userForm]);
 
   useEffect(() => {
-    if (params.id) {
-      setLoading(true);
-      api
-        .get(`/users/${params.id}`)
-        .then(res => {
-          const user: CreateUserFormData = res.data;
+    setLoading(true);
+    api
+      .get(`/users/${user.id}`)
+      .then(res => {
+        const userEdited: CreateUserFormData = res.data;
 
-          const userToBeEdited: UserFormData = {
-            name: user.name,
-            email: user.email,
-            cim: user.cim,
-            cpf: user.cpf,
-            avatar_url: user.avatar_url,
-            date_of_birth: user.date_of_birth
-              ? new Date(user.date_of_birth)
-              : null,
-            degree_id: {
-              value: user.degree_id,
-              label: user.degree?.description,
-            },
-            blood_type: { value: user.blood_type, label: user.blood_type },
-            naturalness_uf_id: {
-              value: user.naturalness_uf_id,
-              label: user.naturalness_uf,
-            },
-            naturalness_city_id: {
-              value: user.naturalness_city_id,
-              label: user.naturalness_city,
-            },
-            civil_status: {
-              value: user.civil_status,
-              label: user.civil_status,
-            },
-            mother: user.mother,
-            father: user.father,
-            rg_number: user.rg_number,
-            rg_uf_id: { value: user.rg_uf_id, label: user.rg_uf },
-            rg_date_of_issue: user.rg_date_of_issue
-              ? new Date(user.rg_date_of_issue)
-              : null,
-            rg_issuing_body: user.rg_issuing_body,
-            company: user.company,
-            company_telephone: user.company_telephone,
-            telephone:
-              user.contacts && user.contacts[0]
-                ? user.contacts[0].telephone
-                : '',
-            cell_phone:
-              user.contacts && user.contacts[0]
-                ? user.contacts[0].cell_phone
-                : '',
-            whatsapp:
-              user.contacts && user.contacts[0]
-                ? user.contacts[0].whatsapp
-                : '',
-            number_sessions_aprendiz: user.number_sessions_aprendiz,
-            number_sessions_companheiro: user.number_sessions_companheiro,
-            number_sessions_mestre: user.number_sessions_mestre,
-            number_sessions_mestre_instalado:
-              user.number_sessions_mestre_instalado,
-          };
+        const userToBeEdited: UserFormData = {
+          name: userEdited.name,
+          email: userEdited.email,
+          cim: userEdited.cim,
+          cpf: userEdited.cpf,
+          avatar_url: userEdited.avatar_url,
+          date_of_birth: userEdited.date_of_birth
+            ? new Date(userEdited.date_of_birth)
+            : null,
+          degree_id: {
+            value: userEdited.degree_id,
+            label: userEdited.degree?.description,
+          },
+          blood_type: {
+            value: userEdited.blood_type,
+            label: userEdited.blood_type,
+          },
+          naturalness_uf_id: {
+            value: userEdited.naturalness_uf_id,
+            label: userEdited.naturalness_uf,
+          },
+          naturalness_city_id: {
+            value: userEdited.naturalness_city_id,
+            label: userEdited.naturalness_city,
+          },
+          civil_status: {
+            value: userEdited.civil_status,
+            label: userEdited.civil_status,
+          },
+          mother: userEdited.mother,
+          father: userEdited.father,
+          rg_number: userEdited.rg_number,
+          rg_uf_id: { value: userEdited.rg_uf_id, label: userEdited.rg_uf },
+          rg_date_of_issue: userEdited.rg_date_of_issue
+            ? new Date(userEdited.rg_date_of_issue)
+            : null,
+          rg_issuing_body: userEdited.rg_issuing_body,
+          company: userEdited.company,
+          company_telephone: userEdited.company_telephone,
+          telephone:
+            userEdited.contacts && userEdited.contacts[0]
+              ? userEdited.contacts[0].telephone
+              : '',
+          cell_phone:
+            userEdited.contacts && userEdited.contacts[0]
+              ? userEdited.contacts[0].cell_phone
+              : '',
+          whatsapp:
+            userEdited.contacts && userEdited.contacts[0]
+              ? userEdited.contacts[0].whatsapp
+              : '',
+          number_sessions_aprendiz: userEdited.number_sessions_aprendiz,
+          number_sessions_companheiro: userEdited.number_sessions_companheiro,
+          number_sessions_mestre: userEdited.number_sessions_mestre,
+          number_sessions_mestre_instalado:
+            userEdited.number_sessions_mestre_instalado,
+        };
 
-          setUserForm(user);
+        setUserForm(userEdited);
 
-          axios
-            .get<CityRes[]>(
-              `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${userToBeEdited.naturalness_uf_id?.value}/municipios`,
-            )
-            .then(data => {
-              const cities = data.data.map(city => {
-                const cityData = {
-                  id: city.id,
-                  nome: city.nome,
-                  value: city.id,
-                  label: city.nome,
-                };
+        axios
+          .get<CityRes[]>(
+            `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${userToBeEdited.naturalness_uf_id?.value}/municipios`,
+          )
+          .then(data => {
+            const cities = data.data.map(city => {
+              const cityData = {
+                id: city.id,
+                nome: city.nome,
+                value: city.id,
+                label: city.nome,
+              };
 
-                return cityData;
-              });
-              setCitiesNaturalness(cities);
+              return cityData;
             });
-          setEditUser(userToBeEdited);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    }
-  }, [params.id]);
+            setCitiesNaturalness(cities);
+          });
+        setEditUser(userToBeEdited);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [user.id]);
 
   const handleAddAddress = useCallback(() => {
     // console.log(
@@ -854,7 +842,7 @@ const User: React.FC = () => {
 
         data.append('avatar', e.target.files[0]);
 
-        api.patch(`/users/avatar/${params.id}`, data).then(res => {
+        api.patch(`/users/avatar/${user.id}`, data).then(res => {
           // const userResponse = res.data.avatar_url;
           const newEditUser = editUser;
           if (newEditUser) {
@@ -868,7 +856,7 @@ const User: React.FC = () => {
         });
       }
     },
-    [addToast, editUser, params.id],
+    [addToast, editUser, user.id],
   );
 
   if (loading) {
@@ -877,10 +865,7 @@ const User: React.FC = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <BasePage
-        title={params.id ? 'Editar Usuário' : 'Novo Usuário'}
-        backLink="/app/cad/usuarios"
-      >
+      <BasePage title="Editar Perfil">
         <Container>
           <Form ref={formRef} initialData={editUser} onSubmit={handleSubmit}>
             <ArroundButton>
@@ -927,7 +912,7 @@ const User: React.FC = () => {
               </AppBar>
               <TabPanel value={value} index={0}>
                 <Title>Informações Gerais</Title>
-                {params.id && (
+                {user.id && (
                   <AvatarInput>
                     <img
                       src={
@@ -955,41 +940,27 @@ const User: React.FC = () => {
                       icon={FiUser}
                       placeholder="Digite o nome"
                       label="Nome"
+                      justRead
                     />
                   </Grid>
-                  {!params.id && (
-                    <Grid item xs={12} sm={6}>
-                      <Input
-                        name="password"
-                        icon={FiLock}
-                        placeholder="Digite a senha"
-                        label="Senha"
-                        type="password"
-                      />
-                    </Grid>
-                  )}
-                  {params.id && (
-                    <>
-                      <Grid item xs={12} sm={3}>
-                        <Input
-                          name="password"
-                          icon={FiLock}
-                          placeholder="Digite a nova senha"
-                          label="Nova Senha"
-                          type="password"
-                        />
-                      </Grid>
-                      <Grid item xs={12} sm={3}>
-                        <Input
-                          name="old_password"
-                          icon={FiLock}
-                          label="Senha Antiga"
-                          placeholder="Digite a senha antiga"
-                          type="password"
-                        />
-                      </Grid>
-                    </>
-                  )}
+                  <Grid item xs={12} sm={3}>
+                    <Input
+                      name="password"
+                      icon={FiLock}
+                      placeholder="Digite a nova senha"
+                      label="Nova Senha"
+                      type="password"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={3}>
+                    <Input
+                      name="old_password"
+                      icon={FiLock}
+                      label="Senha Antiga"
+                      placeholder="Digite a senha antiga"
+                      type="password"
+                    />
+                  </Grid>
                 </Grid>
                 <Grid container spacing={2}>
                   <Grid item xs={12} sm={4}>
@@ -1007,6 +978,7 @@ const User: React.FC = () => {
                       placeholder="Digite o CIM"
                       label="CIM"
                       type="number"
+                      justRead
                     />
                   </Grid>
                   <Grid item xs={12} sm={4}>
@@ -1016,6 +988,7 @@ const User: React.FC = () => {
                       placeholder="Digite o CPF"
                       label="CPF"
                       mask="999.999.999-99"
+                      justRead
                     />
                   </Grid>
                 </Grid>
@@ -1026,6 +999,7 @@ const User: React.FC = () => {
                       icon={FiCalendar}
                       label="Data de Nascimento"
                       placeholderText="Insira a data de nascimento"
+                      justRead
                     />
                   </Grid>
                   <Grid item xs={12} sm={4}>
@@ -1035,6 +1009,7 @@ const User: React.FC = () => {
                       label="Grau de Acesso"
                       placeholder="Selecione o grau de acesso"
                       options={degrees}
+                      isDisabled
                     />
                   </Grid>
                   <Grid item xs={12} sm={4}>
@@ -1045,6 +1020,7 @@ const User: React.FC = () => {
                       icon={FaSyringe}
                       isSearchable={false}
                       options={optionsBloodTypes}
+                      isDisabled
                     />
                   </Grid>
                 </Grid>
@@ -1057,6 +1033,7 @@ const User: React.FC = () => {
                       options={ufsNaturalness}
                       onChange={handleChangeUfNaturalness}
                       placeholder="Selecione a UF"
+                      isDisabled
                     />
                   </Grid>
                   <Grid item xs={12} sm={4}>
@@ -1066,6 +1043,7 @@ const User: React.FC = () => {
                       icon={FaCity}
                       options={citiesNaturalness}
                       placeholder="Selecione a cidade"
+                      isDisabled
                     />
                   </Grid>
                   <Grid item xs={12} sm={4}>
@@ -1076,6 +1054,7 @@ const User: React.FC = () => {
                       placeholder="Selecione o estado civil"
                       options={optionsCivilStatus}
                       isSearchable={false}
+                      isDisabled
                     />
                   </Grid>
                 </Grid>
@@ -1086,6 +1065,7 @@ const User: React.FC = () => {
                       icon={FaFemale}
                       label="Mãe"
                       placeholder="Digite o nome da mãe"
+                      justRead
                     />
                   </Grid>
                   <Grid item xs={12} sm={4}>
@@ -1094,6 +1074,7 @@ const User: React.FC = () => {
                       icon={FaMale}
                       label="Pai"
                       placeholder="Digite o nome do pai"
+                      justRead
                     />
                   </Grid>
                   <Grid item xs={12} sm={4}>
@@ -1102,6 +1083,7 @@ const User: React.FC = () => {
                       label="RG"
                       icon={FaIdBadge}
                       placeholder="Digite o número do RG"
+                      justRead
                     />
                   </Grid>
                 </Grid>
@@ -1112,6 +1094,7 @@ const User: React.FC = () => {
                       label="UF de Emissão RG"
                       icon={FaFlag}
                       options={ufsRG}
+                      isDisabled
                     />
                   </Grid>
                   <Grid item xs={12} sm={4}>
@@ -1120,6 +1103,7 @@ const User: React.FC = () => {
                       icon={FiCalendar}
                       label="Data de Emissão RG"
                       placeholderText="Insira a data de emissão do RG"
+                      justRead
                     />
                   </Grid>
                   <Grid item xs={12} sm={4}>
@@ -1128,6 +1112,7 @@ const User: React.FC = () => {
                       label="Orgão Emissor RG"
                       icon={FaGopuram}
                       placeholder="Digite o orgão emissor do RG"
+                      justRead
                     />
                   </Grid>
                 </Grid>
@@ -1156,6 +1141,7 @@ const User: React.FC = () => {
                       name="number_sessions_aprendiz"
                       label="Sessões Aprendiz"
                       icon={TiSortNumerically}
+                      justRead
                     />
                   </Grid>
                   <Grid item xs={12} sm={3}>
@@ -1163,6 +1149,7 @@ const User: React.FC = () => {
                       name="number_sessions_companheiro"
                       label="Sessões Companheiro"
                       icon={TiSortNumerically}
+                      justRead
                     />
                   </Grid>
                   <Grid item xs={12} sm={3}>
@@ -1170,6 +1157,7 @@ const User: React.FC = () => {
                       name="number_sessions_mestre"
                       label="Sessões Mestre"
                       icon={TiSortNumerically}
+                      justRead
                     />
                   </Grid>
                   <Grid item xs={12} sm={3}>
@@ -1177,6 +1165,7 @@ const User: React.FC = () => {
                       name="number_sessions_mestre_instalado"
                       label="Sessões Mestre Instalado"
                       icon={TiSortNumerically}
+                      justRead
                     />
                   </Grid>
                 </Grid>
@@ -1412,4 +1401,4 @@ const User: React.FC = () => {
   );
 };
 
-export default User;
+export default Profile;

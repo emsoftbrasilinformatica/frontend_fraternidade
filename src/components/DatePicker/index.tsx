@@ -16,8 +16,15 @@ interface Props extends Omit<ReactDatePickerProps, 'onChange'> {
   name: string;
   icon?: React.ComponentType<IconBaseProps>;
   label: string;
+  justRead?: boolean;
 }
-const DatePicker: React.FC<Props> = ({ name, label, icon: Icon, ...rest }) => {
+const DatePicker: React.FC<Props> = ({
+  name,
+  label,
+  icon: Icon,
+  justRead = false,
+  ...rest
+}) => {
   const datepickerRef = useRef(null);
   const { fieldName, registerField, defaultValue, error } = useField(name);
   const [date, setDate] = useState(defaultValue || null);
@@ -53,7 +60,12 @@ const DatePicker: React.FC<Props> = ({ name, label, icon: Icon, ...rest }) => {
         {Icon && <Icon size={20} />}
         {label}
       </Label>
-      <Container isErrored={!!error} isFilled={isFilled} isFocused={isFocused}>
+      <Container
+        isErrored={!!error}
+        isFilled={isFilled}
+        isFocused={isFocused}
+        isReadOnly={justRead}
+      >
         <ReactDatePicker
           onFocus={handleInputFocus}
           onBlur={handleInputBlur}
@@ -64,6 +76,7 @@ const DatePicker: React.FC<Props> = ({ name, label, icon: Icon, ...rest }) => {
           dateFormat="dd/MM/yyyy"
           locale="pt-BR"
           showYearDropdown
+          readOnly={justRead}
           {...rest}
         />
 

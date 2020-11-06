@@ -17,6 +17,7 @@ interface Props<T> {
   name: string;
   label?: string;
   icon?: React.ComponentType<IconBaseProps>;
+  filesAccept?: string;
 }
 
 type InputProps = JSX.IntrinsicElements['input'] & Props<false>;
@@ -25,6 +26,7 @@ const InputFile: React.FC<InputProps> = ({
   name,
   label,
   icon: Icon,
+  filesAccept,
   ...rest
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -69,7 +71,12 @@ const InputFile: React.FC<InputProps> = ({
         <FaUpload />
         {file || 'Selecione o arquivo'}
       </Button>
-      <Container type="file" ref={inputRef} onChange={handleChangeFile} />
+      <Container
+        type="file"
+        ref={inputRef}
+        onChange={handleChangeFile}
+        accept={filesAccept}
+      />
     </div>
   );
 };

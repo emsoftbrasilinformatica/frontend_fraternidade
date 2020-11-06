@@ -13,6 +13,7 @@ interface Props<T> {
   icon?: React.ComponentType<IconBaseProps>;
   multiline?: T;
   heigth?: number;
+  justRead?: boolean;
 }
 
 type InputProps = JSX.IntrinsicElements['input'] & Props<false>;
@@ -24,6 +25,7 @@ const Input: React.FC<InputProps | TextAreaProps> = ({
   icon: Icon,
   multiline = false,
   heigth,
+  justRead = false,
   ...rest
 }) => {
   const ref = useRef<HTMLInputElement | HTMLTextAreaElement>(null);
@@ -66,11 +68,17 @@ const Input: React.FC<InputProps | TextAreaProps> = ({
         {Icon && <Icon size={20} />}
         {label}
       </Label>
-      <Container isErrored={!!error} isFilled={isFilled} isFocused={isFocused}>
+      <Container
+        isErrored={!!error}
+        isFilled={isFilled}
+        isFocused={isFocused}
+        isReadOnly={justRead}
+      >
         {multiline ? (
           <textarea
             onFocus={handleInputFocus}
             onBlur={handleInputBlur}
+            readOnly={justRead}
             {...(props as TextAreaProps)}
             style={{ height: heightSelected }}
           />
@@ -78,6 +86,7 @@ const Input: React.FC<InputProps | TextAreaProps> = ({
           <input
             onFocus={handleInputFocus}
             onBlur={handleInputBlur}
+            readOnly={justRead}
             {...(props as InputProps)}
           />
         )}

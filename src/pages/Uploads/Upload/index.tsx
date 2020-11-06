@@ -18,7 +18,6 @@ import api from '../../../services/api';
 import Card from '../../../components/Card';
 import Input from '../../../components/Input';
 import Button from '../../../components/Button';
-import Select from '../../../components/Select';
 import InputFile from '../../../components/InputFile';
 import { ArroundButton } from './styles';
 
@@ -26,30 +25,16 @@ interface params {
   id: string;
 }
 
-interface Statute {
+interface Upload {
   id?: string;
   description: string;
-  degree: SelectData;
   file: File;
 }
 
-interface SelectData {
-  value?: string | number | undefined | null;
-  label?: string;
-}
-
-interface OptionsData {
-  id: string;
-  description: string;
-  value: string;
-  label: string;
-}
-
-const Statute: React.FC = () => {
+const Upload: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [saveLoading, setSaveLoading] = useState(false);
   const params: params = useParams();
-  const [degrees, setDegrees] = useState<OptionsData[]>([]);
   const history = useHistory();
   // const [selectedFile, setSelectedFile] = useState<File>();
   const formRef = useRef<FormHandles>(null);
@@ -63,7 +48,6 @@ const Statute: React.FC = () => {
 
         const schema = Yup.object().shape({
           description: Yup.string().required('Descrição obrigatória'),
-          degree: Yup.string().required('Grau é obrigatório'),
         });
 
         await schema.validate(data, {
@@ -84,24 +68,29 @@ const Statute: React.FC = () => {
 
         const formData = new FormData();
 
-        const { description, degree, file } = data;
+        const { description, file } = data;
 
         formData.append('user_id', user.id);
+        if (user.administrative_function?.id) {
+          formData.append(
+            'administrative_function_id',
+            user.administrative_function?.id,
+          );
+        }
         formData.append('description', description);
-        formData.append('degree_id', degree);
         formData.append('file', file);
 
         if (params.id) {
-          await api.put(`/statutes/${params.id}`, formData);
+          await api.put(`/uploads/${params.id}`, formData);
         } else {
-          await api.post('/statutes', formData);
+          await api.post('/uploads', formData);
         }
 
         setSaveLoading(false);
-        history.push('/app/cad/estatutos');
+        history.push('/app/cad/uploads');
         addToast({
           type: 'success',
-          title: 'Estatuto cadastrada com sucesso!',
+          title: 'Upload cadastrada com sucesso!',
         });
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
@@ -120,14 +109,14 @@ const Statute: React.FC = () => {
         });
       }
     },
-    [addToast, history, params.id, user.id],
+    [addToast, history, params.id, user.id, user.administrative_function],
   );
 
   useEffect(() => {
     if (params.id) {
       setLoading(true);
       api
-        .get(`/statutes/${params.id}`)
+        .get(`/uploads/${params.id}`)
         .then(res => {
           let fileCreated: File;
           fetch(res.data.file_url)
@@ -140,10 +129,6 @@ const Statute: React.FC = () => {
               );
               fileCreated = new File([blob], nameEditted);
               formRef.current?.setData({
-                degree: {
-                  value: res.data.degree_id,
-                  label: res.data.degree.description,
-                },
                 description: res.data.description,
                 file: fileCreated,
               });
@@ -155,21 +140,10 @@ const Statute: React.FC = () => {
     }
   }, [params.id]);
 
-  useEffect(() => {
-    api.get('/degrees').then(response => {
-      const options: OptionsData[] = response.data;
-      options.map(opt => {
-        opt.label = opt.description;
-        opt.value = opt.id;
-      });
-      setDegrees(options);
-    });
-  }, []);
-
   return (
     <BasePage
-      title={params.id ? 'Editar Estatuto' : 'Novo Estatuto'}
-      backLink="/app/cad/estatutos"
+      title={params.id ? 'Editar Upload' : 'Novo Upload'}
+      backLink="/app/cad/uploads"
     >
       {loading ? (
         <Loading />
@@ -185,27 +159,19 @@ const Statute: React.FC = () => {
                 )}
               </Button>
             </ArroundButton>
-            <Card title="Estatuto">
+            <Card title="Upload">
               <Grid container spacing={2}>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={6}>
                   <Input
                     name="description"
                     label="Descrição"
                     placeholder="Digite a descrição"
                   />
                 </Grid>
-                <Grid item xs={12} md={4}>
-                  <Select
-                    name="degree"
-                    label="Grau"
-                    placeholder="Selecione o grau"
-                    options={degrees}
-                  />
-                </Grid>
                 <Grid
                   item
                   xs={12}
-                  md={4}
+                  md={6}
                   style={{ display: 'flex', alignItems: 'center' }}
                 >
                   <InputFile label="Selecione o arquivo" name="file" />
@@ -219,4 +185,4 @@ const Statute: React.FC = () => {
   );
 };
 
-export default Statute;
+export default Upload;

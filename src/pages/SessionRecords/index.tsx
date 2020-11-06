@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import MaterialTable from 'material-table';
 import {
   Container,
   Dialog,
@@ -11,22 +10,23 @@ import {
   Divider,
 } from '@material-ui/core';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import { FaDownload, FaExclamationTriangle } from 'react-icons/fa';
 import { Edit, AddCircle, Delete } from '@material-ui/icons';
-import { FaExclamationTriangle } from 'react-icons/fa';
-
+import MaterialTable from 'material-table';
 import { useHistory } from 'react-router-dom';
+import { Button, ArroundButton } from './styles';
+
 import BasePage from '../../components/BasePage';
 import labels from '../../utils/labels';
 import api from '../../services/api';
-import { useToast } from '../../hooks/toast';
 import Loading from '../../components/Loading';
+import { useToast } from '../../hooks/toast';
 
-import { Button, ArroundButton } from './styles';
-
-interface News {
+interface SessionRecordsData {
   id: string;
-  title: string;
-  date: string;
+  description: string;
+  file: string;
+  file_url: string;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -56,28 +56,19 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-const AppNews: React.FC = () => {
-  const [data, setData] = useState<News[]>([]);
-  const [openDialog, setOpenDialog] = useState(false);
-  const [idToBeDeleted, setIdToBeDeleted] = useState('');
+const SessionRecords: React.FC = () => {
+  const [data, setData] = useState<SessionRecordsData[]>([]);
   const [loading, setLoading] = useState(false);
-  const { addToast } = useToast();
+  const [idToBeDeleted, setIdToBeDeleted] = useState('');
+  const [openDialog, setOpenDialog] = useState(false);
   const history = useHistory();
   const classes = useStyles();
-
-  const deleteNews = useCallback((rowData: any): void => {
-    setIdToBeDeleted(rowData.id);
-    setOpenDialog(true);
-  }, []);
-
-  const handleClose = useCallback((): void => {
-    setOpenDialog(false);
-  }, []);
+  const { addToast } = useToast();
 
   useEffect(() => {
     setLoading(true);
     api
-      .get('/news')
+      .get('/session-records')
       .then(response => {
         setData(response.data);
       })
@@ -86,75 +77,92 @@ const AppNews: React.FC = () => {
       });
   }, []);
 
-  const editNews = useCallback(
+  const editSessionRecords = useCallback(
     rowData => {
-      history.push(`noticia/${rowData.id}`);
+      history.push(`ata-sessao/${rowData.id}`);
     },
     [history],
   );
 
-  const handleAddNews = useCallback(() => {
-    history.push('noticia');
+  const deleteSessionRecord = useCallback((rowData: any): void => {
+    setIdToBeDeleted(rowData.id);
+    setOpenDialog(true);
+  }, []);
+
+  const generateDownload = useCallback((rowData: any): void => {
+    const element = document.createElement('a');
+    element.href = rowData.file_url;
+    element.download = rowData.file;
+    element.target = '_blank';
+    element.click();
+  }, []);
+
+  const handleAddSessionRecord = useCallback(() => {
+    history.push('ata-sessao');
   }, [history]);
 
-  const handleDeleteNews = useCallback(async () => {
+  const handleClose = useCallback((): void => {
+    setOpenDialog(false);
+  }, []);
+
+  const handleDeleteSessionRecord = useCallback(async () => {
     setOpenDialog(false);
     setLoading(true);
-    const res = await api.delete(`/news/${idToBeDeleted}`);
+    const res = await api.delete(`/session-records/${idToBeDeleted}`);
 
     if (res.status === 204) {
-      const newsUpdated = data.filter(news => news.id !== idToBeDeleted);
+      const sessionRecordsUpdated = data.filter(
+        sessionRecord => sessionRecord.id !== idToBeDeleted,
+      );
 
-      setData(newsUpdated);
+      setData(sessionRecordsUpdated);
       setLoading(false);
       setIdToBeDeleted('');
       addToast({
         type: 'success',
-        title: 'Notícia excluída com sucesso',
+        title: 'Ata excluída com sucesso',
       });
     } else {
       setLoading(false);
       addToast({
         type: 'error',
-        title: 'Falha ao excluir notícia, tente novamente.',
+        title: 'Falha ao excluir ata, tente novamente.',
       });
     }
   }, [idToBeDeleted, addToast, data]);
 
   return (
-    <BasePage title="Notícias">
+    <BasePage title="Atas de Sessão">
       {loading ? (
         <Loading />
       ) : (
         <>
           <Container>
             <ArroundButton>
-              <Button type="button" onClick={handleAddNews}>
-                Adicionar Notícia
+              <Button type="button" onClick={handleAddSessionRecord}>
+                Adicionar Ata
                 <AddCircle style={{ color: '#0f5e9e' }} />
               </Button>
             </ArroundButton>
             <MaterialTable
-              title="Listagem de Notícias"
+              title="Listagem de Atas"
               localization={labels.materialTable.localization}
-              columns={[
-                { title: 'Título', field: 'title' },
-                {
-                  title: 'Data da Notícia',
-                  field: 'date',
-                  type: 'date',
-                },
-              ]}
+              columns={[{ title: 'Descriçao', field: 'description' }]}
               data={[...data]}
               style={{ marginTop: 16, border: '2px solid #0f5e9e' }}
               actions={[
                 rowData => ({
+                  icon: () => <FaDownload style={{ color: '#25b922' }} />,
+                  onClick: () => generateDownload(rowData),
+                }),
+                rowData => ({
                   icon: () => <Edit style={{ color: '#1976d2' }} />,
-                  onClick: () => editNews(rowData),
+                  onClick: () => editSessionRecords(rowData),
+                  tooltip: 'Editar',
                 }),
                 rowData => ({
                   icon: () => <Delete style={{ color: '#c53030' }} />,
-                  onClick: () => deleteNews(rowData),
+                  onClick: () => deleteSessionRecord(rowData),
                 }),
               ]}
             />
@@ -175,7 +183,7 @@ const AppNews: React.FC = () => {
                 className={classes.modalContent}
                 id="alert-dialog-description"
               >
-                Deseja realmente excluir a notícia?
+                Deseja realmente excluir a ata?
               </DialogContentText>
             </DialogContent>
             <Divider />
@@ -185,7 +193,7 @@ const AppNews: React.FC = () => {
               </ButtonMT>
               <ButtonMT
                 className="buttonConfirm"
-                onClick={handleDeleteNews}
+                onClick={handleDeleteSessionRecord}
                 autoFocus
               >
                 Confirmar
@@ -198,4 +206,4 @@ const AppNews: React.FC = () => {
   );
 };
 
-export default AppNews;
+export default SessionRecords;

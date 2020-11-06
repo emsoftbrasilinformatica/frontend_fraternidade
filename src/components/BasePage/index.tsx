@@ -30,11 +30,12 @@ import {
 import { FaSignOutAlt, FaExclamationTriangle } from 'react-icons/fa';
 
 import { useHistory } from 'react-router-dom';
+import { AccountCircle } from '@material-ui/icons';
 import logoMaconaria from '../../assets/esquadro_compasso.png';
 
 import { useAuth } from '../../hooks/auth';
 
-import { ContainerImg } from './styles';
+import { ContainerImg, Username } from './styles';
 
 import ListItemLink from '../ListItemLink';
 import Menu from '../Menu';
@@ -174,6 +175,11 @@ const BasePage: React.FC<ViewProps> = ({ children, title, backLink }) => {
 
     history.push('/');
   }, [signOut, history]);
+
+  const handleGoToProfile = useCallback(() => {
+    history.push('/app/profile');
+  }, [history]);
+
   return (
     <>
       <div className={classes.root}>
@@ -209,6 +215,14 @@ const BasePage: React.FC<ViewProps> = ({ children, title, backLink }) => {
               {title}
             </Typography>
             <div className={classes.signOutButton}>
+              <IconButton
+                color="inherit"
+                aria-label="logout"
+                aria-controls="menu-appbar"
+                onClick={handleGoToProfile}
+              >
+                <AccountCircle />
+              </IconButton>
               <IconButton
                 color="inherit"
                 aria-label="logout"
@@ -269,6 +283,7 @@ const BasePage: React.FC<ViewProps> = ({ children, title, backLink }) => {
             <ContainerImg>
               <img src={logoMaconaria} alt="Maçonaria Logo" />
             </ContainerImg>
+            <Username>{user.name.split(' ')[0]}</Username>
             <IconButton onClick={handleDrawerClose}>
               {theme.direction === 'ltr' ? (
                 <ChevronLeftIcon />

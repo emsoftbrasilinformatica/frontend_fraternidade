@@ -214,7 +214,7 @@ const Session: React.FC = () => {
                     label="Número da sessão"
                     icon={TiSortNumerically}
                     placeholder="Insira o número da sessão"
-                    readOnly={!canSave}
+                    justRead={!canSave}
                   />
                 </Grid>
                 <Grid item xs={12} md={4}>
@@ -226,7 +226,7 @@ const Session: React.FC = () => {
                     timeCaption="Horário"
                     icon={FaCalendarDay}
                     placeholderText="Selecione a data - hora"
-                    readOnly={!canSave}
+                    justRead={!canSave}
                   />
                 </Grid>
                 <Grid item xs={12} md={4}>
@@ -250,7 +250,7 @@ const Session: React.FC = () => {
                     placeholder="Digite o valor"
                     type="number"
                     step={0.01}
-                    readOnly={!canSave}
+                    justRead={!canSave}
                   />
                 </Grid>
                 <Grid item xs={12} md={9}>
@@ -259,7 +259,7 @@ const Session: React.FC = () => {
                     label="Observação"
                     placeholder="Digite a observação"
                     icon={FiInfo}
-                    readOnly={!canSave}
+                    justRead={!canSave}
                   />
                 </Grid>
               </Grid>

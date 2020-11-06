@@ -9,3 +9,7 @@ export const ContainerImg = styled.div`
     height: 50px;
   }
 `;
+
+export const Username = styled.div`
+  font-weight: bold;
+`;

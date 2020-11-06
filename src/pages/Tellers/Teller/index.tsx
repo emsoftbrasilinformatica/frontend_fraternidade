@@ -11,7 +11,6 @@ import { FormHandles } from '@unform/core';
 
 import BasePage from '../../../components/BasePage';
 import Loading from '../../../components/Loading';
-import { useAuth } from '../../../hooks/auth';
 import { useToast } from '../../../hooks/toast';
 import getValidationErrors from '../../../utils/getValidationErrors';
 import api from '../../../services/api';
@@ -19,23 +18,26 @@ import Card from '../../../components/Card';
 import Input from '../../../components/Input';
 import Button from '../../../components/Button';
 import Select from '../../../components/Select';
-import InputFile from '../../../components/InputFile';
 import { ArroundButton } from './styles';
 
 interface params {
   id: string;
 }
 
-interface Statute {
+interface TellerData {
   id?: string;
   description: string;
-  degree: SelectData;
-  file: File;
+  cost_center: SelectData;
 }
 
-interface SelectData {
+export interface SelectData {
   value?: string | number | undefined | null;
   label?: string;
+}
+
+interface Data {
+  description: string;
+  cost_center_id: string;
 }
 
 interface OptionsData {
@@ -45,16 +47,15 @@ interface OptionsData {
   label: string;
 }
 
-const Statute: React.FC = () => {
+const Teller: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [saveLoading, setSaveLoading] = useState(false);
+  const [tellerEdit, setTellerEdit] = useState<TellerData>();
   const params: params = useParams();
-  const [degrees, setDegrees] = useState<OptionsData[]>([]);
+  const [costCenters, setCostCenters] = useState<OptionsData[]>([]);
   const history = useHistory();
-  // const [selectedFile, setSelectedFile] = useState<File>();
   const formRef = useRef<FormHandles>(null);
   const { addToast } = useToast();
-  const { user } = useAuth();
 
   const handleSubmit = useCallback(
     async data => {
@@ -63,45 +64,31 @@ const Statute: React.FC = () => {
 
         const schema = Yup.object().shape({
           description: Yup.string().required('Descrição obrigatória'),
-          degree: Yup.string().required('Grau é obrigatório'),
+          cost_center: Yup.string().required('Grau é obrigatório'),
         });
 
         await schema.validate(data, {
           abortEarly: false,
         });
 
-        if (!data.file) {
-          addToast({
-            type: 'error',
-            title: 'Selecione um arquivo!',
-          });
-          return;
-        }
-
-        console.log(data);
-
         setSaveLoading(true);
 
-        const formData = new FormData();
-
-        const { description, degree, file } = data;
-
-        formData.append('user_id', user.id);
-        formData.append('description', description);
-        formData.append('degree_id', degree);
-        formData.append('file', file);
+        const formData: Data = {
+          description: data.description,
+          cost_center_id: data.cost_center,
+        };
 
         if (params.id) {
-          await api.put(`/statutes/${params.id}`, formData);
+          await api.put(`/tellers/${params.id}`, formData);
         } else {
-          await api.post('/statutes', formData);
+          await api.post('/tellers', formData);
         }
 
         setSaveLoading(false);
-        history.push('/app/cad/estatutos');
+        history.push('/app/financeiro/caixas');
         addToast({
           type: 'success',
-          title: 'Estatuto cadastrada com sucesso!',
+          title: 'Caixa cadastrado com sucesso!',
         });
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
@@ -120,34 +107,23 @@ const Statute: React.FC = () => {
         });
       }
     },
-    [addToast, history, params.id, user.id],
+    [addToast, history, params.id],
   );
 
   useEffect(() => {
     if (params.id) {
       setLoading(true);
       api
-        .get(`/statutes/${params.id}`)
+        .get(`/tellers/${params.id}`)
         .then(res => {
-          let fileCreated: File;
-          fetch(res.data.file_url)
-            .then(response => response.blob())
-            .then(blob => {
-              const nameFile: string = res.data.file;
-              const nameEditted = nameFile.slice(
-                nameFile.indexOf('-') + 1,
-                nameFile.length,
-              );
-              fileCreated = new File([blob], nameEditted);
-              formRef.current?.setData({
-                degree: {
-                  value: res.data.degree_id,
-                  label: res.data.degree.description,
-                },
-                description: res.data.description,
-                file: fileCreated,
-              });
-            });
+          console.log(res.data);
+          setTellerEdit({
+            cost_center: {
+              value: res.data.cost_center_id,
+              label: res.data.costCenter.description,
+            },
+            description: res.data.description,
+          });
         })
         .finally(() => {
           setLoading(false);
@@ -156,26 +132,26 @@ const Statute: React.FC = () => {
   }, [params.id]);
 
   useEffect(() => {
-    api.get('/degrees').then(response => {
+    api.get('/cost-centers').then(response => {
       const options: OptionsData[] = response.data;
       options.map(opt => {
         opt.label = opt.description;
         opt.value = opt.id;
       });
-      setDegrees(options);
+      setCostCenters(options);
     });
   }, []);
 
   return (
     <BasePage
-      title={params.id ? 'Editar Estatuto' : 'Novo Estatuto'}
-      backLink="/app/cad/estatutos"
+      title={params.id ? 'Editar Caixa' : 'Novo Caixa'}
+      backLink="/app/financeiro/caixas"
     >
       {loading ? (
         <Loading />
       ) : (
         <Container>
-          <Form ref={formRef} onSubmit={handleSubmit}>
+          <Form ref={formRef} onSubmit={handleSubmit} initialData={tellerEdit}>
             <ArroundButton>
               <Button type="submit" disabled={!!saveLoading}>
                 {saveLoading ? (
@@ -185,30 +161,22 @@ const Statute: React.FC = () => {
                 )}
               </Button>
             </ArroundButton>
-            <Card title="Estatuto">
+            <Card title="Caixa">
               <Grid container spacing={2}>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={6}>
                   <Input
                     name="description"
                     label="Descrição"
                     placeholder="Digite a descrição"
                   />
                 </Grid>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={6}>
                   <Select
-                    name="degree"
-                    label="Grau"
-                    placeholder="Selecione o grau"
-                    options={degrees}
+                    name="cost_center"
+                    label="Centro de custo"
+                    placeholder="Selecione o centro de custo"
+                    options={costCenters}
                   />
-                </Grid>
-                <Grid
-                  item
-                  xs={12}
-                  md={4}
-                  style={{ display: 'flex', alignItems: 'center' }}
-                >
-                  <InputFile label="Selecione o arquivo" name="file" />
                 </Grid>
               </Grid>
             </Card>
@@ -219,4 +187,4 @@ const Statute: React.FC = () => {
   );
 };
 
-export default Statute;
+export default Teller;

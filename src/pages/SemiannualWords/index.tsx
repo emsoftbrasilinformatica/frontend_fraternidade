@@ -108,7 +108,7 @@ const SemiannualWords: React.FC = () => {
                     name="last_word"
                     label="Palavra anterior"
                     icon={VscWholeWord}
-                    readOnly
+                    justRead
                   />
                 </Grid>
                 <Grid item xs={12} sm={4}>

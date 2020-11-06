@@ -6,6 +6,7 @@ interface ContainerProps {
   isFocused: boolean;
   isFilled: boolean;
   isErrored: boolean;
+  isReadOnly: boolean;
 }
 
 export const Label = styled.label`
@@ -53,6 +54,12 @@ export const Container = styled.div<ContainerProps>`
     props.isFilled &&
     css`
       color: #0f5e9e;
+    `}
+
+  ${props =>
+    props.isReadOnly &&
+    css`
+      background-color: #f2f2f2;
     `}
 
   .react-datepicker-wrapper{

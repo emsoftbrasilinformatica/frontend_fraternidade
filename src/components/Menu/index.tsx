@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import {
   ListItem,
@@ -16,10 +16,16 @@ import {
   Assignment,
   Publish,
   ChromeReaderMode,
+  CreditCard,
+  MonetizationOn,
+  AccountBalance,
+  AccountBalanceWallet,
+  AttachMoney,
 } from '@material-ui/icons';
 import { FaNewspaper, FaCalendar, FaFileContract } from 'react-icons/fa';
 import { MdGroupWork } from 'react-icons/md';
 import { FiType } from 'react-icons/fi';
+import { BiDonateHeart } from 'react-icons/bi';
 import ListItemLink from '../ListItemLink';
 
 interface MenuProps {
@@ -27,6 +33,16 @@ interface MenuProps {
     description: string;
     admin: boolean;
   };
+}
+
+interface ItemMenu {
+  description: string;
+  link: string;
+  icon: ReactElement;
+  collapse: boolean;
+  onClick?: VoidFunction;
+  controller?: boolean;
+  collapseItem?: ReactElement;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -51,17 +67,176 @@ const Menu: React.FC<MenuProps> = ({ administrativeFunction, ...rest }) => {
     false,
   );
   const [openCollapseSessoes, setOpenCollapseSessoes] = React.useState(false);
+  const [openCollapseFinanceiro, setOpenCollapseFinanceiro] = React.useState(
+    false,
+  );
 
   const handleOpenCollapseCadastrosClick = (): void => {
     setOpenCollapseCadastros(!openCollapseCadastros);
+    if (openCollapseFinanceiro) {
+      setOpenCollapseFinanceiro(!openCollapseFinanceiro);
+    }
   };
 
   const handleOpenCollapseSessoesClick = (): void => {
     setOpenCollapseSessoes(!openCollapseSessoes);
   };
 
-  if (administrativeFunction?.description === 'Venerável') {
-    return (
+  const handleOpenCollapseFinanceiroClick = (): void => {
+    setOpenCollapseFinanceiro(!openCollapseFinanceiro);
+    if (openCollapseCadastros) {
+      setOpenCollapseCadastros(!openCollapseCadastros);
+    }
+  };
+
+  const itemsCadastros: ItemMenu[] = [
+    {
+      description: 'Usuários',
+      link: '/app/cad/usuarios',
+      icon: <SupervisedUserCircle />,
+      collapse: false,
+    },
+    {
+      icon: <Lock />,
+      link: '/app/cad/palavra-semestral',
+      description: 'Palavra Semestral',
+      collapse: false,
+    },
+    {
+      icon: <AccountTree />,
+      link: '/app/cad/gestoes',
+      description: 'Gestões',
+      collapse: false,
+    },
+    {
+      icon: <FaNewspaper style={{ fontSize: '1.5rem' }} />,
+      link: '/app/cad/noticias',
+      description: 'Notícias',
+      collapse: false,
+    },
+    {
+      icon: <FaFileContract style={{ fontSize: '1.5rem' }} />,
+      link: '/app/cad/estatutos',
+      description: 'Estatutos',
+      collapse: false,
+    },
+    {
+      icon: <MdGroupWork style={{ fontSize: '1.5rem' }} />,
+      description: 'Sessões',
+      link: '',
+      collapse: true,
+      onClick: handleOpenCollapseSessoesClick,
+      controller: openCollapseSessoes,
+      collapseItem: (
+        <Collapse
+          in={openCollapseSessoes}
+          timeout="auto"
+          unmountOnExit
+          style={{ borderTop: '1px solid #e0e0e0' }}
+        >
+          <List component="div" disablePadding>
+            <ListItemLink
+              className={classes.nestedThird}
+              icon={<FaCalendar style={{ fontSize: '1.5rem' }} />}
+              to="/app/cad/sessoes"
+              primary="Agendamento"
+            />
+            <ListItemLink
+              className={classes.nestedThird}
+              icon={<FiType style={{ fontSize: '1.5rem' }} />}
+              to="/app/cad/tipos-sessao"
+              primary="Tipos de Sessões"
+            />
+          </List>
+        </Collapse>
+      ),
+    },
+  ];
+
+  const itemsCadastrosChanceler: ItemMenu[] = [
+    {
+      description: 'Usuários',
+      link: '/app/cad/usuarios',
+      icon: <SupervisedUserCircle />,
+      collapse: false,
+    },
+    {
+      icon: <MdGroupWork style={{ fontSize: '1.5rem' }} />,
+      description: 'Sessões',
+      link: '',
+      collapse: true,
+      onClick: handleOpenCollapseSessoesClick,
+      controller: openCollapseSessoes,
+      collapseItem: (
+        <Collapse
+          in={openCollapseSessoes}
+          timeout="auto"
+          unmountOnExit
+          style={{ borderTop: '1px solid #e0e0e0' }}
+        >
+          <List component="div" disablePadding>
+            <ListItemLink
+              className={classes.nestedThird}
+              icon={<FaCalendar style={{ fontSize: '1.5rem' }} />}
+              to="/app/cad/sessoes"
+              primary="Agendamento"
+            />
+            <ListItemLink
+              className={classes.nestedThird}
+              icon={<FiType style={{ fontSize: '1.5rem' }} />}
+              to="/app/cad/tipos-sessao"
+              primary="Tipos de Sessões"
+            />
+          </List>
+        </Collapse>
+      ),
+    },
+  ];
+
+  const itemsCadastrosSecretario: ItemMenu[] = [
+    {
+      icon: <FaFileContract style={{ fontSize: '1.5rem' }} />,
+      link: '/app/cad/estatutos',
+      description: 'Estatutos',
+      collapse: false,
+    },
+  ];
+
+  const itemsFinanceiro: ItemMenu[] = [
+    {
+      icon: <AccountBalance />,
+      link: '/app/financeiro/centros-custo',
+      description: 'Centros de Custo',
+      collapse: false,
+    },
+    {
+      icon: <AccountBalance />,
+      link: '/app/financeiro/caixas',
+      description: 'Caixas',
+      collapse: false,
+    },
+    {
+      icon: <CreditCard />,
+      link: '/app/financeiro/tipos-lancamentos',
+      description: 'Tipos de Lançamentos',
+      collapse: false,
+    },
+    {
+      icon: <AccountBalanceWallet />,
+      link: '/app/financeiro/lancamentos',
+      description: 'Lançamentos',
+      collapse: false,
+    },
+    {
+      icon: <AttachMoney />,
+      link: '/app/cad/noticias',
+      description: 'Demonstração',
+      collapse: false,
+    },
+  ];
+
+  const menus = {
+    cadastros: (
       <>
         <ListItem button onClick={handleOpenCollapseCadastrosClick}>
           <ListItemIcon>
@@ -77,82 +252,267 @@ const Menu: React.FC<MenuProps> = ({ administrativeFunction, ...rest }) => {
           style={{ borderTop: '1px solid #e0e0e0' }}
         >
           <List component="div" disablePadding>
-            <ListItemLink
-              className={classes.nested}
-              icon={<SupervisedUserCircle />}
-              to="/app/cad/usuarios"
-              primary="Usuários"
-            />
-            <ListItemLink
-              className={classes.nested}
-              icon={<Lock />}
-              to="/app/cad/palavra-semestral"
-              primary="Palavra Semestral"
-            />
-            <ListItemLink
-              className={classes.nested}
-              icon={<AccountTree />}
-              to="/app/cad/gestoes"
-              primary="Gestões"
-            />
-            <ListItemLink
-              className={classes.nested}
-              icon={<FaNewspaper style={{ fontSize: '1.5rem' }} />}
-              to="/app/cad/noticias"
-              primary="Notícias"
-            />
-            <ListItemLink
-              className={classes.nested}
-              icon={<FaFileContract style={{ fontSize: '1.5rem' }} />}
-              to="/app/cad/estatutos"
-              primary="Estatutos"
-            />
-            <ListItem
-              button
-              className={classes.collapseSecondLevel}
-              onClick={handleOpenCollapseSessoesClick}
-            >
-              <ListItemIcon>
-                <MdGroupWork style={{ fontSize: '1.5rem' }} />
-              </ListItemIcon>
-              <ListItemText primary="Sessões" />
-              {openCollapseSessoes ? <ExpandLess /> : <ExpandMore />}
-            </ListItem>
-            <Collapse
-              in={openCollapseSessoes}
-              timeout="auto"
-              unmountOnExit
-              style={{ borderTop: '1px solid #e0e0e0' }}
-            >
-              <List component="div" disablePadding>
-                <ListItemLink
-                  className={classes.nestedThird}
-                  icon={<FaCalendar style={{ fontSize: '1.5rem' }} />}
-                  to="/app/cad/sessoes"
-                  primary="Agendamento"
-                />
-                <ListItemLink
-                  className={classes.nestedThird}
-                  icon={<FiType style={{ fontSize: '1.5rem' }} />}
-                  to="/app/cad/tipos-sessao"
-                  primary="Tipos de Sessões"
-                />
-              </List>
-            </Collapse>
+            {itemsCadastros
+              .sort((a, b) => {
+                if (a.description > b.description) {
+                  return 1;
+                }
+                if (b.description > a.description) {
+                  return -1;
+                }
+                return 0;
+              })
+              .map(item => {
+                if (item.collapse) {
+                  return (
+                    <>
+                      <ListItem
+                        button
+                        className={classes.collapseSecondLevel}
+                        onClick={item.onClick}
+                      >
+                        <ListItemIcon>{item.icon}</ListItemIcon>
+                        <ListItemText primary={item.description} />
+                        {item.controller ? <ExpandLess /> : <ExpandMore />}
+                      </ListItem>
+                      {item.collapseItem}
+                    </>
+                  );
+                }
+                return (
+                  <ListItemLink
+                    key={item.description}
+                    className={classes.nested}
+                    icon={item.icon}
+                    to={item.link}
+                    primary={item.description}
+                  />
+                );
+              })}
           </List>
         </Collapse>
+      </>
+    ),
+    cadastrosChanceler: (
+      <>
+        <ListItem button onClick={handleOpenCollapseCadastrosClick}>
+          <ListItemIcon>
+            <Assignment />
+          </ListItemIcon>
+          <ListItemText primary="Cadastros" />
+          {openCollapseCadastros ? <ExpandLess /> : <ExpandMore />}
+        </ListItem>
+        <Collapse
+          in={openCollapseCadastros}
+          timeout="auto"
+          unmountOnExit
+          style={{ borderTop: '1px solid #e0e0e0' }}
+        >
+          <List component="div" disablePadding>
+            {itemsCadastrosChanceler
+              .sort((a, b) => {
+                if (a.description > b.description) {
+                  return 1;
+                }
+                if (b.description > a.description) {
+                  return -1;
+                }
+                return 0;
+              })
+              .map(item => {
+                if (item.collapse) {
+                  return (
+                    <>
+                      <ListItem
+                        button
+                        className={classes.collapseSecondLevel}
+                        onClick={item.onClick}
+                      >
+                        <ListItemIcon>{item.icon}</ListItemIcon>
+                        <ListItemText primary={item.description} />
+                        {item.controller ? <ExpandLess /> : <ExpandMore />}
+                      </ListItem>
+                      {item.collapseItem}
+                    </>
+                  );
+                }
+                return (
+                  <ListItemLink
+                    key={item.description}
+                    className={classes.nested}
+                    icon={item.icon}
+                    to={item.link}
+                    primary={item.description}
+                  />
+                );
+              })}
+          </List>
+        </Collapse>
+      </>
+    ),
+    cadastrosSecretario: (
+      <>
+        <ListItem button onClick={handleOpenCollapseCadastrosClick}>
+          <ListItemIcon>
+            <Assignment />
+          </ListItemIcon>
+          <ListItemText primary="Cadastros" />
+          {openCollapseCadastros ? <ExpandLess /> : <ExpandMore />}
+        </ListItem>
+        <Collapse
+          in={openCollapseCadastros}
+          timeout="auto"
+          unmountOnExit
+          style={{ borderTop: '1px solid #e0e0e0' }}
+        >
+          <List component="div" disablePadding>
+            {itemsCadastrosSecretario
+              .sort((a, b) => {
+                if (a.description > b.description) {
+                  return 1;
+                }
+                if (b.description > a.description) {
+                  return -1;
+                }
+                return 0;
+              })
+              .map(item => {
+                if (item.collapse) {
+                  return (
+                    <>
+                      <ListItem
+                        button
+                        className={classes.collapseSecondLevel}
+                        onClick={item.onClick}
+                      >
+                        <ListItemIcon>{item.icon}</ListItemIcon>
+                        <ListItemText primary={item.description} />
+                        {item.controller ? <ExpandLess /> : <ExpandMore />}
+                      </ListItem>
+                      {item.collapseItem}
+                    </>
+                  );
+                }
+                return (
+                  <ListItemLink
+                    key={item.description}
+                    className={classes.nested}
+                    icon={item.icon}
+                    to={item.link}
+                    primary={item.description}
+                  />
+                );
+              })}
+          </List>
+        </Collapse>
+      </>
+    ),
+    financeiro: (
+      <>
+        <ListItem button onClick={handleOpenCollapseFinanceiroClick}>
+          <ListItemIcon>
+            <MonetizationOn />
+          </ListItemIcon>
+          <ListItemText primary="Financeiro" />
+          {openCollapseFinanceiro ? <ExpandLess /> : <ExpandMore />}
+        </ListItem>
+        <Collapse
+          in={openCollapseFinanceiro}
+          timeout="auto"
+          unmountOnExit
+          style={{ borderTop: '1px solid #e0e0e0' }}
+        >
+          <List component="div" disablePadding>
+            {itemsFinanceiro
+              .sort((a, b) => {
+                if (a.description > b.description) {
+                  return 1;
+                }
+                if (b.description > a.description) {
+                  return -1;
+                }
+                return 0;
+              })
+              .map(item => {
+                if (item.collapse) {
+                  return (
+                    <>
+                      <ListItem
+                        button
+                        className={classes.collapseSecondLevel}
+                        onClick={item.onClick}
+                      >
+                        <ListItemIcon>{item.icon}</ListItemIcon>
+                        <ListItemText primary={item.description} />
+                        {item.controller ? <ExpandLess /> : <ExpandMore />}
+                      </ListItem>
+                      {item.collapseItem}
+                    </>
+                  );
+                }
+                return (
+                  <ListItemLink
+                    key={item.description}
+                    className={classes.nested}
+                    icon={item.icon}
+                    to={item.link}
+                    primary={item.description}
+                  />
+                );
+              })}
+          </List>
+        </Collapse>
+      </>
+    ),
+    atas: (
+      <ListItemLink
+        icon={<ChromeReaderMode />}
+        to="/app/cad/atas-sessao"
+        primary="Atas de Sessões"
+      />
+    ),
+    doacao: (
+      <ListItemLink
+        icon={<BiDonateHeart style={{ fontSize: '1.5rem' }} />}
+        to="/app/dashboard"
+        primary="Doações"
+      />
+    ),
+    uploads: (
+      <ListItemLink
+        icon={<Publish />}
+        to="/app/cad/uploads"
+        primary="Uploads"
+      />
+    ),
+  };
 
-        <ListItemLink
-          icon={<ChromeReaderMode />}
-          to="/app/dashboard"
-          primary="Atas de Sessões"
-        />
+  if (administrativeFunction?.description === 'Venerável') {
+    return (
+      <>
+        {menus.cadastros}
+        {menus.financeiro}
+        {menus.doacao}
+        {menus.atas}
+        {menus.uploads}
+      </>
+    );
+  }
 
-        <ListItemLink
-          icon={<Publish />}
-          to="/app/dashboard"
-          primary="Uploads"
-        />
+  if (administrativeFunction?.description === 'Tesoureiro') {
+    return (
+      <>
+        {menus.financeiro}
+        {menus.uploads}
+      </>
+    );
+  }
+
+  if (administrativeFunction?.description === 'Chanceler') {
+    return (
+      <>
+        {menus.cadastrosChanceler}
+        {menus.uploads}
       </>
     );
   }
@@ -160,23 +520,24 @@ const Menu: React.FC<MenuProps> = ({ administrativeFunction, ...rest }) => {
   if (administrativeFunction?.description === 'Secretário') {
     return (
       <>
-        <ListItemLink
-          icon={<ChromeReaderMode />}
-          to="/app/dashboard"
-          primary="Atas de Sessões"
-        />
-        <ListItemLink
-          icon={<Publish />}
-          to="/app/dashboard"
-          primary="Uploads"
-        />
+        {menus.cadastrosSecretario}
+        {menus.atas}
+        {menus.uploads}
       </>
     );
   }
-  if (administrativeFunction && administrativeFunction.admin) {
+
+  if (administrativeFunction?.description === 'Hospitaleiro') {
     return (
-      <ListItemLink icon={<Publish />} to="/app/dashboard" primary="Uploads" />
+      <>
+        {menus.doacao}
+        {menus.uploads}
+      </>
     );
+  }
+
+  if (administrativeFunction && administrativeFunction.admin) {
+    return <>{menus.uploads}</>;
   }
 
   return null;

@@ -299,7 +299,7 @@ const Management: React.FC = () => {
                       label="Ano Inicial"
                       type="number"
                       icon={FaRegCalendarCheck}
-                      readOnly
+                      justRead
                     />
                   </Grid>
                   <Grid item xs={12} sm={6}>
@@ -309,7 +309,7 @@ const Management: React.FC = () => {
                       label="Ano Final"
                       type="number"
                       icon={FaRegCalendarTimes}
-                      readOnly
+                      justRead
                     />
                   </Grid>
                 </Grid>
