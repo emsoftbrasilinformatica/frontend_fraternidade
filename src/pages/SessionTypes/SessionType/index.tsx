@@ -109,9 +109,7 @@ const SessionType: React.FC = () => {
   );
 
   useEffect(() => {
-    console.log('chamou');
     if (params.id) {
-      console.log('entrou');
       setLoading(true);
       api.get(`/session-types/${params.id}`).then(res => {
         setLoading(false);
@@ -126,7 +124,6 @@ const SessionType: React.FC = () => {
             label: res.data.type,
           },
         });
-        console.log(formRef.current);
       });
     }
   }, [params.id]);

@@ -62,8 +62,6 @@ const Upload: React.FC = () => {
           return;
         }
 
-        console.log(data);
-
         setSaveLoading(true);
 
         const formData = new FormData();

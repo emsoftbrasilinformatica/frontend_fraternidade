@@ -596,10 +596,6 @@ const User: React.FC = () => {
   }, [params.id]);
 
   const handleAddAddress = useCallback(() => {
-    // console.log(
-    //   formRef.current?.getFieldValue('city'),
-    //   formRef.current?.getFieldValue('uf'),
-    // );
     if (
       formRef.current?.getFieldValue('city') === '' ||
       formRef.current?.getFieldValue('uf') === '' ||
@@ -621,8 +617,6 @@ const User: React.FC = () => {
         ?.nome;
       const uf_id = Number(formRef.current?.getFieldValue('uf'));
       const uf = ufsAddress.find(ufSelect => ufSelect.id === uf_id)?.sigla;
-
-      // console.log(city, uf);
 
       if (city === undefined || uf === undefined) {
         return;
@@ -804,7 +798,6 @@ const User: React.FC = () => {
   }, [kinships, genders, dependents, idDependent, addToast]);
 
   const handleEditDependent = useCallback(rowData => {
-    // console.log(rowData);
     setIdDependent(rowData.tableData.id);
     formRef.current?.setFieldValue('name_dependent', rowData.name_dependent);
     formRef.current?.setFieldValue(

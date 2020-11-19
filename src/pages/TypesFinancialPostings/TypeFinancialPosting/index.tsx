@@ -52,7 +52,6 @@ const TypeFinancialPosting: React.FC = () => {
 
   const handleSubmit = useCallback(
     async (data, { reset }, event) => {
-      console.log(event);
       try {
         formRef.current?.setErrors({});
 
@@ -122,7 +121,6 @@ const TypeFinancialPosting: React.FC = () => {
           },
           default_value: res.data.default_value,
         });
-        console.log(formRef.current?.getData());
       });
     }
   }, [params.id]);

@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, Fragment } from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import {
   ListItem,
@@ -26,6 +26,7 @@ import { FaNewspaper, FaCalendar, FaFileContract } from 'react-icons/fa';
 import { MdGroupWork } from 'react-icons/md';
 import { FiType } from 'react-icons/fi';
 import { BiDonateHeart } from 'react-icons/bi';
+import { GiMoneyStack } from 'react-icons/gi';
 import ListItemLink from '../ListItemLink';
 
 interface MenuProps {
@@ -200,6 +201,12 @@ const Menu: React.FC<MenuProps> = ({ administrativeFunction, ...rest }) => {
       description: 'Estatutos',
       collapse: false,
     },
+    {
+      icon: <FaNewspaper style={{ fontSize: '1.5rem' }} />,
+      link: '/app/cad/noticias',
+      description: 'Notícias',
+      collapse: false,
+    },
   ];
 
   const itemsFinanceiro: ItemMenu[] = [
@@ -210,7 +217,7 @@ const Menu: React.FC<MenuProps> = ({ administrativeFunction, ...rest }) => {
       collapse: false,
     },
     {
-      icon: <AccountBalance />,
+      icon: <GiMoneyStack style={{ fontSize: '1.5rem' }} />,
       link: '/app/financeiro/caixas',
       description: 'Caixas',
       collapse: false,
@@ -229,8 +236,14 @@ const Menu: React.FC<MenuProps> = ({ administrativeFunction, ...rest }) => {
     },
     {
       icon: <AttachMoney />,
-      link: '/app/cad/noticias',
+      link: '/app/financeiro/demonstracao',
       description: 'Demonstração',
+      collapse: false,
+    },
+    {
+      icon: <AccountBalance />,
+      link: '/app/financeiro/contas-bancarias',
+      description: 'Contas Bancárias',
       collapse: false,
     },
   ];
@@ -265,7 +278,7 @@ const Menu: React.FC<MenuProps> = ({ administrativeFunction, ...rest }) => {
               .map(item => {
                 if (item.collapse) {
                   return (
-                    <>
+                    <Fragment key={item.description}>
                       <ListItem
                         button
                         className={classes.collapseSecondLevel}
@@ -276,7 +289,7 @@ const Menu: React.FC<MenuProps> = ({ administrativeFunction, ...rest }) => {
                         {item.controller ? <ExpandLess /> : <ExpandMore />}
                       </ListItem>
                       {item.collapseItem}
-                    </>
+                    </Fragment>
                   );
                 }
                 return (
@@ -322,7 +335,7 @@ const Menu: React.FC<MenuProps> = ({ administrativeFunction, ...rest }) => {
               .map(item => {
                 if (item.collapse) {
                   return (
-                    <>
+                    <Fragment key={item.description}>
                       <ListItem
                         button
                         className={classes.collapseSecondLevel}
@@ -333,7 +346,7 @@ const Menu: React.FC<MenuProps> = ({ administrativeFunction, ...rest }) => {
                         {item.controller ? <ExpandLess /> : <ExpandMore />}
                       </ListItem>
                       {item.collapseItem}
-                    </>
+                    </Fragment>
                   );
                 }
                 return (
@@ -379,7 +392,7 @@ const Menu: React.FC<MenuProps> = ({ administrativeFunction, ...rest }) => {
               .map(item => {
                 if (item.collapse) {
                   return (
-                    <>
+                    <Fragment key={item.description}>
                       <ListItem
                         button
                         className={classes.collapseSecondLevel}
@@ -390,7 +403,7 @@ const Menu: React.FC<MenuProps> = ({ administrativeFunction, ...rest }) => {
                         {item.controller ? <ExpandLess /> : <ExpandMore />}
                       </ListItem>
                       {item.collapseItem}
-                    </>
+                    </Fragment>
                   );
                 }
                 return (
@@ -436,7 +449,7 @@ const Menu: React.FC<MenuProps> = ({ administrativeFunction, ...rest }) => {
               .map(item => {
                 if (item.collapse) {
                   return (
-                    <>
+                    <Fragment key={item.description}>
                       <ListItem
                         button
                         className={classes.collapseSecondLevel}
@@ -447,7 +460,7 @@ const Menu: React.FC<MenuProps> = ({ administrativeFunction, ...rest }) => {
                         {item.controller ? <ExpandLess /> : <ExpandMore />}
                       </ListItem>
                       {item.collapseItem}
-                    </>
+                    </Fragment>
                   );
                 }
                 return (
@@ -474,7 +487,7 @@ const Menu: React.FC<MenuProps> = ({ administrativeFunction, ...rest }) => {
     doacao: (
       <ListItemLink
         icon={<BiDonateHeart style={{ fontSize: '1.5rem' }} />}
-        to="/app/dashboard"
+        to="/app/doacoes"
         primary="Doações"
       />
     ),

@@ -29,7 +29,6 @@ const Header: React.FC = () => {
   const handleLogin = useCallback(() => {
     history.push('/app/login');
   }, [history]);
-  // console.log(`${pathname} ------ ${hash}`);
   const handleMediaQueryChange = (mediaQuery: any): void => {
     if (mediaQuery.matches) {
       setIsSmallScreen(true);

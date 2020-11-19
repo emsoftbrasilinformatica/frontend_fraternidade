@@ -128,8 +128,6 @@ const NewsDetail: React.FC = () => {
     window.addEventListener('resize', () => {
       setWidth(window.innerWidth);
       setHeight(window.innerHeight);
-      // console.log(`width: ${width}`);
-      // console.log(`height: ${height}`);
     });
   }, [height, width]);
 

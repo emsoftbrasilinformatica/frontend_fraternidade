@@ -62,8 +62,6 @@ const SessionRecord: React.FC = () => {
           return;
         }
 
-        console.log(data);
-
         setSaveLoading(true);
 
         const formData = new FormData();

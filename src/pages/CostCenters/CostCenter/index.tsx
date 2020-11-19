@@ -35,7 +35,6 @@ const TypeFinancialPosting: React.FC = () => {
 
   const handleSubmit = useCallback(
     async (data, { reset }, event) => {
-      console.log(event);
       try {
         formRef.current?.setErrors({});
 
@@ -95,7 +94,6 @@ const TypeFinancialPosting: React.FC = () => {
         setEditCostCenter({
           description: res.data.description,
         });
-        console.log(res.data.description);
       });
     }
   }, [params.id]);

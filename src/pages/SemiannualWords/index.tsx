@@ -27,7 +27,6 @@ const SemiannualWords: React.FC = () => {
 
   const handleSubmit = useCallback(
     async (data: SemiannualWord) => {
-      // console.log(data);
       try {
         setLoading(true);
         formRef.current?.setErrors({});

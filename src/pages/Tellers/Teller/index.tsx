@@ -116,7 +116,6 @@ const Teller: React.FC = () => {
       api
         .get(`/tellers/${params.id}`)
         .then(res => {
-          console.log(res.data);
           setTellerEdit({
             cost_center: {
               value: res.data.cost_center_id,

@@ -45,8 +45,18 @@ import CostCenters from '../pages/CostCenters';
 import CostCenter from '../pages/CostCenters/CostCenter';
 
 import FinancialPostings from '../pages/FinancialPostings';
+import FinancialPosting from '../pages/FinancialPostings/FinancialPosting';
+
 import Tellers from '../pages/Tellers';
 import Teller from '../pages/Tellers/Teller';
+
+import Donations from '../pages/Donations';
+import Donation from '../pages/Donations/Donation';
+
+import Demonstrations from '../pages/Demonstrations';
+
+import BankAccounts from '../pages/BankAccounts';
+import BankAccount from '../pages/BankAccounts/BankAccount';
 
 const Routes: React.FC = () => (
   <Switch>
@@ -61,45 +71,103 @@ const Routes: React.FC = () => (
     <Route path="/app/dashboard" component={Dashboard} isPrivate />
 
     {/** managements */}
-    <Route path="/app/cad/gestoes" component={Managements} isPrivate />
-    <Route path="/app/cad/gestao/:id" component={Management} isPrivate />
+    <Route
+      path="/app/cad/gestoes"
+      component={Managements}
+      allowed={['Venerável']}
+      isPrivate
+    />
+    <Route
+      path="/app/cad/gestao/:id"
+      component={Management}
+      allowed={['Venerável']}
+      isPrivate
+    />
     {/** managements */}
 
     {/** news */}
-    <Route path="/app/cad/noticias" component={AppNews} isPrivate />
-    <Route path="/app/cad/noticia/:id?" component={AppNewsOne} isPrivate />
+    <Route
+      path="/app/cad/noticias"
+      component={AppNews}
+      allowed={['Venerável', 'Secretário']}
+      isPrivate
+    />
+    <Route
+      path="/app/cad/noticia/:id?"
+      component={AppNewsOne}
+      allowed={['Venerável', 'Secretário']}
+      isPrivate
+    />
     {/** news */}
 
     {/** semiannualwords */}
     <Route
       path="/app/cad/palavra-semestral"
       component={SemiannualWords}
+      allowed={['Venerável']}
       isPrivate
     />
     {/** semiannualwords */}
 
     {/** sessions */}
-    <Route path="/app/cad/sessoes" component={Sessions} isPrivate />
-    <Route path="/app/cad/sessao/:id?" component={Session} isPrivate />
-    <Route path="/app/cad/tipos-sessao" component={SessionTypes} isPrivate />
-    <Route path="/app/cad/tipo-sessao/:id?" component={SessionType} isPrivate />
+    <Route
+      path="/app/cad/sessoes"
+      component={Sessions}
+      allowed={['Venerável', 'Chanceler']}
+      isPrivate
+    />
+    <Route
+      path="/app/cad/sessao/:id?"
+      component={Session}
+      allowed={['Venerável', 'Chanceler']}
+      isPrivate
+    />
+    <Route
+      path="/app/cad/tipos-sessao"
+      component={SessionTypes}
+      allowed={['Venerável', 'Chanceler']}
+      isPrivate
+    />
+    <Route
+      path="/app/cad/tipo-sessao/:id?"
+      component={SessionType}
+      allowed={['Venerável', 'Chanceler']}
+      isPrivate
+    />
     <Route
       path="/app/cad/presencas-sessao/:id"
       component={Presences}
+      allowed={['Venerável', 'Chanceler']}
       isPrivate
     />
     {/** sessions */}
 
     {/** statutes */}
-    <Route path="/app/cad/estatutos" component={Statutes} isPrivate />
-    <Route path="/app/cad/estatuto/:id?" component={Statute} isPrivate />
+    <Route
+      path="/app/cad/estatutos"
+      component={Statutes}
+      allowed={['Venerável', 'Secretário']}
+      isPrivate
+    />
+    <Route
+      path="/app/cad/estatuto/:id?"
+      component={Statute}
+      allowed={['Venerável', 'Secretário']}
+      isPrivate
+    />
     {/** statutes */}
 
     {/** session records */}
-    <Route path="/app/cad/atas-sessao" component={SessionRecords} isPrivate />
+    <Route
+      path="/app/cad/atas-sessao"
+      component={SessionRecords}
+      allowed={['Venerável', 'Secretário']}
+      isPrivate
+    />
     <Route
       path="/app/cad/ata-sessao/:id?"
       component={SessionRecord}
+      allowed={['Venerável', 'Secretário']}
       isPrivate
     />
     {/** session records */}
@@ -112,31 +180,85 @@ const Routes: React.FC = () => (
     <Route
       path="/app/financeiro/tipos-lancamentos"
       component={TypesFinancialPostings}
+      allowed={['Venerável', 'Tesoureiro']}
       isPrivate
     />
     <Route
       path="/app/financeiro/tipo-lancamento/:id?"
       component={TypeFinancialPosting}
+      allowed={['Venerável', 'Tesoureiro']}
       isPrivate
     />
 
     <Route
       path="/app/financeiro/centros-custo/"
+      allowed={['Venerável', 'Tesoureiro']}
       component={CostCenters}
       isPrivate
     />
     <Route
       path="/app/financeiro/centro-custo/:id?"
       component={CostCenter}
+      allowed={['Venerável', 'Tesoureiro']}
       isPrivate
     />
 
-    <Route path="/app/financeiro/caixas/" component={Tellers} isPrivate />
-    <Route path="/app/financeiro/caixa/:id?" component={Teller} isPrivate />
+    <Route
+      path="/app/financeiro/caixas/"
+      component={Tellers}
+      allowed={['Venerável', 'Tesoureiro']}
+      isPrivate
+    />
+    <Route
+      path="/app/financeiro/caixa/:id?"
+      component={Teller}
+      allowed={['Venerável', 'Tesoureiro']}
+      isPrivate
+    />
 
     <Route
       path="/app/financeiro/lancamentos/"
       component={FinancialPostings}
+      allowed={['Venerável', 'Tesoureiro']}
+      isPrivate
+    />
+    <Route
+      path="/app/financeiro/lancamento/:id?"
+      component={FinancialPosting}
+      allowed={['Venerável', 'Tesoureiro']}
+      isPrivate
+    />
+
+    <Route
+      path="/app/financeiro/demonstracao"
+      component={Demonstrations}
+      allowed={['Venerável', 'Tesoureiro']}
+      isPrivate
+    />
+
+    <Route
+      path="/app/doacoes"
+      component={Donations}
+      allowed={['Venerável', 'Hospitaleiro']}
+      isPrivate
+    />
+    <Route
+      path="/app/doacao/:id?"
+      component={Donation}
+      allowed={['Venerável', 'Hospitaleiro']}
+      isPrivate
+    />
+
+    <Route
+      path="/app/financeiro/contas-bancarias"
+      component={BankAccounts}
+      allowed={['Venerável', 'Hospitaleiro']}
+      isPrivate
+    />
+    <Route
+      path="/app/financeiro/conta-bancaria/:id?"
+      component={BankAccount}
+      allowed={['Venerável', 'Hospitaleiro']}
       isPrivate
     />
     {/** financial */}
@@ -147,8 +269,18 @@ const Routes: React.FC = () => (
     {/** uploads */}
 
     {/** users */}
-    <Route path="/app/cad/usuarios" component={Users} isPrivate />
-    <Route path="/app/cad/usuario/:id?" component={User} isPrivate />
+    <Route
+      path="/app/cad/usuarios"
+      component={Users}
+      allowed={['Venerável', 'Chanceler']}
+      isPrivate
+    />
+    <Route
+      path="/app/cad/usuario/:id?"
+      component={User}
+      allowed={['Venerável', 'Chanceler']}
+      isPrivate
+    />
     {/** users */}
   </Switch>
 );
