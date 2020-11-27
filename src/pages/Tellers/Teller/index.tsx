@@ -175,6 +175,7 @@ const Teller: React.FC = () => {
                     label="Centro de custo"
                     placeholder="Selecione o centro de custo"
                     options={costCenters}
+                    isClearable
                   />
                 </Grid>
               </Grid>

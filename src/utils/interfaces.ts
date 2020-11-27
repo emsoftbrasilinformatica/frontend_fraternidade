@@ -100,6 +100,11 @@ export interface CreateUserFormData {
   number_sessions_companheiro: number;
   number_sessions_mestre: number;
   number_sessions_mestre_instalado: number;
+  wedding_date?: string | null | undefined;
+  elevacao_date?: string | null | undefined;
+  exaltacao_date?: string | null | undefined;
+  instalacao_date?: string | null | undefined;
+  iniciacao_date?: string | null | undefined;
   adresses?: AddressFormData[];
   contacts?: ContactFormData[];
   dependents?: DependentFormData[];
@@ -133,6 +138,11 @@ export interface UserFormData {
   number_sessions_companheiro: number;
   number_sessions_mestre: number;
   number_sessions_mestre_instalado: number;
+  wedding_date?: Date | null;
+  elevacao_date?: Date | null;
+  exaltacao_date?: Date | null;
+  instalacao_date?: Date | null;
+  iniciacao_date?: Date | null;
 }
 
 export interface SelectData {

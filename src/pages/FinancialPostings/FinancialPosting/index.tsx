@@ -351,6 +351,7 @@ const FinancialPosting: React.FC = () => {
                     icon={FiType}
                     onChange={handleChangeTypeFinancialPosting}
                     options={typesFinancialPostings}
+                    isClearable
                   />
                 </Grid>
                 <Grid item xs={12} md={2}>
@@ -360,6 +361,7 @@ const FinancialPosting: React.FC = () => {
                     icon={FaSort}
                     placeholder="Selecione..."
                     options={movs}
+                    isClearable
                   />
                 </Grid>
                 <Grid item xs={12} md={3}>
@@ -393,6 +395,7 @@ const FinancialPosting: React.FC = () => {
                     icon={RiBankLine}
                     options={costCenters}
                     onChange={handleChangeCostCenter}
+                    isClearable
                   />
                 </Grid>
                 <Grid item xs={12} md={4}>
@@ -402,6 +405,7 @@ const FinancialPosting: React.FC = () => {
                     placeholder="Selecione o caixa"
                     icon={FaWallet}
                     options={tellers}
+                    isClearable
                   />
                 </Grid>
 
@@ -425,6 +429,7 @@ const FinancialPosting: React.FC = () => {
                     placeholder="Selecione o obreiro"
                     icon={FaUserAlt}
                     options={obreiros}
+                    isClearable
                   />
                 </Grid>
                 <Grid item xs={12} md={4}>

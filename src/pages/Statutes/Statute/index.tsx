@@ -198,6 +198,7 @@ const Statute: React.FC = () => {
                     label="Grau"
                     placeholder="Selecione o grau"
                     options={degrees}
+                    isClearable
                   />
                 </Grid>
                 <Grid

@@ -237,6 +237,7 @@ const Session: React.FC = () => {
                     icon={FaSort}
                     options={sessionTypes}
                     isDisabled={!canSave}
+                    isClearable
                   />
                 </Grid>
               </Grid>

@@ -117,6 +117,12 @@ export const CardInfo = styled.div`
   padding: 16px;
   text-align: right;
 
+  .title {
+    text-align: center;
+    font-weight: bold;
+    font-size: 24px;
+  }
+
   .item {
     padding: 4px;
     display: grid;

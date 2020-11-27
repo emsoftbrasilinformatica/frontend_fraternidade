@@ -1210,6 +1210,7 @@ const Profile: React.FC = () => {
                       icon={FaLocationArrow}
                       isSearchable={false}
                       options={optionsTypeAddress}
+                      isClearable
                     />
                   </Grid>
                   <Grid item xs={12} sm={4}>
@@ -1231,6 +1232,7 @@ const Profile: React.FC = () => {
                       options={ufsAddress}
                       onChange={handleChangeUfAddress}
                       placeholder="Selecione a UF"
+                      isClearable
                     />
                   </Grid>
                   <Grid item xs={12} sm={6}>
@@ -1240,6 +1242,7 @@ const Profile: React.FC = () => {
                       icon={FaCity}
                       options={citiesAddress}
                       placeholder="Selecione a cidade"
+                      isClearable
                     />
                   </Grid>
                   <Grid item xs={12} sm={3}>
@@ -1337,6 +1340,7 @@ const Profile: React.FC = () => {
                       icon={FaVenusMars}
                       options={genders}
                       placeholder="Selecione o genêro"
+                      isClearable
                     />
                   </Grid>
                   <Grid item xs={12} sm={4}>
@@ -1346,6 +1350,7 @@ const Profile: React.FC = () => {
                       icon={FaGenderless}
                       options={kinships}
                       placeholder="Selecione o parentesco"
+                      isClearable
                     />
                   </Grid>
                   <Grid item xs={12} sm={4}>

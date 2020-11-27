@@ -33,6 +33,7 @@ import { ImFilter } from 'react-icons/im';
 
 import { MdAttachMoney } from 'react-icons/md';
 
+import { format } from 'date-fns';
 import BasePage from '../../components/BasePage';
 
 import labels from '../../utils/labels';
@@ -72,8 +73,8 @@ interface Donation {
 }
 
 interface QueryParams {
-  start_date?: Date;
-  end_date?: Date;
+  start_date?: string;
+  end_date?: string;
 }
 
 const drawerWidth = 300;
@@ -170,8 +171,8 @@ const Donations: React.FC = () => {
     const params: QueryParams = {};
 
     if (startDate && endDate) {
-      params.start_date = startDate;
-      params.end_date = endDate;
+      params.start_date = format(startDate, 'yyyy-MM-dd');
+      params.end_date = format(endDate, 'yyyy-MM-dd');
     }
 
     setSearchLoading(true);
@@ -242,8 +243,14 @@ const Donations: React.FC = () => {
     api
       .get<Donation[]>('/donations', {
         params: {
-          start_date: new Date(today.getFullYear(), today.getMonth(), 1),
-          end_date: new Date(today.getFullYear(), today.getMonth() + 1, 0),
+          start_date: format(
+            new Date(today.getFullYear(), today.getMonth(), 1),
+            'yyyy-MM-dd',
+          ),
+          end_date: format(
+            new Date(today.getFullYear(), today.getMonth() + 1, 0),
+            'yyyy-MM-dd',
+          ),
         },
       })
       .then(response => {

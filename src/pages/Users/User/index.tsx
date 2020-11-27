@@ -331,6 +331,21 @@ const User: React.FC = () => {
           number_sessions_mestre: data.number_sessions_mestre,
           number_sessions_mestre_instalado:
             data.number_sessions_mestre_instalado,
+          wedding_date:
+            data.wedding_date &&
+            format(new Date(data.wedding_date), 'yyyy-MM-dd'),
+          iniciacao_date:
+            data.iniciacao_date &&
+            format(new Date(data.iniciacao_date), 'yyyy-MM-dd'),
+          exaltacao_date:
+            data.exaltacao_date &&
+            format(new Date(data.exaltacao_date), 'yyyy-MM-dd'),
+          elevacao_date:
+            data.elevacao_date &&
+            format(new Date(data.elevacao_date), 'yyyy-MM-dd'),
+          instalacao_date:
+            data.instalacao_date &&
+            format(new Date(data.instalacao_date), 'yyyy-MM-dd'),
           contacts,
           adresses: adressesToBeCreate,
           dependents: dependentsToBeCreate,
@@ -566,6 +581,21 @@ const User: React.FC = () => {
             number_sessions_mestre: user.number_sessions_mestre,
             number_sessions_mestre_instalado:
               user.number_sessions_mestre_instalado,
+            wedding_date: user.wedding_date
+              ? new Date(user.wedding_date)
+              : null,
+            iniciacao_date: user.iniciacao_date
+              ? new Date(user.iniciacao_date)
+              : null,
+            exaltacao_date: user.exaltacao_date
+              ? new Date(user.exaltacao_date)
+              : null,
+            elevacao_date: user.elevacao_date
+              ? new Date(user.elevacao_date)
+              : null,
+            instalacao_date: user.instalacao_date
+              ? new Date(user.instalacao_date)
+              : null,
           };
 
           setUserForm(user);
@@ -1028,6 +1058,7 @@ const User: React.FC = () => {
                       label="Grau de Acesso"
                       placeholder="Selecione o grau de acesso"
                       options={degrees}
+                      isClearable
                     />
                   </Grid>
                   <Grid item xs={12} sm={4}>
@@ -1038,6 +1069,7 @@ const User: React.FC = () => {
                       icon={FaSyringe}
                       isSearchable={false}
                       options={optionsBloodTypes}
+                      isClearable
                     />
                   </Grid>
                 </Grid>
@@ -1050,6 +1082,7 @@ const User: React.FC = () => {
                       options={ufsNaturalness}
                       onChange={handleChangeUfNaturalness}
                       placeholder="Selecione a UF"
+                      isClearable
                     />
                   </Grid>
                   <Grid item xs={12} sm={4}>
@@ -1059,6 +1092,7 @@ const User: React.FC = () => {
                       icon={FaCity}
                       options={citiesNaturalness}
                       placeholder="Selecione a cidade"
+                      isClearable
                     />
                   </Grid>
                   <Grid item xs={12} sm={4}>
@@ -1069,6 +1103,7 @@ const User: React.FC = () => {
                       placeholder="Selecione o estado civil"
                       options={optionsCivilStatus}
                       isSearchable={false}
+                      isClearable
                     />
                   </Grid>
                 </Grid>
@@ -1105,6 +1140,7 @@ const User: React.FC = () => {
                       label="UF de Emissão RG"
                       icon={FaFlag}
                       options={ufsRG}
+                      isClearable
                     />
                   </Grid>
                   <Grid item xs={12} sm={4}>
@@ -1140,6 +1176,48 @@ const User: React.FC = () => {
                       icon={FaPhoneSquare}
                       placeholder="Digite o telefone da empresa"
                       mask="(99) 99999-9999"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={4}>
+                    <DatePicker
+                      name="wedding_date"
+                      icon={FiCalendar}
+                      label="Data do Casamento"
+                      placeholderText="Insira a data do casamento"
+                    />
+                  </Grid>
+                </Grid>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={3}>
+                    <DatePicker
+                      name="iniciacao_date"
+                      icon={FiCalendar}
+                      label="Data de Iniciação"
+                      placeholderText="Insira a data de iniciação"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={3}>
+                    <DatePicker
+                      name="exaltacao_date"
+                      icon={FiCalendar}
+                      label="Data de Exaltação"
+                      placeholderText="Insira a data de exaltação"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={3}>
+                    <DatePicker
+                      name="elevacao_date"
+                      icon={FiCalendar}
+                      label="Data de Elevação"
+                      placeholderText="Insira a data de elevação"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={3}>
+                    <DatePicker
+                      name="instalacao_date"
+                      icon={FiCalendar}
+                      label="Data de Instalação"
+                      placeholderText="Insira a data de instalação"
                     />
                   </Grid>
                 </Grid>
@@ -1221,6 +1299,7 @@ const User: React.FC = () => {
                       icon={FaLocationArrow}
                       isSearchable={false}
                       options={optionsTypeAddress}
+                      isClearable
                     />
                   </Grid>
                   <Grid item xs={12} sm={4}>
@@ -1242,6 +1321,7 @@ const User: React.FC = () => {
                       options={ufsAddress}
                       onChange={handleChangeUfAddress}
                       placeholder="Selecione a UF"
+                      isClearable
                     />
                   </Grid>
                   <Grid item xs={12} sm={6}>
@@ -1251,6 +1331,7 @@ const User: React.FC = () => {
                       icon={FaCity}
                       options={citiesAddress}
                       placeholder="Selecione a cidade"
+                      isClearable
                     />
                   </Grid>
                   <Grid item xs={12} sm={3}>
@@ -1348,6 +1429,7 @@ const User: React.FC = () => {
                       icon={FaVenusMars}
                       options={genders}
                       placeholder="Selecione o genêro"
+                      isClearable
                     />
                   </Grid>
                   <Grid item xs={12} sm={4}>
@@ -1357,6 +1439,7 @@ const User: React.FC = () => {
                       icon={FaGenderless}
                       options={kinships}
                       placeholder="Selecione o parentesco"
+                      isClearable
                     />
                   </Grid>
                   <Grid item xs={12} sm={4}>
