@@ -84,7 +84,7 @@ const History: React.FC = () => {
     <section className={classes.sectionAnchor}>
       <span id="historia" className={classes.anchor} />
       <div className={classes.container}>
-        <Container>
+        <Container style={{ overflow: 'hidden' }}>
           <div className={classes.title}>
             <div className={classes.titleText}>Nossa História</div>
           </div>
@@ -138,7 +138,7 @@ const History: React.FC = () => {
           <br />
           <br />
         </Container>
-        <Container>
+        <Container style={{ overflow: 'hidden' }}>
           <Grid container spacing={2}>
             <Grid item xs={12} md={8}>
               <Slide left>
@@ -176,7 +176,10 @@ const History: React.FC = () => {
           <br />
           <br />
         </Container>
-        <Container className={classes.shadeColor}>
+        <Container
+          className={classes.shadeColor}
+          style={{ overflow: 'hidden' }}
+        >
           <Grid container spacing={2}>
             <Grid item xs={12} md={4}>
               <Slide left>
@@ -208,7 +211,7 @@ const History: React.FC = () => {
         </Container>
         <br />
         <br />
-        <Container>
+        <Container style={{ overflow: 'hidden' }}>
           <Grid container spacing={2}>
             <Grid item xs={12} md={8}>
               <Slide left>
