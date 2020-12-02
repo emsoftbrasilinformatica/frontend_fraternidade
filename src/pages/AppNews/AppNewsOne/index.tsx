@@ -60,7 +60,7 @@ interface params {
 const AppNewsOne: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File>();
   const [images, setImages] = useState<ImageListType>([]);
-  const maxNumber = 69;
+  const maxNumber = 1000;
   const [editNews, setEditNews] = useState<News | undefined>();
   const [loading, setLoading] = useState(false);
   const [saveLoading, setSaveLoading] = useState(false);

@@ -154,6 +154,7 @@ const SessionRecords: React.FC = () => {
                 rowData => ({
                   icon: () => <FaDownload style={{ color: '#25b922' }} />,
                   onClick: () => generateDownload(rowData),
+                  tooltip: 'Download',
                 }),
                 rowData => ({
                   icon: () => <Edit style={{ color: '#1976d2' }} />,
@@ -163,6 +164,7 @@ const SessionRecords: React.FC = () => {
                 rowData => ({
                   icon: () => <Delete style={{ color: '#c53030' }} />,
                   onClick: () => deleteSessionRecord(rowData),
+                  tooltip: 'Excluir',
                 }),
               ]}
             />

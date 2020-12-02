@@ -78,6 +78,15 @@ const Statute: React.FC = () => {
           return;
         }
 
+        if (data.file.size > 3000 * 1024) {
+          addToast({
+            type: 'error',
+            title: 'Arquivo não suportado!',
+            description: 'Arquivo acima do limite permitido de 3.0MB',
+          });
+          return;
+        }
+
         setSaveLoading(true);
 
         const formData = new FormData();

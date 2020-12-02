@@ -10,6 +10,7 @@ import React, {
 import axios from 'axios';
 import { format } from 'date-fns';
 import { cpf } from 'cpf-cnpj-validator';
+import Resizer from 'react-image-file-resizer';
 import * as Yup from 'yup';
 import {
   makeStyles,
@@ -870,25 +871,52 @@ const User: React.FC = () => {
     [dependents],
   );
 
+  const resizeFile = (file: File): Promise<string> =>
+    new Promise(resolve => {
+      Resizer.imageFileResizer(
+        file,
+        850,
+        850,
+        'JPEG',
+        90,
+        0,
+        uri => {
+          resolve(uri as string);
+        },
+        'base64',
+      );
+    });
+
   const handleAvatarChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
+    async (e: ChangeEvent<HTMLInputElement>) => {
       if (e.target.files) {
         const data = new FormData();
+        const file: File = e.target.files[0];
 
-        data.append('avatar', e.target.files[0]);
+        const resizedFile = await resizeFile(file);
 
-        api.patch(`/users/avatar/${params.id}`, data).then(res => {
-          // const userResponse = res.data.avatar_url;
-          const newEditUser = editUser;
-          if (newEditUser) {
-            newEditUser.avatar_url = res.data.avatar_url;
-          }
-          setEditUser(newEditUser);
-          addToast({
-            type: 'success',
-            title: 'Avatar atualizado',
+        fetch(resizedFile)
+          .then(response => response.blob())
+          .then(blob => {
+            const fileResized = new File([blob], file.name, {
+              type: 'image/jpeg',
+            });
+
+            data.append('avatar', fileResized);
+
+            api.patch(`/users/avatar/${params.id}`, data).then(res => {
+              // const userResponse = res.data.avatar_url;
+              const newEditUser = editUser;
+              if (newEditUser) {
+                newEditUser.avatar_url = res.data.avatar_url;
+              }
+              setEditUser(newEditUser);
+              addToast({
+                type: 'success',
+                title: 'Avatar atualizado',
+              });
+            });
           });
-        });
       }
     },
     [addToast, editUser, params.id],
@@ -966,6 +994,7 @@ const User: React.FC = () => {
                         type="file"
                         id="avatar"
                         onChange={handleAvatarChange}
+                        accept="image/*"
                       />
                     </label>
                   </AvatarInput>

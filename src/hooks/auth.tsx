@@ -75,6 +75,10 @@ const AuthProvider: React.FC = ({ children }) => {
 
     const { token, user } = response.data;
 
+    if (user.administrative_function.admin !== true) {
+      throw Error;
+    }
+
     localStorage.setItem('@Loja:token', token);
     localStorage.setItem('@Loja:user', JSON.stringify(user));
 

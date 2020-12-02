@@ -145,10 +145,12 @@ const BankAccounts: React.FC = () => {
                 rowData => ({
                   icon: () => <Edit style={{ color: '#1976d2' }} />,
                   onClick: () => editBankAccount(rowData),
+                  tooltip: 'Editar',
                 }),
                 rowData => ({
                   icon: () => <Delete style={{ color: '#c53030' }} />,
                   onClick: () => deleteBankAccount(rowData),
+                  tooltip: 'Excluir',
                 }),
               ]}
             />

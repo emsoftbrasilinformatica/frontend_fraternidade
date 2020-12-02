@@ -362,8 +362,12 @@ const Management: React.FC = () => {
                       headerStyle: {
                         zIndex: 0,
                       },
+                      pageSize: 10,
                     }}
                     editable={{
+                      editTooltip: () => {
+                        return 'Editar';
+                      },
                       onRowUpdate: (newData, oldData) =>
                         new Promise((resolve, reject) => {
                           setTimeout(() => {

@@ -170,6 +170,7 @@ const Uploads: React.FC = () => {
                 rowData => ({
                   icon: () => <FaDownload style={{ color: '#25b922' }} />,
                   onClick: () => generateDownload(rowData),
+                  tooltip: 'Download',
                 }),
                 rowData => ({
                   icon: () => <Edit style={{ color: '#1976d2' }} />,
@@ -179,6 +180,7 @@ const Uploads: React.FC = () => {
                 rowData => ({
                   icon: () => <Delete style={{ color: '#c53030' }} />,
                   onClick: () => deleteUpload(rowData),
+                  tooltip: 'Excluir',
                 }),
               ]}
             />

@@ -178,7 +178,6 @@ const Demonstrations: React.FC = () => {
       } else {
         acc += data.total_month;
       }
-      console.log(acc);
       return acc;
     }, 0);
   }, [viewData]);
@@ -187,8 +186,6 @@ const Demonstrations: React.FC = () => {
     if (viewData.length > 0) {
       const valueMonth = viewData[viewData.length - 1].total_month;
       let startValue = 0;
-      console.log('valor do mês: ', valueMonth);
-      console.log('maior');
       startValue = totalValue - valueMonth;
       return startValue;
       // console.log('menor');

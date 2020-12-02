@@ -151,10 +151,12 @@ const AppNews: React.FC = () => {
                 rowData => ({
                   icon: () => <Edit style={{ color: '#1976d2' }} />,
                   onClick: () => editNews(rowData),
+                  tooltip: 'Editar',
                 }),
                 rowData => ({
                   icon: () => <Delete style={{ color: '#c53030' }} />,
                   onClick: () => deleteNews(rowData),
+                  tooltip: 'Excluir',
                 }),
               ]}
             />

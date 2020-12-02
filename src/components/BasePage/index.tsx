@@ -6,26 +6,26 @@ import {
   Theme,
   createStyles,
 } from '@material-ui/core/styles';
-import Drawer from '@material-ui/core/Drawer';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
-import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import BackIcon from '@material-ui/icons/ArrowBack';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import {
+  IconButton,
+  SwipeableDrawer,
+  CssBaseline,
+  AppBar,
+  Toolbar,
+  List,
+  Typography,
   Dialog,
   DialogActions,
   DialogTitle,
   DialogContent,
   DialogContentText,
   Button,
+  Divider,
 } from '@material-ui/core';
 import { FaSignOutAlt, FaExclamationTriangle } from 'react-icons/fa';
 
@@ -158,6 +158,22 @@ const BasePage: React.FC<ViewProps> = ({ children, title, backLink }) => {
     setOpen(false);
   };
 
+  const toggleDrawer = useCallback(
+    (isOpen: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
+      if (
+        event &&
+        event.type === 'keydown' &&
+        ((event as React.KeyboardEvent).key === 'Tab' ||
+          (event as React.KeyboardEvent).key === 'Shift')
+      ) {
+        return;
+      }
+
+      setOpen(isOpen);
+    },
+    [],
+  );
+
   const handleGoBack = useCallback(() => {
     history.push(backLink || '/');
   }, [history, backLink]);
@@ -270,11 +286,13 @@ const BasePage: React.FC<ViewProps> = ({ children, title, backLink }) => {
             </div>
           </Toolbar>
         </AppBar>
-        <Drawer
+        <SwipeableDrawer
           className={classes.drawer}
           // variant="persistent"
           anchor="left"
           open={open}
+          onClose={toggleDrawer(false)}
+          onOpen={toggleDrawer(true)}
           classes={{
             paper: classes.drawerPaper,
           }}
@@ -301,7 +319,7 @@ const BasePage: React.FC<ViewProps> = ({ children, title, backLink }) => {
             />
             <Menu administrativeFunction={user.administrative_function} />
           </List>
-        </Drawer>
+        </SwipeableDrawer>
         <main
           className={clsx(classes.content, {
             [classes.contentShift]: open,

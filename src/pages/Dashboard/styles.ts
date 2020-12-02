@@ -30,6 +30,7 @@ export const Button = styled.button`
 
 export const BirthdaysContent = styled.div`
   background-color: #fff;
+  border: 2px solid #0f5e9e;
   border-radius: 10px;
   width: 100%;
   padding: 16px;

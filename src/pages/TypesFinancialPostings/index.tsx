@@ -88,6 +88,7 @@ const TypesFinancialPostings: React.FC = () => {
               rowData => ({
                 icon: () => <Edit style={{ color: '#1976d2' }} />,
                 onClick: () => editTypeFinancialPosting(rowData),
+                tooltip: 'Editar',
               }),
             ]}
           />
