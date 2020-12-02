@@ -1,5 +1,6 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { FiLock, FiUser, FiKey } from 'react-icons/fi';
+import { CircularProgress } from '@material-ui/core';
 import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
 import * as Yup from 'yup';
@@ -26,6 +27,7 @@ const SignIn: React.FC = () => {
   const { signIn } = useAuth();
   const history = useHistory();
   const { addToast } = useToast();
+  const [saveLoading, setSaveLoading] = useState(false);
 
   const handleSubmit = useCallback(
     async (data: SignInFormData) => {
@@ -44,11 +46,15 @@ const SignIn: React.FC = () => {
           abortEarly: false,
         });
 
+        setSaveLoading(true);
+
         await signIn({
           cim: data.cim,
           semiannual_word: data.semiannual_word,
           password: data.password,
         });
+
+        setSaveLoading(false);
 
         history.push('/app/dashboard');
       } catch (err) {
@@ -65,6 +71,7 @@ const SignIn: React.FC = () => {
           title: 'Erro na autenticação',
           description: 'Ocorreu um erro ao fazer login, cheque as credenciais',
         });
+        setSaveLoading(false);
       }
     },
     [signIn, history, addToast],
@@ -99,7 +106,13 @@ const SignIn: React.FC = () => {
               placeholder="Digite a Palavra Semestral"
             />
 
-            <Button type="submit">Entrar</Button>
+            <Button type="submit">
+              {saveLoading ? (
+                <CircularProgress style={{ color: '#FFF' }} />
+              ) : (
+                'ENTRAR'
+              )}
+            </Button>
 
             {/* <a href="forgot">Esqueci minha senha</a> */}
           </Form>
