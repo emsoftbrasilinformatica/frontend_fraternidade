@@ -9,6 +9,7 @@ import { FaMapMarkerAlt, FaEnvelope } from 'react-icons/fa';
 import { FiArrowRight } from 'react-icons/fi';
 
 import LogoFooter from '../../assets/novaFlamula.png';
+import logoEmsoft from '../../assets/logo-emsoft.png';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -191,6 +192,16 @@ const Footer: React.FC = () => {
         >
           Desenvolvido por Emsoft Brasil Informática Ltda.&copy;
         </a>
+        <div
+          style={{
+            backgroundImage: `url("${logoEmsoft}")`,
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            backgroundSize: 'contain',
+            marginBottom: 16,
+            height: 135,
+          }}
+        />
       </Container>
     </footer>
   );
