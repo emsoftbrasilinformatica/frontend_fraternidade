@@ -10046,10 +10046,10 @@ react-images-upload@^1.2.8:
     react "^16.12.0"
     react-flip-move "^3.0.4"
 
-react-images-uploading@^3.1.2:
-  version "3.1.2"
-  resolved "https://registry.yarnpkg.com/react-images-uploading/-/react-images-uploading-3.1.2.tgz#c1636bab2cc709cdce47dba3f043a33a8ffe9edf"
-  integrity sha512-Yy7r+I/f1gPM1qN95uvAoHOTGMG23Bu4kgXQLJoS7rnAQ/InpI3y6U0S0QMMCX+85c1JNdNZl4Bn/Z4ge39emQ==
+react-images-uploading@3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/react-images-uploading/-/react-images-uploading-3.0.1.tgz#5b2dc1b382307422c85ae76cef4825f5fa997643"
+  integrity sha512-4PrkVIOwcmpHRWDRyO/GabgYUeby5pL/0hCxY2rcj9h6KF+6uwnpWb7gLE98N7WNQVxsSXPfYSoW9Mq219oLtg==
 
 react-input-autosize@^2.2.2:
   version "2.2.2"

@@ -176,6 +176,21 @@ const Footer: React.FC = () => {
             </div>
           </Grid>
         </Grid>
+
+        <a
+          className={classes.link}
+          href="https://www.emsoft.com.br"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 16,
+          }}
+        >
+          Desenvolvido por Emsoft Brasil Informática Ltda.&copy;
+        </a>
       </Container>
     </footer>
   );
