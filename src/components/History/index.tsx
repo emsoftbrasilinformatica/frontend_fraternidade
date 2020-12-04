@@ -4,8 +4,8 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
 import Hall from '../../assets/hall.jpeg';
 import TemploAntigo from '../../assets/templo-antigo.jpg';
-import Fundadores from '../../assets/fundadores.png';
-import macons from '../../assets/22macons.jpg';
+import Fundadores from '../../assets/fundadores.jpeg';
+import macons from '../../assets/22macons.jpeg';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const Slide = require('react-reveal/Slide');
