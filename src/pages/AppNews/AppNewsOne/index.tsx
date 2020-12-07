@@ -1,19 +1,30 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 
 import * as Yup from 'yup';
-import { shade } from 'polished';
 
-import ImageUploading, { ImageListType } from 'react-images-uploading';
+import { uuid } from 'uuidv4';
+import { useDropzone } from 'react-dropzone';
 import Resizer from 'react-image-file-resizer';
-
-import { CircularProgress, Container, Grid } from '@material-ui/core';
+import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import {
+  CircularProgress,
+  Container,
+  Grid,
+  Dialog,
+  DialogActions,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  Divider,
+} from '@material-ui/core';
 import { MdTitle, MdSubtitles } from 'react-icons/md';
 import { BiBookContent } from 'react-icons/bi';
 import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
 import { useParams, useHistory } from 'react-router-dom';
-import { FaCalendarDay, FaTrash, FaUpload } from 'react-icons/fa';
+import { FaCalendarDay, FaImage } from 'react-icons/fa';
 import { format } from 'date-fns';
+import { FiUpload } from 'react-icons/fi';
 import BasePage from '../../../components/BasePage';
 import Card from '../../../components/Card';
 import Dropzone from '../../../components/Dropzone';
@@ -28,14 +39,15 @@ import LoadingLocale from '../../../components/LoadingLocale';
 import DatePicker from '../../../components/DatePicker';
 
 import {
-  AddImages,
-  RemoveAllImages,
-  ContainerButtons,
-  ContainerListImage,
-  ItemImage,
-  Image,
-  ButtonUpdateImage,
-  ButtonRemoveImage,
+  ButtonRemove,
+  ContainerDropzone,
+  Img,
+  Thumb,
+  ThumbInner,
+  ThumbsContainer,
+  ButtonRemoveAll,
+  ContainerImgDialog,
+  ImgDialog,
 } from './styles';
 
 interface News {
@@ -57,10 +69,36 @@ interface params {
   id: string;
 }
 
+interface FileDropzone extends File {
+  preview: string;
+  id: string;
+}
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    modalTitle: {
+      background: '#0f5e9e',
+      color: '#FFF',
+      flex: '0 0 auto',
+      margin: 0,
+      padding: '9px 24px',
+      textAlign: 'center',
+    },
+    modalContent: {
+      margin: '15px 0',
+      fontWeight: 'bold',
+    },
+    iconDialog: {
+      marginRight: 8,
+    },
+  }),
+);
+
 const AppNewsOne: React.FC = () => {
+  const classes = useStyles();
   const [selectedFile, setSelectedFile] = useState<File>();
-  const [images, setImages] = useState<ImageListType>([]);
-  const maxNumber = 1000;
+  const [images, setImages] = useState<FileDropzone[]>([]);
+  const [imageDialog, setImageDialog] = useState<FileDropzone>();
   const [editNews, setEditNews] = useState<News | undefined>();
   const [loading, setLoading] = useState(false);
   const [saveLoading, setSaveLoading] = useState(false);
@@ -72,6 +110,7 @@ const AppNewsOne: React.FC = () => {
   const params: params = useParams();
   const [width, setWidth] = useState<number>(window.innerWidth);
   const [height, setHeight] = useState<number>(window.innerHeight);
+  const [openDialog, setOpenDialog] = useState(false);
 
   const resizeFile = (file: File): Promise<string> =>
     new Promise(resolve => {
@@ -89,50 +128,22 @@ const AppNewsOne: React.FC = () => {
       );
     });
 
+  const handleClickOpen = (id: string): void => {
+    const imageFind = images.find(image => image.id === id);
+    setImageDialog(imageFind);
+    setOpenDialog(true);
+  };
+
+  const handleClose = (): void => {
+    setOpenDialog(false);
+  };
+
   useEffect(() => {
     window.addEventListener('resize', () => {
       setWidth(window.innerWidth);
       setHeight(window.innerHeight);
     });
   }, [height, width]);
-
-  const onChangeImages = useCallback(
-    async (imageList: ImageListType, addUpdateIndex: number[] | undefined) => {
-      setLoadingImages(true);
-      setImages([]);
-      if (imageList) {
-        const imagesResized = imageList.map(async resized => {
-          if (resized.file) {
-            const imageResized = await resizeFile(resized.file);
-            return imageResized;
-          }
-          return '';
-        });
-
-        const resizedImages = await Promise.all(imagesResized);
-
-        resizedImages.forEach(image => {
-          fetch(image)
-            .then(response => response.blob())
-            .then(blob => {
-              const file = new File([blob], 'imagenews.jpeg', {
-                type: 'image/jpeg',
-              });
-              const imageCreated = {
-                dataURL: image,
-                file,
-              };
-
-              setImages(i => {
-                return [...i, imageCreated];
-              });
-            });
-        });
-      }
-      setLoadingImages(false);
-    },
-    [],
-  );
 
   const handleSubmit = useCallback(
     async (data: News) => {
@@ -176,8 +187,8 @@ const AppNewsOne: React.FC = () => {
 
         if (images.length > 0) {
           images.forEach(image => {
-            if (image.file) {
-              formData.append('images', image.file);
+            if (image) {
+              formData.append('images', image);
             }
           });
         }
@@ -252,14 +263,13 @@ const AppNewsOne: React.FC = () => {
               nameFile.length,
             );
             const file = new File([blob], nameEditted);
-            const url = URL.createObjectURL(file);
-            const imageCreated = {
-              dataURL: url,
-              file,
-            };
+            const fileCreated: FileDropzone = Object.assign(file, {
+              preview: URL.createObjectURL(file),
+              id: uuid(),
+            });
 
             setImages(i => {
-              return [...i, imageCreated];
+              return [...i, fileCreated];
             });
           });
       });
@@ -267,6 +277,67 @@ const AppNewsOne: React.FC = () => {
 
     generateImages();
   }, [editNews]);
+
+  const { getRootProps, getInputProps } = useDropzone({
+    accept: 'image/*',
+    onDrop: async acceptedFiles => {
+      if (acceptedFiles) {
+        setLoadingImages(true);
+        const imagesResized = acceptedFiles.map(async resized => {
+          if (resized) {
+            const imageResized = await resizeFile(resized);
+            return imageResized;
+          }
+          return '';
+        });
+
+        const resizedImages = await Promise.all(imagesResized);
+
+        resizedImages.forEach(image => {
+          fetch(image)
+            .then(response => response.blob())
+            .then(blob => {
+              const file = new File([blob], 'imagenews.jpeg', {
+                type: 'image/jpeg',
+              });
+              const fileCreated: FileDropzone = Object.assign(file, {
+                preview: URL.createObjectURL(file),
+                id: uuid(),
+              });
+
+              setImages(i => {
+                return [...i, fileCreated];
+              });
+            });
+        });
+        setLoadingImages(false);
+      }
+    },
+  });
+
+  const handleRemoveImage = useCallback(
+    id => {
+      const updatedImages = images.filter(file => file.id !== id);
+
+      setImages(updatedImages);
+    },
+    [images],
+  );
+
+  const handleRemoveAllImages = useCallback(() => {
+    setImages([]);
+  }, []);
+
+  const thumbs = images.map(image => (
+    <Thumb key={image.id}>
+      <ThumbInner>
+        <Img src={image.preview} onClick={() => handleClickOpen(image.id)} />
+      </ThumbInner>
+      <ButtonRemove type="button" onClick={() => handleRemoveImage(image.id)}>
+        Remover
+      </ButtonRemove>
+    </Thumb>
+  ));
 
   return (
     <BasePage
@@ -342,120 +413,28 @@ const AppNewsOne: React.FC = () => {
                       label="Conteúdo"
                     />
                   </Grid>
-                  <ImageUploading
-                    multiple
-                    value={images}
-                    onChange={onChangeImages}
-                    maxNumber={maxNumber}
-                  >
-                    {({
-                      imageList,
-                      onImageUpload,
-                      onImageRemoveAll,
-                      onImageUpdate,
-                      onImageRemove,
-                      isDragging,
-                      dragProps,
-                    }) => (
-                      // write your building UI
-                      <div
-                        style={{ marginTop: 16, marginBottom: 16 }}
-                        className="upload__image-wrapper"
-                      >
-                        <ContainerButtons container spacing={2}>
-                          <Grid item xs={12} md={6} style={{ display: 'flex' }}>
-                            <AddImages
-                              style={
-                                isDragging
-                                  ? { backgroundColor: shade(0.2, '#6b9ec7') }
-                                  : undefined
-                              }
-                              onClick={onImageUpload}
-                              {...dragProps}
-                              type="button"
-                            >
-                              <FaUpload />
-                              Selecione ou arraste as imagens
-                            </AddImages>
-                          </Grid>
-                          <Grid item xs={12} md={6} style={{ display: 'flex' }}>
-                            <RemoveAllImages
-                              onClick={onImageRemoveAll}
-                              type="button"
-                            >
-                              <FaTrash />
-                              Remover imagens
-                            </RemoveAllImages>
-                          </Grid>
-                        </ContainerButtons>
-                        <Grid
-                          container
-                          spacing={2}
-                          style={
-                            loadingImages
-                              ? { display: 'flex', justifyContent: 'center' }
-                              : {}
-                          }
+                  <Grid item md={12}>
+                    {loadingImages ? (
+                      <LoadingLocale />
+                    ) : (
+                      <ContainerDropzone>
+                        <div {...getRootProps({ className: 'dropzone' })}>
+                          <input {...getInputProps()} />
+                          <p>
+                            <FiUpload />
+                            Selecione os arquivos ou arraste
+                          </p>
+                        </div>
+                        <ButtonRemoveAll
+                          type="button"
+                          onClick={handleRemoveAllImages}
                         >
-                          {loadingImages ? (
-                            <LoadingLocale />
-                          ) : (
-                            imageList.map((image, index) => (
-                              <ContainerListImage
-                                item
-                                xs={12}
-                                md={4}
-                                key={index}
-                                className="image-item"
-                              >
-                                <ItemImage>
-                                  <Image imageURL={image.dataURL} />
-                                  <Grid
-                                    container
-                                    spacing={2}
-                                    style={{ padding: 10 }}
-                                  >
-                                    <Grid
-                                      item
-                                      xs={12}
-                                      style={{
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                      }}
-                                    >
-                                      <ButtonUpdateImage
-                                        onClick={() => onImageUpdate(index)}
-                                        type="button"
-                                      >
-                                        Atualizar
-                                      </ButtonUpdateImage>
-                                    </Grid>
-                                    <Grid
-                                      item
-                                      xs={12}
-                                      style={{
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                      }}
-                                    >
-                                      <ButtonRemoveImage
-                                        onClick={() => onImageRemove(index)}
-                                        type="button"
-                                      >
-                                        Remover
-                                      </ButtonRemoveImage>
-                                    </Grid>
-                                  </Grid>
-                                </ItemImage>
-                              </ContainerListImage>
-                            ))
-                          )}
-                        </Grid>
-                      </div>
+                          Remover todas
+                        </ButtonRemoveAll>
+                        <ThumbsContainer>{thumbs}</ThumbsContainer>
+                      </ContainerDropzone>
                     )}
-                  </ImageUploading>
+                  </Grid>
                   <Grid item md={12}>
                     <Button type="submit" disabled={!!saveLoading}>
                       {saveLoading ? (
@@ -469,6 +448,34 @@ const AppNewsOne: React.FC = () => {
               </Grid>
             </Form>
           </Card>
+          <Dialog
+            open={openDialog}
+            onClose={handleClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle className={classes.modalTitle} id="alert-dialog-title">
+              <FaImage className={classes.iconDialog} />
+              Preview da Imagem
+            </DialogTitle>
+            <Divider />
+            <DialogContent>
+              <DialogContentText
+                className={classes.modalContent}
+                id="alert-dialog-description"
+              >
+                <ContainerImgDialog>
+                  <ImgDialog image={imageDialog ? imageDialog.preview : ''} />
+                </ContainerImgDialog>
+              </DialogContentText>
+            </DialogContent>
+            <Divider />
+            <DialogActions>
+              <Button onClick={handleClose} className="buttonCancel">
+                Fechar
+              </Button>
+            </DialogActions>
+          </Dialog>
         </Container>
       )}
     </BasePage>
