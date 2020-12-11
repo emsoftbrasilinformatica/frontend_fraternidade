@@ -1,7 +1,5 @@
 import React, { ReactElement } from 'react';
 
-import { AccountBalanceWallet } from '@material-ui/icons';
-
 import { GiTakeMyMoney } from 'react-icons/gi';
 import { FaCalendarDay, FaFileContract } from 'react-icons/fa';
 import { MdWork } from 'react-icons/md';
