@@ -30,6 +30,9 @@ import Presences from '../pages/Sessions/Presences';
 import Statutes from '../pages/Statutes';
 import Statute from '../pages/Statutes/Statute';
 
+import Works from '../pages/Works';
+import Work from '../pages/Works/Work';
+
 import SessionRecords from '../pages/SessionRecords';
 import SessionRecord from '../pages/SessionRecords/SessionRecord';
 
@@ -57,6 +60,14 @@ import Demonstrations from '../pages/Demonstrations';
 
 import BankAccounts from '../pages/BankAccounts';
 import BankAccount from '../pages/BankAccounts/BankAccount';
+
+import NonPayments from '../pages/NonPayments';
+import FinancialConsultation from '../pages/FinancialConsultation';
+import SessionSchedule from '../pages/SessionSchedule';
+import OneSession from '../pages/SessionSchedule/OneSession';
+
+import GeneralWorks from '../pages/GeneralWorks';
+import GeneralStatutes from '../pages/GeneralStatutes';
 
 const Routes: React.FC = () => (
   <Switch>
@@ -157,6 +168,21 @@ const Routes: React.FC = () => (
     />
     {/** statutes */}
 
+    {/** works */}
+    <Route
+      path="/app/cad/trabalhos"
+      component={Works}
+      allowed={['Venerável', 'Secretário']}
+      isPrivate
+    />
+    <Route
+      path="/app/cad/trabalho/:id?"
+      component={Work}
+      allowed={['Venerável', 'Secretário']}
+      isPrivate
+    />
+    {/** works */}
+
     {/** session records */}
     <Route
       path="/app/cad/atas-sessao"
@@ -252,16 +278,48 @@ const Routes: React.FC = () => (
     <Route
       path="/app/financeiro/contas-bancarias"
       component={BankAccounts}
-      allowed={['Venerável', 'Hospitaleiro']}
+      allowed={['Venerável', 'Tesoureiro']}
       isPrivate
     />
     <Route
       path="/app/financeiro/conta-bancaria/:id?"
       component={BankAccount}
-      allowed={['Venerável', 'Hospitaleiro']}
+      allowed={['Venerável', 'Tesoureiro']}
+      isPrivate
+    />
+
+    <Route
+      path="/app/financeiro/inadimplentes"
+      component={NonPayments}
+      allowed={['Venerável', 'Tesoureiro']}
       isPrivate
     />
     {/** financial */}
+
+    {/** general */}
+    <Route
+      path="/app/geral/consulta"
+      component={FinancialConsultation}
+      isPrivate
+    />
+
+    <Route
+      path="/app/geral/agenda-sessoes"
+      component={SessionSchedule}
+      exact
+      isPrivate
+    />
+
+    <Route
+      path="/app/geral/agenda-sessoes/sessao/:id"
+      component={OneSession}
+      isPrivate
+    />
+
+    <Route path="/app/geral/trabalhos" component={GeneralWorks} isPrivate />
+
+    <Route path="/app/geral/estatutos" component={GeneralStatutes} isPrivate />
+    {/** general */}
 
     {/** uploads */}
     <Route path="/app/cad/uploads" component={Uploads} isPrivate />

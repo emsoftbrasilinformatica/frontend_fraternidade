@@ -18,7 +18,7 @@ interface UserData {
   name: string;
   cim: number;
   avatar?: string;
-  degree_id: string;
+  degree: Degree;
   administrative_function?: AdminstrativeFunction;
 }
 
@@ -32,6 +32,12 @@ interface AdminstrativeFunction {
   id: string;
   description: string;
   admin: boolean;
+}
+
+interface Degree {
+  id: string;
+  description: string;
+  order: number;
 }
 
 interface AuthContextData {

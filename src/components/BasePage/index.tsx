@@ -39,6 +39,7 @@ import { ContainerImg, Username } from './styles';
 
 import ListItemLink from '../ListItemLink';
 import Menu from '../Menu';
+import MenuGeneral from '../MenuGeneral';
 
 interface ViewProps {
   title: string;
@@ -318,6 +319,8 @@ const BasePage: React.FC<ViewProps> = ({ children, title, backLink }) => {
               primary="Dashboard"
             />
             <Menu administrativeFunction={user.administrative_function} />
+            <Divider />
+            <MenuGeneral />
           </List>
         </SwipeableDrawer>
         <main

@@ -21,9 +21,10 @@ import {
   AccountBalance,
   AccountBalanceWallet,
   AttachMoney,
+  MoneyOff,
 } from '@material-ui/icons';
 import { FaNewspaper, FaCalendar, FaFileContract } from 'react-icons/fa';
-import { MdGroupWork } from 'react-icons/md';
+import { MdGroupWork, MdWork } from 'react-icons/md';
 import { FiType } from 'react-icons/fi';
 import { BiDonateHeart } from 'react-icons/bi';
 import { GiMoneyStack } from 'react-icons/gi';
@@ -122,6 +123,12 @@ const Menu: React.FC<MenuProps> = ({ administrativeFunction, ...rest }) => {
       collapse: false,
     },
     {
+      icon: <MdWork style={{ fontSize: '1.5rem' }} />,
+      link: '/app/cad/trabalhos',
+      description: 'Trabalhos',
+      collapse: false,
+    },
+    {
       icon: <MdGroupWork style={{ fontSize: '1.5rem' }} />,
       description: 'Sessões',
       link: '',
@@ -202,6 +209,12 @@ const Menu: React.FC<MenuProps> = ({ administrativeFunction, ...rest }) => {
       collapse: false,
     },
     {
+      icon: <MdWork style={{ fontSize: '1.5rem' }} />,
+      link: '/app/cad/trabalhos',
+      description: 'Trabalhos',
+      collapse: false,
+    },
+    {
       icon: <FaNewspaper style={{ fontSize: '1.5rem' }} />,
       link: '/app/cad/noticias',
       description: 'Notícias',
@@ -244,6 +257,12 @@ const Menu: React.FC<MenuProps> = ({ administrativeFunction, ...rest }) => {
       icon: <AccountBalance />,
       link: '/app/financeiro/contas-bancarias',
       description: 'Contas Bancárias',
+      collapse: false,
+    },
+    {
+      icon: <MoneyOff />,
+      link: '/app/financeiro/inadimplentes',
+      description: 'Inadimplentes',
       collapse: false,
     },
   ];
