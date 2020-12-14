@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import clsx from 'clsx';
 import {
   makeStyles,
@@ -150,6 +150,13 @@ const BasePage: React.FC<ViewProps> = ({ children, title, backLink }) => {
   const [openDialog, setOpenDialog] = useState(false);
   const history = useHistory();
   const { signOut, user } = useAuth();
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  }, []);
 
   const handleDrawerOpen = (): void => {
     setOpen(true);
