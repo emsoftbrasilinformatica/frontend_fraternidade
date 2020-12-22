@@ -24,8 +24,10 @@ import {
   MoneyOff,
 } from '@material-ui/icons';
 import { FaNewspaper, FaCalendar, FaFileContract } from 'react-icons/fa';
-import { MdGroupWork, MdWork } from 'react-icons/md';
+import { MdGroupWork } from 'react-icons/md';
+import { VscLibrary } from 'react-icons/vsc';
 import { FiType } from 'react-icons/fi';
+import { AiOutlineAreaChart } from 'react-icons/ai';
 import { BiDonateHeart } from 'react-icons/bi';
 import { GiMoneyStack } from 'react-icons/gi';
 import ListItemLink from '../ListItemLink';
@@ -123,9 +125,9 @@ const Menu: React.FC<MenuProps> = ({ administrativeFunction, ...rest }) => {
       collapse: false,
     },
     {
-      icon: <MdWork style={{ fontSize: '1.5rem' }} />,
-      link: '/app/cad/trabalhos',
-      description: 'Trabalhos',
+      icon: <VscLibrary style={{ fontSize: '1.5rem' }} />,
+      link: '/app/cad/bibliotecas',
+      description: 'Biblioteca',
       collapse: false,
     },
     {
@@ -148,6 +150,12 @@ const Menu: React.FC<MenuProps> = ({ administrativeFunction, ...rest }) => {
               icon={<FaCalendar style={{ fontSize: '1.5rem' }} />}
               to="/app/cad/sessoes"
               primary="Agendamento"
+            />
+            <ListItemLink
+              className={classes.nestedThird}
+              icon={<AiOutlineAreaChart style={{ fontSize: '1.5rem' }} />}
+              to="/app/cad/frequencias"
+              primary="Frequências"
             />
             <ListItemLink
               className={classes.nestedThird}
@@ -191,6 +199,12 @@ const Menu: React.FC<MenuProps> = ({ administrativeFunction, ...rest }) => {
             />
             <ListItemLink
               className={classes.nestedThird}
+              icon={<AiOutlineAreaChart style={{ fontSize: '1.5rem' }} />}
+              to="/app/cad/frequencias"
+              primary="Frequências"
+            />
+            <ListItemLink
+              className={classes.nestedThird}
               icon={<FiType style={{ fontSize: '1.5rem' }} />}
               to="/app/cad/tipos-sessao"
               primary="Tipos de Sessões"
@@ -209,9 +223,9 @@ const Menu: React.FC<MenuProps> = ({ administrativeFunction, ...rest }) => {
       collapse: false,
     },
     {
-      icon: <MdWork style={{ fontSize: '1.5rem' }} />,
-      link: '/app/cad/trabalhos',
-      description: 'Trabalhos',
+      icon: <VscLibrary style={{ fontSize: '1.5rem' }} />,
+      link: '/app/cad/bibliotecas',
+      description: 'Biblioteca',
       collapse: false,
     },
     {

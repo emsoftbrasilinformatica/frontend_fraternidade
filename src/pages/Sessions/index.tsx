@@ -94,12 +94,13 @@ const Sessions: React.FC = () => {
                 <DayPicker
                   weekdaysShort={['D', 'S', 'T', 'Q', 'Q', 'S', 'S']}
                   modifiers={{
-                    available: { daysOfWeek: [1, 2, 3, 4, 5] },
+                    available: { daysOfWeek: [0, 1, 2, 3, 4, 5, 6] },
                     haveSession: sessionsInMonth,
                   }}
                   onDayClick={handleDateChange}
                   onMonthChange={handleMonthChange}
                   selectedDays={selectedDate}
+                  showOutsideDays
                   months={[
                     'Janeiro',
                     'Fevereiro',

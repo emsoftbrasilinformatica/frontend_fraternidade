@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-const Works: React.FC = () => {
+const Library: React.FC = () => {
   const [data, setData] = useState<Work[]>([]);
   const [loading, setLoading] = useState(false);
   const [idToBeDeleted, setIdToBeDeleted] = useState('');
@@ -80,13 +80,13 @@ const Works: React.FC = () => {
 
   const editWork = useCallback(
     rowData => {
-      history.push(`trabalho/${rowData.id}`);
+      history.push(`biblioteca/${rowData.id}`);
     },
     [history],
   );
 
   const handleAddWork = useCallback(() => {
-    history.push('trabalho');
+    history.push('biblioteca');
   }, [history]);
 
   const handleClose = useCallback((): void => {
@@ -111,19 +111,19 @@ const Works: React.FC = () => {
       setIdToBeDeleted('');
       addToast({
         type: 'success',
-        title: 'Trabalho excluído com sucesso',
+        title: 'Item excluído com sucesso',
       });
     } else {
       setLoading(false);
       addToast({
         type: 'error',
-        title: 'Falha ao excluir trabalho, tente novamente.',
+        title: 'Falha ao excluir item, tente novamente.',
       });
     }
   }, [idToBeDeleted, addToast, data]);
 
   return (
-    <BasePage title="Trabalhos">
+    <BasePage title="Biblioteca">
       {loading ? (
         <Loading />
       ) : (
@@ -131,12 +131,12 @@ const Works: React.FC = () => {
           <Container>
             <ArroundButton>
               <Button type="button" onClick={handleAddWork}>
-                Adicionar Trabalho
+                Adicionar Item
                 <AddCircle style={{ color: '#0f5e9e' }} />
               </Button>
             </ArroundButton>
             <MaterialTable
-              title="Listagem de Trabalhos"
+              title="Listagem"
               localization={labels.materialTable.localization}
               columns={[
                 { title: 'Descriçao', field: 'description' },
@@ -175,7 +175,7 @@ const Works: React.FC = () => {
                 className={classes.modalContent}
                 id="alert-dialog-description"
               >
-                Deseja realmente excluir o trabalho?
+                Deseja realmente excluir o item?
               </DialogContentText>
             </DialogContent>
             <Divider />
@@ -198,4 +198,4 @@ const Works: React.FC = () => {
   );
 };
 
-export default Works;
+export default Library;

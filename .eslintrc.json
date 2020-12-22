@@ -29,6 +29,7 @@
     "prettier"
   ],
   "rules": {
+    "import/no-duplicates": "off",
     "react/jsx-props-no-spreading": "off",
     "no-underscore-dangle":"off",
     "react/jsx-one-expression-per-line": "off",

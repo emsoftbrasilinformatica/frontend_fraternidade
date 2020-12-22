@@ -200,7 +200,7 @@ const Profile: React.FC = () => {
   const [idDependent, setIdDependent] = useState<number>(-1);
   const [userForm, setUserForm] = useState<CreateUserFormData>();
   const [saveLoading, setSaveLoading] = useState(false);
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
 
   const handleChange = (
     event: React.ChangeEvent<{}>,
@@ -330,8 +330,9 @@ const Profile: React.FC = () => {
           dependents: dependentsToBeCreate,
         };
 
-        await api.put(`/users/${user.id}`, userCreated);
+        const res = await api.put(`/users/${user.id}`, userCreated);
 
+        updateUser(res.data);
         setSaveLoading(false);
         history.push('/app/dashboard');
 
@@ -368,6 +369,7 @@ const Profile: React.FC = () => {
       dependents,
       history,
       user.id,
+      updateUser,
     ],
   );
 

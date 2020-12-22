@@ -45,7 +45,7 @@ interface OptionsData {
   label: string;
 }
 
-const Work: React.FC = () => {
+const LibraryItem: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [saveLoading, setSaveLoading] = useState(false);
   const params: params = useParams();
@@ -78,11 +78,11 @@ const Work: React.FC = () => {
           return;
         }
 
-        if (data.file.size > 3000 * 1024) {
+        if (data.file.size > 10000 * 1024) {
           addToast({
             type: 'error',
             title: 'Arquivo não suportado!',
-            description: 'Arquivo acima do limite permitido de 3.0MB',
+            description: 'Arquivo acima do limite permitido de 10.0MB',
           });
           return;
         }
@@ -105,10 +105,10 @@ const Work: React.FC = () => {
         }
 
         setSaveLoading(false);
-        history.push('/app/cad/trabalhos');
+        history.push('/app/cad/bibliotecas');
         addToast({
           type: 'success',
-          title: 'Trabalho cadastrado com sucesso!',
+          title: 'Item cadastrado com sucesso!',
         });
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
@@ -175,8 +175,8 @@ const Work: React.FC = () => {
 
   return (
     <BasePage
-      title={params.id ? 'Editar Trabalho' : 'Novo Trabalho'}
-      backLink="/app/cad/trabalhos"
+      title={params.id ? 'Editar Item' : 'Novo Item'}
+      backLink="/app/cad/bibliotecas"
     >
       {loading ? (
         <Loading />
@@ -192,7 +192,7 @@ const Work: React.FC = () => {
                 )}
               </Button>
             </ArroundButton>
-            <Card title="Trabalho">
+            <Card title="Item de biblioteca">
               <Grid container spacing={2}>
                 <Grid item xs={12} md={4}>
                   <Input
@@ -227,4 +227,4 @@ const Work: React.FC = () => {
   );
 };
 
-export default Work;
+export default LibraryItem;

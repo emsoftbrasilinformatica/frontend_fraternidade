@@ -17,7 +17,7 @@ interface Work {
   };
 }
 
-const GeneralWorks: React.FC = () => {
+const GeneralLibrary: React.FC = () => {
   const [data, setData] = useState<Work[]>([]);
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
@@ -43,14 +43,14 @@ const GeneralWorks: React.FC = () => {
   }, []);
 
   return (
-    <BasePage title="Trabalhos">
+    <BasePage title="Biblioteca">
       {loading ? (
         <Loading />
       ) : (
         <>
           <Container>
             <MaterialTable
-              title="Listagem de Trabalhos"
+              title="Listagem"
               localization={labels.materialTable.localization}
               columns={[
                 { title: 'Descriçao', field: 'description' },
@@ -74,4 +74,4 @@ const GeneralWorks: React.FC = () => {
   );
 };
 
-export default GeneralWorks;
+export default GeneralLibrary;

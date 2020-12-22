@@ -1,8 +1,8 @@
 import React, { ReactElement } from 'react';
 
 import { GiTakeMyMoney } from 'react-icons/gi';
-import { FaCalendarDay, FaFileContract } from 'react-icons/fa';
-import { MdWork } from 'react-icons/md';
+import { FaCalendarDay, FaFileContract, FaHistory } from 'react-icons/fa';
+import { VscLibrary } from 'react-icons/vsc';
 import { AiOutlineAreaChart } from 'react-icons/ai';
 import ListItemLink from '../ListItemLink';
 
@@ -25,9 +25,9 @@ const Menu: React.FC = () => {
       collapse: false,
     },
     {
-      icon: <MdWork style={{ fontSize: '1.5rem' }} />,
-      link: '/app/geral/trabalhos',
-      description: 'Trabalhos',
+      icon: <VscLibrary style={{ fontSize: '1.5rem' }} />,
+      link: '/app/geral/biblioteca',
+      description: 'Biblioteca',
       collapse: false,
     },
     {
@@ -38,7 +38,7 @@ const Menu: React.FC = () => {
     },
     {
       icon: <AiOutlineAreaChart style={{ fontSize: '1.5rem' }} />,
-      link: '/app/dashboard',
+      link: '/app/geral/frequencia',
       description: 'Frequência',
       collapse: false,
     },
@@ -46,6 +46,12 @@ const Menu: React.FC = () => {
       icon: <GiTakeMyMoney style={{ fontSize: '1.5rem' }} />,
       link: '/app/geral/consulta',
       description: 'Consulta Financeira',
+      collapse: false,
+    },
+    {
+      icon: <FaHistory style={{ fontSize: '1.5rem' }} />,
+      link: '/app/geral/historico',
+      description: 'Histórico',
       collapse: false,
     },
   ];

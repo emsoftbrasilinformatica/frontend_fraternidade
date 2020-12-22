@@ -34,6 +34,7 @@ import { AccountCircle } from '@material-ui/icons';
 import logoMaconaria from '../../assets/esquadro_compasso.png';
 
 import { useAuth } from '../../hooks/auth';
+import { useForceUpdate } from '../../hooks/forceUpdate';
 
 import { ContainerImg, Username } from './styles';
 
@@ -150,13 +151,16 @@ const BasePage: React.FC<ViewProps> = ({ children, title, backLink }) => {
   const [openDialog, setOpenDialog] = useState(false);
   const history = useHistory();
   const { signOut, user } = useAuth();
+  const { forceUpdate } = useForceUpdate();
 
   useEffect(() => {
     window.scrollTo({
       top: 0,
       behavior: 'smooth',
     });
-  }, []);
+
+    forceUpdate(user.updated_at);
+  }, [forceUpdate, user]);
 
   const handleDrawerOpen = (): void => {
     setOpen(true);

@@ -26,12 +26,13 @@ import SessionType from '../pages/SessionTypes/SessionType';
 import Sessions from '../pages/Sessions';
 import Session from '../pages/Sessions/Session';
 import Presences from '../pages/Sessions/Presences';
+import Frequencies from '../pages/Frequencies';
 
 import Statutes from '../pages/Statutes';
 import Statute from '../pages/Statutes/Statute';
 
-import Works from '../pages/Works';
-import Work from '../pages/Works/Work';
+import Library from '../pages/Library';
+import LibraryItem from '../pages/Library/LibraryItem';
 
 import SessionRecords from '../pages/SessionRecords';
 import SessionRecord from '../pages/SessionRecords/SessionRecord';
@@ -66,8 +67,11 @@ import FinancialConsultation from '../pages/FinancialConsultation';
 import SessionSchedule from '../pages/SessionSchedule';
 import OneSession from '../pages/SessionSchedule/OneSession';
 
-import GeneralWorks from '../pages/GeneralWorks';
+import GeneralLibrary from '../pages/GeneralLibrary';
 import GeneralStatutes from '../pages/GeneralStatutes';
+
+import IndividualFrequencies from '../pages/IndividualFrequencies';
+import Historic from '../pages/Historic';
 
 const Routes: React.FC = () => (
   <Switch>
@@ -151,6 +155,13 @@ const Routes: React.FC = () => (
       allowed={['Venerável', 'Chanceler']}
       isPrivate
     />
+
+    <Route
+      path="/app/cad/frequencias"
+      component={Frequencies}
+      allowed={['Venerável', 'Chanceler']}
+      isPrivate
+    />
     {/** sessions */}
 
     {/** statutes */}
@@ -170,14 +181,14 @@ const Routes: React.FC = () => (
 
     {/** works */}
     <Route
-      path="/app/cad/trabalhos"
-      component={Works}
+      path="/app/cad/bibliotecas"
+      component={Library}
       allowed={['Venerável', 'Secretário']}
       isPrivate
     />
     <Route
-      path="/app/cad/trabalho/:id?"
-      component={Work}
+      path="/app/cad/biblioteca/:id?"
+      component={LibraryItem}
       allowed={['Venerável', 'Secretário']}
       isPrivate
     />
@@ -316,9 +327,17 @@ const Routes: React.FC = () => (
       isPrivate
     />
 
-    <Route path="/app/geral/trabalhos" component={GeneralWorks} isPrivate />
+    <Route path="/app/geral/biblioteca" component={GeneralLibrary} isPrivate />
 
     <Route path="/app/geral/estatutos" component={GeneralStatutes} isPrivate />
+
+    <Route
+      path="/app/geral/frequencia"
+      component={IndividualFrequencies}
+      isPrivate
+    />
+
+    <Route path="/app/geral/historico" component={Historic} isPrivate />
     {/** general */}
 
     {/** uploads */}
