@@ -119,22 +119,6 @@ const Historic: React.FC = () => {
           ),
         },
         {
-          type: 'Exaltação',
-          degree: 'Companheiro',
-          date: userDates.exaltacao_date
-            ? format(new Date(userDates.exaltacao_date), 'dd/MM/yyyy')
-            : ' ---- ',
-          totalTime: userDates.exaltacao_date
-            ? formatDuration(
-                intervalToDuration({
-                  start: new Date(userDates.exaltacao_date),
-                  end: new Date(),
-                }),
-                { format: ['years', 'months'], delimiter: ', ', locale: ptBR },
-              )
-            : ' ---- ',
-        },
-        {
           type: 'Elevação',
           degree: 'Mestre',
           date: userDates.elevacao_date
@@ -144,6 +128,22 @@ const Historic: React.FC = () => {
             ? formatDuration(
                 intervalToDuration({
                   start: new Date(userDates.elevacao_date),
+                  end: new Date(),
+                }),
+                { format: ['years', 'months'], delimiter: ', ', locale: ptBR },
+              )
+            : ' ---- ',
+        },
+        {
+          type: 'Exaltação',
+          degree: 'Companheiro',
+          date: userDates.exaltacao_date
+            ? format(new Date(userDates.exaltacao_date), 'dd/MM/yyyy')
+            : ' ---- ',
+          totalTime: userDates.exaltacao_date
+            ? formatDuration(
+                intervalToDuration({
+                  start: new Date(userDates.exaltacao_date),
                   end: new Date(),
                 }),
                 { format: ['years', 'months'], delimiter: ', ', locale: ptBR },

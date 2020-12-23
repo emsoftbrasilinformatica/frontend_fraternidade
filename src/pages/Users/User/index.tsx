@@ -1227,18 +1227,18 @@ const User: React.FC = () => {
                   </Grid>
                   <Grid item xs={12} sm={3}>
                     <DatePicker
-                      name="exaltacao_date"
-                      icon={FiCalendar}
-                      label="Data de Exaltação"
-                      placeholderText="Insira a data de exaltação"
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={3}>
-                    <DatePicker
                       name="elevacao_date"
                       icon={FiCalendar}
                       label="Data de Elevação"
                       placeholderText="Insira a data de elevação"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={3}>
+                    <DatePicker
+                      name="exaltacao_date"
+                      icon={FiCalendar}
+                      label="Data de Exaltação"
+                      placeholderText="Insira a data de exaltação"
                     />
                   </Grid>
                   <Grid item xs={12} sm={3}>
