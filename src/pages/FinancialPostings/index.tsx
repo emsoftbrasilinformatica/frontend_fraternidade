@@ -26,6 +26,7 @@ import Switch, { SwitchClassKey, SwitchProps } from '@material-ui/core/Switch';
 
 import { BsGraphDown, BsGraphUp } from 'react-icons/bs';
 import { FaExclamationTriangle } from 'react-icons/fa';
+import { FiInfo } from 'react-icons/fi';
 
 import {
   makeStyles,
@@ -136,6 +137,7 @@ interface Props extends SwitchProps {
 interface Payment {
   value: number;
   payment_amount?: number;
+  obs_payment?: string;
 }
 
 interface QueryParams {
@@ -460,6 +462,7 @@ const FinancialPostings: React.FC = () => {
         .patch('/financial-postings', {
           id: toPay?.id,
           payment_amount: dataForm.payment_amount,
+          obs_payment: dataForm.obs_payment,
         })
         .then(res => {
           handleSubmit();
@@ -1002,6 +1005,12 @@ const FinancialPostings: React.FC = () => {
                   icon={HiCurrencyDollar}
                   placeholder="Digite o valor"
                   step={0.01}
+                />
+                <Input
+                  name="obs_payment"
+                  label="Observação de Pagamento"
+                  placeholder="Digite a observação de pagamento"
+                  icon={FiInfo}
                 />
               </DialogContent>
               <Divider />

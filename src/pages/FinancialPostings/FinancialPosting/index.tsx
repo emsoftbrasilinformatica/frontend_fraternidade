@@ -45,6 +45,7 @@ interface FinancialPostingFormData {
   payment_amount: number;
   payday: Date | null;
   obs: string;
+  obs_payment: string;
 }
 
 interface DataForm {
@@ -59,6 +60,7 @@ interface DataForm {
   payment_amount?: number;
   payday?: string;
   obs?: string;
+  obs_payment?: string;
 }
 
 interface OptionsData {
@@ -196,6 +198,7 @@ const FinancialPosting: React.FC = () => {
               label: res.data.typeFinancialPosting.description,
             },
             obs: res.data.obs,
+            obs_payment: res.data.obs_payment,
             value: res.data.value,
             payday: res.data.payday ? new Date(res.data.payday) : null,
             payment_amount: res.data.payment_amount,
@@ -267,6 +270,7 @@ const FinancialPosting: React.FC = () => {
           payday,
           payment_amount,
           obs,
+          obs_payment,
         } = data;
 
         const dataForm: DataForm = {
@@ -281,6 +285,7 @@ const FinancialPosting: React.FC = () => {
           payday: payday || null,
           payment_amount: payment_amount || null,
           obs,
+          obs_payment,
         };
 
         if (params.id) {
@@ -455,11 +460,19 @@ const FinancialPosting: React.FC = () => {
               </Grid>
 
               <Grid container spacing={2}>
-                <Grid item xs={12} md={12}>
+                <Grid item xs={12} md={6}>
                   <Input
                     name="obs"
                     label="Observação"
                     placeholder="Digite a observação"
+                    icon={FiInfo}
+                  />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <Input
+                    name="obs_payment"
+                    label="Observação de Pagamento"
+                    placeholder="Digite a observação de pagamento"
                     icon={FiInfo}
                   />
                 </Grid>
