@@ -21,6 +21,10 @@ interface UserData {
   degree: Degree;
   administrative_function?: AdminstrativeFunction;
   updated_at: string;
+  iniciacao_date: string;
+  elevacao_date: string;
+  exaltacao_date: string;
+  instalacao_date: string;
 }
 
 interface DecodeToken {

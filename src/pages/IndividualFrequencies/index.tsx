@@ -34,12 +34,36 @@ interface SessionData {
   date: string;
 }
 
-interface User {
-  id: string;
-  name: string;
-  degree: {
-    order: number;
+interface Session {
+  date: string;
+  session_type: {
+    degree: {
+      order: number;
+    };
   };
+}
+
+interface ShootDown {
+  name: string;
+  january: ShootDownMonth;
+  february: ShootDownMonth;
+  march: ShootDownMonth;
+  april: ShootDownMonth;
+  may: ShootDownMonth;
+  june: ShootDownMonth;
+  july: ShootDownMonth;
+  august: ShootDownMonth;
+  september: ShootDownMonth;
+  october: ShootDownMonth;
+  november: ShootDownMonth;
+  december: ShootDownMonth;
+  total: ShootDownMonth;
+}
+
+interface ShootDownMonth {
+  totalGrauI: number;
+  totalGrauII: number;
+  totalGrauIII: number;
 }
 
 interface Frequency {
@@ -71,6 +95,18 @@ interface MonthFrequency {
 interface TotalFrequency {
   value: number;
   percent: number;
+}
+
+interface ShootDown12Months {
+  name: string;
+  data: DataShootDown12Months[];
+}
+
+interface DataShootDown12Months {
+  date: Date;
+  totalGrauI: number;
+  totalGrauII: number;
+  totalGrauIII: number;
 }
 
 interface NumberSessions12Months {
@@ -131,6 +167,7 @@ const IndividualFrequencies: React.FC = () => {
   );
   const [loading, setLoading] = useState(false);
   const [userData, setUserData] = useState<UserData[]>([]);
+  const [sessions, setSessions] = useState<Session[]>([]);
   const [totalSessions, setTotalSessions] = useState<SessionData[]>([]);
   const { user } = useAuth();
 
@@ -140,6 +177,7 @@ const IndividualFrequencies: React.FC = () => {
     }
     setUserData([]);
     setTotalSessions([]);
+    setSessions([]);
   }, []);
 
   const getMonth = useCallback((date: Date):
@@ -182,10 +220,12 @@ const IndividualFrequencies: React.FC = () => {
     Promise.all([
       api.get<UserData[]>(`/frequencies/frequencies-user/${user.id}`),
       api.get<SessionData[]>('/frequencies/total-sessions'),
+      api.get<Session[]>('/sessions'),
     ])
       .then(res => {
         setUserData(res[0].data);
         setTotalSessions(res[1].data);
+        setSessions(res[2].data);
       })
       .finally(() => {
         setLoading(false);
@@ -293,24 +333,142 @@ const IndividualFrequencies: React.FC = () => {
             item.totalGrauIII += Number(session.total);
           }
         }
-
-        // if (isEqual(pastDate, dateSession)) {
-        //   if (session.order === 1) {
-        //     item.totalGrauI -= Number(session.total);
-        //     item.totalGrauII -= Number(session.total);
-        //     item.totalGrauIII -= Number(session.total);
-        //   } else if (session.order === 2) {
-        //     item.totalGrauII -= Number(session.total);
-        //     item.totalGrauIII -= Number(session.total);
-        //   } else if (session.order === 3) {
-        //     item.totalGrauIII -= Number(session.total);
-        //   }
-        // }
       });
     });
 
     return total;
   }, [startDate, totalSessions]);
+
+  const shootDown12Months: ShootDown12Months = useMemo(() => {
+    const total: ShootDown12Months = {
+      name: user.name,
+      data: [
+        {
+          date: new Date(startDate.getFullYear(), 0 + 1, 0),
+          totalGrauI: 0,
+          totalGrauII: 0,
+          totalGrauIII: 0,
+        },
+        {
+          date: new Date(startDate.getFullYear(), 1 + 1, 0),
+          totalGrauI: 0,
+          totalGrauII: 0,
+          totalGrauIII: 0,
+        },
+        {
+          date: new Date(startDate.getFullYear(), 2 + 1, 0),
+          totalGrauI: 0,
+          totalGrauII: 0,
+          totalGrauIII: 0,
+        },
+        {
+          date: new Date(startDate.getFullYear(), 3 + 1, 0),
+          totalGrauI: 0,
+          totalGrauII: 0,
+          totalGrauIII: 0,
+        },
+        {
+          date: new Date(startDate.getFullYear(), 4 + 1, 0),
+          totalGrauI: 0,
+          totalGrauII: 0,
+          totalGrauIII: 0,
+        },
+        {
+          date: new Date(startDate.getFullYear(), 5 + 1, 0),
+          totalGrauI: 0,
+          totalGrauII: 0,
+          totalGrauIII: 0,
+        },
+        {
+          date: new Date(startDate.getFullYear(), 6 + 1, 0),
+          totalGrauI: 0,
+          totalGrauII: 0,
+          totalGrauIII: 0,
+        },
+        {
+          date: new Date(startDate.getFullYear(), 7 + 1, 0),
+          totalGrauI: 0,
+          totalGrauII: 0,
+          totalGrauIII: 0,
+        },
+        {
+          date: new Date(startDate.getFullYear(), 8 + 1, 0),
+          totalGrauI: 0,
+          totalGrauII: 0,
+          totalGrauIII: 0,
+        },
+        {
+          date: new Date(startDate.getFullYear(), 9 + 1, 0),
+          totalGrauI: 0,
+          totalGrauII: 0,
+          totalGrauIII: 0,
+        },
+        {
+          date: new Date(startDate.getFullYear(), 10 + 1, 0),
+          totalGrauI: 0,
+          totalGrauII: 0,
+          totalGrauIII: 0,
+        },
+        {
+          date: new Date(startDate.getFullYear(), 11 + 1, 0),
+          totalGrauI: 0,
+          totalGrauII: 0,
+          totalGrauIII: 0,
+        },
+      ],
+    };
+
+    total.data.map(item => {
+      const date = new Date(item.date);
+      const pastDate = new Date(
+        date.getFullYear() - 1,
+        date.getMonth(),
+        date.getDate(),
+      );
+
+      sessions.map(session => {
+        const dateSession = new Date(session.date);
+
+        if (user.iniciacao_date) {
+          const iniciacaoDate = new Date(user.iniciacao_date);
+          if (
+            ((isAfter(dateSession, pastDate) && isBefore(dateSession, date)) ||
+              isEqual(date, dateSession)) &&
+            isBefore(dateSession, iniciacaoDate) &&
+            session.session_type.degree.order === 1
+          ) {
+            item.totalGrauI += 1;
+          }
+        }
+
+        if (user.elevacao_date) {
+          const elevacaoDate = new Date(user.elevacao_date);
+          if (
+            ((isAfter(dateSession, pastDate) && isBefore(dateSession, date)) ||
+              isEqual(date, dateSession)) &&
+            isBefore(dateSession, elevacaoDate) &&
+            session.session_type.degree.order === 2
+          ) {
+            item.totalGrauII += 1;
+          }
+        }
+
+        if (user.exaltacao_date) {
+          const exaltacaoDate = new Date(user.exaltacao_date);
+          if (
+            ((isAfter(dateSession, pastDate) && isBefore(dateSession, date)) ||
+              isEqual(date, dateSession)) &&
+            isBefore(dateSession, exaltacaoDate) &&
+            session.session_type.degree.order === 3
+          ) {
+            item.totalGrauIII += 1;
+          }
+        }
+      });
+    });
+
+    return total;
+  }, [user, startDate, sessions]);
 
   const totalNumbersSessions: TotalNumbersSessions = useMemo(() => {
     const total: TotalNumbersSessions = {
@@ -461,6 +619,96 @@ const IndividualFrequencies: React.FC = () => {
     return total;
   }, [user, startDate, userData]);
 
+  const shootDown: ShootDown = useMemo(() => {
+    const dataShootDown: ShootDown = {
+      name: user.name,
+      january: { totalGrauI: 0, totalGrauII: 0, totalGrauIII: 0 },
+      february: { totalGrauI: 0, totalGrauII: 0, totalGrauIII: 0 },
+      march: { totalGrauI: 0, totalGrauII: 0, totalGrauIII: 0 },
+      april: { totalGrauI: 0, totalGrauII: 0, totalGrauIII: 0 },
+      may: { totalGrauI: 0, totalGrauII: 0, totalGrauIII: 0 },
+      june: { totalGrauI: 0, totalGrauII: 0, totalGrauIII: 0 },
+      july: { totalGrauI: 0, totalGrauII: 0, totalGrauIII: 0 },
+      august: { totalGrauI: 0, totalGrauII: 0, totalGrauIII: 0 },
+      september: { totalGrauI: 0, totalGrauII: 0, totalGrauIII: 0 },
+      october: { totalGrauI: 0, totalGrauII: 0, totalGrauIII: 0 },
+      november: { totalGrauI: 0, totalGrauII: 0, totalGrauIII: 0 },
+      december: { totalGrauI: 0, totalGrauII: 0, totalGrauIII: 0 },
+      total: { totalGrauI: 0, totalGrauII: 0, totalGrauIII: 0 },
+    };
+
+    if (
+      user.iniciacao_date &&
+      new Date(user.iniciacao_date).getFullYear() === startDate.getFullYear()
+    ) {
+      const iniciacaoDate = new Date(user.iniciacao_date);
+      sessions.map(session => {
+        const sessionDate = new Date(session.date);
+        if (
+          iniciacaoDate.getFullYear() === sessionDate.getFullYear() &&
+          isBefore(sessionDate, iniciacaoDate) &&
+          session.session_type.degree.order === 1
+        ) {
+          const monthE = getMonth(sessionDate);
+
+          if (monthE) {
+            dataShootDown[monthE].totalGrauI += 1;
+
+            dataShootDown.total.totalGrauI += 1;
+          }
+        }
+      });
+    }
+
+    if (
+      user.elevacao_date &&
+      new Date(user.elevacao_date).getFullYear() === startDate.getFullYear()
+    ) {
+      const elevacaoDate = new Date(user.elevacao_date);
+      sessions.map(session => {
+        const sessionDate = new Date(session.date);
+        if (
+          elevacaoDate.getFullYear() === sessionDate.getFullYear() &&
+          isBefore(sessionDate, elevacaoDate) &&
+          session.session_type.degree.order === 2
+        ) {
+          const monthE = getMonth(sessionDate);
+
+          if (monthE) {
+            dataShootDown[monthE].totalGrauII += 1;
+
+            dataShootDown.total.totalGrauII += 1;
+          }
+        }
+      });
+    }
+
+    if (
+      user.exaltacao_date &&
+      new Date(user.exaltacao_date).getFullYear() === startDate.getFullYear()
+    ) {
+      const exaltacaoDate = new Date(user.exaltacao_date);
+      sessions.map(session => {
+        const sessionDate = new Date(session.date);
+        if (
+          exaltacaoDate.getFullYear() === sessionDate.getFullYear() &&
+          isBefore(sessionDate, exaltacaoDate) &&
+          session.session_type.degree.order === 3
+        ) {
+          const monthE = getMonth(sessionDate);
+
+          if (monthE) {
+            dataShootDown[monthE].totalGrauIII += 1;
+
+            dataShootDown.total.totalGrauIII += 1;
+          }
+        }
+      });
+    }
+
+    return dataShootDown;
+  }, [user, startDate, sessions, getMonth]);
+
   const finalData: Frequency | undefined = useMemo(() => {
     const frequencies: Frequency = {
       name: user.name,
@@ -561,21 +809,24 @@ const IndividualFrequencies: React.FC = () => {
             case 1:
               frequencies[monthE].percentMonth = Math.round(
                 (frequencies[monthE].totalMonth /
-                  totalNumbersSessions[monthE].totalGrauI) *
+                  (totalNumbersSessions[monthE].totalGrauI -
+                    shootDown[monthE].totalGrauI)) *
                   100,
               );
               break;
             case 2:
               frequencies[monthE].percentMonth = Math.round(
                 (frequencies[monthE].totalMonth /
-                  totalNumbersSessions[monthE].totalGrauII) *
+                  (totalNumbersSessions[monthE].totalGrauII -
+                    shootDown[monthE].totalGrauII)) *
                   100,
               );
               break;
             case 3:
               frequencies[monthE].percentMonth = Math.round(
                 (frequencies[monthE].totalMonth /
-                  totalNumbersSessions[monthE].totalGrauIII) *
+                  (totalNumbersSessions[monthE].totalGrauIII -
+                    shootDown[monthE].totalGrauIII)) *
                   100,
               );
               break;
@@ -605,18 +856,23 @@ const IndividualFrequencies: React.FC = () => {
 
         if (frequencies.order === 1) {
           frequencies.total.percent = Math.round(
-            (frequencies.total.value / totalNumbersSessions.total.totalGrauI) *
+            (frequencies.total.value /
+              (totalNumbersSessions.total.totalGrauI -
+                shootDown.total.totalGrauI)) *
               100,
           );
         } else if (frequencies.order === 2) {
           frequencies.total.percent = Math.round(
-            (frequencies.total.value / totalNumbersSessions.total.totalGrauII) *
+            (frequencies.total.value /
+              (totalNumbersSessions.total.totalGrauII -
+                shootDown.total.totalGrauII)) *
               100,
           );
         } else if (frequencies.order === 3 || frequencies.order === 4) {
           frequencies.total.percent = Math.round(
             (frequencies.total.value /
-              totalNumbersSessions.total.totalGrauIII) *
+              (totalNumbersSessions.total.totalGrauIII -
+                shootDown.total.totalGrauIII)) *
               100,
           );
         }
@@ -633,6 +889,17 @@ const IndividualFrequencies: React.FC = () => {
         totalGrauII: 0,
         totalGrauIII: 0,
       };
+      const totalShootDown12Months = shootDown12Months.data.find(total =>
+        isEqual(
+          new Date(total.date.getFullYear(), total.date.getMonth(), 1),
+          month.date,
+        ),
+      ) || {
+        date: new Date(),
+        totalGrauI: 0,
+        totalGrauII: 0,
+        totalGrauIII: 0,
+      };
 
       if (monthE) {
         frequencies[monthE].totalLast12Months =
@@ -642,7 +909,8 @@ const IndividualFrequencies: React.FC = () => {
             if (totalSessionsMonth.totalGrauI > 0) {
               frequencies[monthE].percentLast12Months = Math.round(
                 (frequencies[monthE].totalLast12Months /
-                  totalSessionsMonth.totalGrauI) *
+                  (totalSessionsMonth.totalGrauI -
+                    totalShootDown12Months.totalGrauI)) *
                   100,
               );
             }
@@ -651,7 +919,8 @@ const IndividualFrequencies: React.FC = () => {
             if (totalSessionsMonth.totalGrauII > 0) {
               frequencies[monthE].percentLast12Months = Math.round(
                 (frequencies[monthE].totalLast12Months /
-                  totalSessionsMonth.totalGrauII) *
+                  (totalSessionsMonth.totalGrauII -
+                    totalShootDown12Months.totalGrauII)) *
                   100,
               );
             }
@@ -660,7 +929,8 @@ const IndividualFrequencies: React.FC = () => {
             if (totalSessionsMonth.totalGrauIII > 0) {
               frequencies[monthE].percentLast12Months = Math.round(
                 (frequencies[monthE].totalLast12Months /
-                  totalSessionsMonth.totalGrauIII) *
+                  (totalSessionsMonth.totalGrauIII -
+                    totalShootDown12Months.totalGrauIII)) *
                   100,
               );
             }
@@ -669,7 +939,8 @@ const IndividualFrequencies: React.FC = () => {
             if (totalSessionsMonth.totalGrauIII > 0) {
               frequencies[monthE].percentLast12Months = Math.round(
                 (frequencies[monthE].totalLast12Months /
-                  totalSessionsMonth.totalGrauIII) *
+                  (totalSessionsMonth.totalGrauIII -
+                    totalShootDown12Months.totalGrauIII)) *
                   100,
               );
             }
@@ -688,31 +959,56 @@ const IndividualFrequencies: React.FC = () => {
     totalUserSessions12Months,
     totalNumbersSessions12Months,
     getMonth,
+    shootDown,
+    shootDown12Months,
   ]);
 
   const monthData: MonthData | undefined = useMemo(() => {
     const month = getMonth(startDate);
     const sessions12Months = totalNumbersSessions12Months.find(
-      sessions =>
-        format(sessions.date, 'dd/MM/yyyy') === format(startDate, 'dd/MM/yyyy'),
+      sessionsData =>
+        format(sessionsData.date, 'dd/MM/yyyy') ===
+        format(startDate, 'dd/MM/yyyy'),
     );
+    const totalShootDown12Months = shootDown12Months.data.find(
+      sessionsData =>
+        format(sessionsData.date, '01/MM/yyyy') ===
+        format(startDate, 'dd/MM/yyyy'),
+    ) || {
+      date: new Date(),
+      totalGrauI: 0,
+      totalGrauII: 0,
+      totalGrauIII: 0,
+    };
 
     if (month && sessions12Months) {
       let totalSessionsMonth;
       let totalSessionsYear;
       let totalSessions12Months;
       if (user.degree.order === 1) {
-        totalSessionsMonth = totalNumbersSessions[month].totalGrauI;
-        totalSessionsYear = totalNumbersSessions.total.totalGrauI;
-        totalSessions12Months = sessions12Months.totalGrauI;
+        totalSessionsMonth =
+          totalNumbersSessions[month].totalGrauI - shootDown[month].totalGrauI;
+        totalSessionsYear =
+          totalNumbersSessions.total.totalGrauI - shootDown.total.totalGrauI;
+        totalSessions12Months =
+          sessions12Months.totalGrauI - totalShootDown12Months.totalGrauI;
       } else if (user.degree.order === 2) {
-        totalSessionsMonth = totalNumbersSessions[month].totalGrauII;
-        totalSessionsYear = totalNumbersSessions.total.totalGrauII;
-        totalSessions12Months = sessions12Months.totalGrauII;
+        totalSessionsMonth =
+          totalNumbersSessions[month].totalGrauII -
+          shootDown[month].totalGrauII;
+        totalSessionsYear =
+          totalNumbersSessions.total.totalGrauII - shootDown.total.totalGrauII;
+        totalSessions12Months =
+          sessions12Months.totalGrauII - totalShootDown12Months.totalGrauII;
       } else {
-        totalSessionsMonth = totalNumbersSessions[month].totalGrauIII;
-        totalSessionsYear = totalNumbersSessions.total.totalGrauIII;
-        totalSessions12Months = sessions12Months.totalGrauIII;
+        totalSessionsMonth =
+          totalNumbersSessions[month].totalGrauIII -
+          shootDown[month].totalGrauIII;
+        totalSessionsYear =
+          totalNumbersSessions.total.totalGrauIII -
+          shootDown.total.totalGrauIII;
+        totalSessions12Months =
+          sessions12Months.totalGrauIII - totalShootDown12Months.totalGrauIII;
       }
       return {
         totalYear: finalData.total.value,
@@ -735,6 +1031,8 @@ const IndividualFrequencies: React.FC = () => {
     totalNumbersSessions,
     user,
     totalNumbersSessions12Months,
+    shootDown,
+    shootDown12Months,
   ]);
 
   return (
