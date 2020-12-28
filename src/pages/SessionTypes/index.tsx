@@ -55,7 +55,7 @@ const SessionTypes: React.FC = () => {
   );
 
   return (
-    <BasePage title="Gestões">
+    <BasePage title="Tipos de Sessão">
       {loading ? (
         <Loading />
       ) : (
