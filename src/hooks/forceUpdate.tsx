@@ -3,7 +3,7 @@ import { differenceInMonths } from 'date-fns';
 import { useHistory } from 'react-router-dom';
 
 interface ForceUpdateData {
-  forceUpdate(updated_at: string): void;
+  forceUpdate(updated_at: string, first_access: boolean): void;
 }
 
 const ForceUpdateContext = createContext<ForceUpdateData>(
@@ -13,13 +13,17 @@ const ForceUpdateContext = createContext<ForceUpdateData>(
 const ForceUpdateProvider: React.FC = ({ children }) => {
   const history = useHistory();
   const forceUpdate = useCallback(
-    (updated_at: string) => {
+    (updated_at: string, first_access: boolean) => {
       const monthsDifference = differenceInMonths(
         new Date(),
         new Date(updated_at),
       );
 
       if (monthsDifference >= 6) {
+        history.push('/app/profile');
+      }
+
+      if (!first_access) {
         history.push('/app/profile');
       }
     },

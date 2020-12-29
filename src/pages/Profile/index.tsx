@@ -219,6 +219,14 @@ const Profile: React.FC = () => {
           email: Yup.string()
             .required('Email obrigatório')
             .email('Digite um email válido'),
+          password: Yup.string(),
+          confirm_password: Yup.string()
+            .when('password', {
+              is: val => !!val.length,
+              then: Yup.string().required('Campo obrigatório'),
+              otherwise: Yup.string(),
+            })
+            .oneOf([Yup.ref('password'), undefined], 'Senhas não conferem'),
           cim: Yup.number()
             .transform((v, o) => (o === '' ? null : v))
             .nullable()
@@ -288,7 +296,6 @@ const Profile: React.FC = () => {
           name: data.name,
           email: data.email ? data.email : undefined,
           password: data.password,
-          old_password: data.old_password,
           cim: Number(data.cim),
           cpf: data.cpf,
           degree_id: data.degree_id,
@@ -328,6 +335,7 @@ const Profile: React.FC = () => {
           contacts,
           adresses: adressesToBeCreate,
           dependents: dependentsToBeCreate,
+          first_access: !user.first_access,
         };
 
         const res = await api.put(`/users/${user.id}`, userCreated);
@@ -368,7 +376,7 @@ const Profile: React.FC = () => {
       addresses,
       dependents,
       history,
-      user.id,
+      user,
       updateUser,
     ],
   );
@@ -949,10 +957,10 @@ const Profile: React.FC = () => {
                   </Grid>
                   <Grid item xs={12} sm={3}>
                     <Input
-                      name="old_password"
+                      name="confirm_password"
                       icon={FiLock}
-                      label="Senha Antiga"
-                      placeholder="Digite a senha antiga"
+                      label="Confirmação de senha"
+                      placeholder="Confirme a nova senha"
                       type="password"
                     />
                   </Grid>

@@ -25,6 +25,7 @@ interface UserData {
   elevacao_date: string;
   exaltacao_date: string;
   instalacao_date: string;
+  first_access: boolean;
 }
 
 interface DecodeToken {

@@ -105,6 +105,7 @@ export interface CreateUserFormData {
   exaltacao_date?: string | null | undefined;
   instalacao_date?: string | null | undefined;
   iniciacao_date?: string | null | undefined;
+  first_access?: boolean;
   adresses?: AddressFormData[];
   contacts?: ContactFormData[];
   dependents?: DependentFormData[];

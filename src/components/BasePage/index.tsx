@@ -159,7 +159,7 @@ const BasePage: React.FC<ViewProps> = ({ children, title, backLink }) => {
       behavior: 'smooth',
     });
 
-    forceUpdate(user.updated_at);
+    forceUpdate(user.updated_at, user.first_access);
   }, [forceUpdate, user]);
 
   const handleDrawerOpen = (): void => {

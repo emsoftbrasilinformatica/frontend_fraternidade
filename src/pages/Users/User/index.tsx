@@ -223,6 +223,15 @@ const User: React.FC = () => {
           password: params.id
             ? Yup.string()
             : Yup.string().required('Senha obrigatória'),
+          confirm_password: params.id
+            ? Yup.string()
+                .when('password', {
+                  is: val => !!val.length,
+                  then: Yup.string().required('Campo obrigatório'),
+                  otherwise: Yup.string(),
+                })
+                .oneOf([Yup.ref('password'), undefined], 'Senhas não conferem')
+            : Yup.string(),
           email: Yup.string()
             .required('Email obrigatório')
             .email('Digite um email válido'),
@@ -295,7 +304,6 @@ const User: React.FC = () => {
           name: data.name,
           email: data.email ? data.email : undefined,
           password: data.password,
-          old_password: data.old_password,
           cim: Number(data.cim),
           cpf: data.cpf,
           degree_id: data.degree_id,
@@ -1033,10 +1041,10 @@ const User: React.FC = () => {
                       </Grid>
                       <Grid item xs={12} sm={3}>
                         <Input
-                          name="old_password"
+                          name="confirm_password"
                           icon={FiLock}
-                          label="Senha Antiga"
-                          placeholder="Digite a senha antiga"
+                          label="Confirmação de senha"
+                          placeholder="Confirme a nova senha"
                           type="password"
                         />
                       </Grid>
