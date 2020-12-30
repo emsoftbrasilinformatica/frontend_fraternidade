@@ -49,6 +49,7 @@ import {
   FaVenusMars,
   FaGenderless,
   FaBezierCurve,
+  FaExclamationTriangle,
 } from 'react-icons/fa';
 
 import {
@@ -59,6 +60,13 @@ import {
   Tabs,
   Tab,
   CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  Button as ButtonMT,
+  Divider,
 } from '@material-ui/core';
 import {
   Info as InfoIcon,
@@ -143,6 +151,22 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginTop: 16,
     border: '1px solid red',
   },
+  modalTitle: {
+    background: '#0f5e9e',
+    color: '#FFF',
+    flex: '0 0 auto',
+    margin: 0,
+    padding: '9px 24px',
+    textAlign: 'center',
+  },
+  modalContent: {
+    margin: '15px 0',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  iconDialog: {
+    marginRight: 8,
+  },
 }));
 
 const theme = createMuiTheme({
@@ -201,6 +225,7 @@ const Profile: React.FC = () => {
   const [userForm, setUserForm] = useState<CreateUserFormData>();
   const [saveLoading, setSaveLoading] = useState(false);
   const { user, updateUser } = useAuth();
+  const [openDialog, setOpenDialog] = useState(false);
 
   const handleChange = (
     event: React.ChangeEvent<{}>,
@@ -862,6 +887,16 @@ const Profile: React.FC = () => {
     [addToast, editUser, user.id],
   );
 
+  const handleCloseDialog = useCallback((): void => {
+    setOpenDialog(false);
+  }, []);
+
+  useEffect(() => {
+    if (!user.first_access) {
+      setOpenDialog(true);
+    }
+  }, [user]);
+
   if (loading) {
     return <Loading />;
   }
@@ -1403,6 +1438,36 @@ const Profile: React.FC = () => {
               </TabPanel>
             </div>
           </Form>
+
+          {!user.first_access && (
+            <Dialog
+              open={openDialog}
+              onClose={handleCloseDialog}
+              aria-labelledby="dialog"
+              aria-describedby="dialog-description"
+            >
+              <DialogTitle className={classes.modalTitle} id="dialog-title">
+                <FaExclamationTriangle className={classes.iconDialog} />
+                Atenção
+              </DialogTitle>
+              <Divider />
+              <DialogContent>
+                <DialogContentText
+                  className={classes.modalContent}
+                  id="dialog-description"
+                >
+                  Revise e confirme seus dados cadastrais, em seguida salve para
+                  prosseguir com o acesso ao sistema!
+                </DialogContentText>
+              </DialogContent>
+              <Divider />
+              <DialogActions>
+                <ButtonMT onClick={handleCloseDialog} className="buttonCancel">
+                  Fechar
+                </ButtonMT>
+              </DialogActions>
+            </Dialog>
+          )}
         </Container>
       </BasePage>
     </ThemeProvider>
