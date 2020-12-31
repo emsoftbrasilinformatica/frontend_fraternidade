@@ -361,6 +361,9 @@ const Profile: React.FC = () => {
           adresses: adressesToBeCreate,
           dependents: dependentsToBeCreate,
           first_access: !user.first_access,
+          wedding_date:
+            data.wedding_date &&
+            format(new Date(data.wedding_date), 'yyyy-MM-dd'),
         };
 
         const res = await api.put(`/users/${user.id}`, userCreated);
@@ -585,6 +588,9 @@ const Profile: React.FC = () => {
             userEdited.contacts && userEdited.contacts[0]
               ? userEdited.contacts[0].whatsapp
               : '',
+          wedding_date: userEdited.wedding_date
+            ? new Date(userEdited.wedding_date)
+            : null,
           number_sessions_aprendiz: userEdited.number_sessions_aprendiz,
           number_sessions_companheiro: userEdited.number_sessions_companheiro,
           number_sessions_mestre: userEdited.number_sessions_mestre,
@@ -1170,6 +1176,14 @@ const Profile: React.FC = () => {
                       icon={FaPhoneSquare}
                       placeholder="Digite o telefone da empresa"
                       mask="(99) 99999-9999"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={4}>
+                    <DatePicker
+                      name="wedding_date"
+                      icon={FiCalendar}
+                      label="Data do Casamento"
+                      placeholderText="Insira a data do casamento"
                     />
                   </Grid>
                 </Grid>
