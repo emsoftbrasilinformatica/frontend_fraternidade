@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { CircularProgress, Container } from '@material-ui/core';
-import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import MaterialTable from 'material-table';
 import { useParams, useHistory } from 'react-router-dom';
 import Button from '../../../components/Button';
@@ -58,17 +57,6 @@ interface Presence {
 interface params {
   id: string;
 }
-
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      main: '#0f5e9e',
-    },
-    secondary: {
-      main: '#0f5e9e',
-    },
-  },
-});
 
 const Presences: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -170,62 +158,60 @@ const Presences: React.FC = () => {
 
   return (
     <BasePage title="Presenças" backLink="/app/cad/sessoes">
-      <ThemeProvider theme={theme}>
-        {loading ? (
-          <Loading />
-        ) : (
-          <Container>
-            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <Button
-                type="submit"
-                disabled={!!saveLoading}
-                onClick={handleSavePresences}
-              >
-                {saveLoading ? (
-                  <CircularProgress style={{ color: '#FFF' }} />
-                ) : (
-                  'SALVAR'
-                )}
-              </Button>
-            </div>
-            <Card
-              title={`Número: ${
-                session?.number
-              } | Tipo: ${session?.session_type.type.substring(0, 1)} - ${
-                session?.session_type.description
-              } | ${session?.session_type.degree.description}`}
+      {loading ? (
+        <Loading />
+      ) : (
+        <Container>
+          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Button
+              type="submit"
+              disabled={!!saveLoading}
+              onClick={handleSavePresences}
             >
-              <MaterialTable
-                title="Lista de presença"
-                columns={[
-                  {
-                    title: 'Usuário',
-                    field: 'name',
-                  },
-                  {
-                    title: 'CIM',
-                    field: 'cim',
-                  },
-                  {
-                    title: 'Grau',
-                    field: 'degree.description',
-                  },
-                ]}
-                style={{
-                  marginTop: 16,
-                  border: '2px solid #0f5e9e',
-                }}
-                data={usersCanBePresence}
-                localization={labels.materialTable.localization}
-                options={{
-                  selection: true,
-                  pageSize: 20,
-                }}
-              />
-            </Card>
-          </Container>
-        )}
-      </ThemeProvider>
+              {saveLoading ? (
+                <CircularProgress style={{ color: '#FFF' }} />
+              ) : (
+                'SALVAR'
+              )}
+            </Button>
+          </div>
+          <Card
+            title={`Número: ${
+              session?.number
+            } | Tipo: ${session?.session_type.type.substring(0, 1)} - ${
+              session?.session_type.description
+            } | ${session?.session_type.degree.description}`}
+          >
+            <MaterialTable
+              title="Lista de presença"
+              columns={[
+                {
+                  title: 'Usuário',
+                  field: 'name',
+                },
+                {
+                  title: 'CIM',
+                  field: 'cim',
+                },
+                {
+                  title: 'Grau',
+                  field: 'degree.description',
+                },
+              ]}
+              style={{
+                marginTop: 16,
+                border: '2px solid #0f5e9e',
+              }}
+              data={usersCanBePresence}
+              localization={labels.materialTable.localization}
+              options={{
+                selection: true,
+                pageSize: 20,
+              }}
+            />
+          </Card>
+        </Container>
+      )}
     </BasePage>
   );
 };

@@ -360,6 +360,8 @@ const User: React.FC = () => {
           dependents: dependentsToBeCreate,
         };
 
+        console.log(user.date_of_birth);
+
         if (params.id) {
           await api.put(`/users/${params.id}`, user);
         } else {
@@ -544,7 +546,7 @@ const User: React.FC = () => {
             cpf: user.cpf,
             avatar_url: user.avatar_url,
             date_of_birth: user.date_of_birth
-              ? new Date(user.date_of_birth)
+              ? new Date(`${user.date_of_birth.split('T')[0]}T03:00:00.000Z`)
               : null,
             degree_id: {
               value: user.degree_id,

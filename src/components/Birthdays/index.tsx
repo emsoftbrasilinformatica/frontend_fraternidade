@@ -9,6 +9,7 @@ import {
   intervalToDuration,
   eachMonthOfInterval,
   addDays,
+  toDate,
 } from 'date-fns';
 
 import LoadingLocale from '../LoadingLocale';
@@ -168,7 +169,10 @@ const Birthdays: React.FC = () => {
     }
 
     const usersBirthdayFormatted: Data[] = birthdaysUsers.map(el => {
-      const dateCreated = new Date(el.date_of_birth);
+      console.log(toDate(new Date(el.date_of_birth)));
+      const dateCreated = new Date(
+        `${el.date_of_birth.split('T')[0]}T03:00:00.000Z`,
+      );
       const year = intervalMonths.find(
         dateInterval => dateInterval.getMonth() === dateCreated.getMonth(),
       );
@@ -180,7 +184,7 @@ const Birthdays: React.FC = () => {
       return {
         description: `Aniversário Ir∴ ${el.name}`,
         date: currentDate,
-        dateFormatted: format(new Date(el.date_of_birth), 'dd/MM'),
+        dateFormatted: format(dateCreated, 'dd/MM'),
         type: 'irmao',
       };
     });
@@ -202,7 +206,9 @@ const Birthdays: React.FC = () => {
           break;
       }
 
-      const dateCreated = new Date(el.date_of_birth);
+      const dateCreated = new Date(
+        `${el.date_of_birth.split('T')[0]}T03:00:00.000Z`,
+      );
       const year = intervalMonths.find(
         dateInterval => dateInterval.getMonth() === dateCreated.getMonth(),
       );
@@ -214,7 +220,7 @@ const Birthdays: React.FC = () => {
       return {
         description,
         date: currentDate,
-        dateFormatted: format(new Date(el.date_of_birth), 'dd/MM'),
+        dateFormatted: format(dateCreated, 'dd/MM'),
         type,
       };
     });
@@ -236,13 +242,13 @@ const Birthdays: React.FC = () => {
       return {
         description: `Casamento: Ir∴ ${el.name} e ${wife}`,
         date: currentDate,
-        dateFormatted: format(new Date(el.wedding_date), 'dd/MM'),
+        dateFormatted: format(dateCreated, 'dd/MM'),
         type: 'casamento',
       };
     }, []);
 
     const iniciacaoDateFormatted: Data[] = iniciacaoDates.map(el => {
-      const date = new Date(el.iniciacao_date);
+      const date = new Date(`${el.iniciacao_date.split('T')[0]}T03:00:00.000Z`);
       const year = intervalMonths.find(
         dateInterval => dateInterval.getMonth() === date.getMonth(),
       );

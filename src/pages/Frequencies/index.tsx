@@ -336,7 +336,6 @@ const Frequencies: React.FC = () => {
       field: 'february.totalMonth',
       width: 100,
       align: 'center',
-      headerStyle: { backgroundColor: '#CCC' },
       cellStyle: (_, rowData) => {
         return {
           backgroundColor:
@@ -357,7 +356,6 @@ const Frequencies: React.FC = () => {
         );
       },
       align: 'center',
-      headerStyle: { backgroundColor: '#CCC' },
       cellStyle: (_, rowData) => {
         return {
           backgroundColor:
@@ -370,7 +368,6 @@ const Frequencies: React.FC = () => {
       field: 'february.totalLast12Months',
       width: 100,
       align: 'center',
-      headerStyle: { backgroundColor: '#CCC' },
       cellStyle: (_, rowData) => {
         return {
           backgroundColor:
@@ -393,7 +390,6 @@ const Frequencies: React.FC = () => {
         );
       },
       align: 'center',
-      headerStyle: { backgroundColor: '#CCC' },
       cellStyle: (_, rowData) => {
         return {
           backgroundColor:
@@ -470,7 +466,6 @@ const Frequencies: React.FC = () => {
       field: 'april.totalMonth',
       width: 100,
       align: 'center',
-      headerStyle: { backgroundColor: '#CCC' },
       cellStyle: (_, rowData) => {
         return {
           backgroundColor:
@@ -491,7 +486,6 @@ const Frequencies: React.FC = () => {
         );
       },
       align: 'center',
-      headerStyle: { backgroundColor: '#CCC' },
       cellStyle: (_, rowData) => {
         return {
           backgroundColor:
@@ -504,7 +498,6 @@ const Frequencies: React.FC = () => {
       field: 'april.totalLast12Months',
       width: 100,
       align: 'center',
-      headerStyle: { backgroundColor: '#CCC' },
       cellStyle: (_, rowData) => {
         return {
           backgroundColor:
@@ -525,7 +518,6 @@ const Frequencies: React.FC = () => {
         );
       },
       align: 'center',
-      headerStyle: { backgroundColor: '#CCC' },
       cellStyle: (_, rowData) => {
         return {
           backgroundColor:
@@ -602,7 +594,6 @@ const Frequencies: React.FC = () => {
       field: 'june.totalMonth',
       width: 100,
       align: 'center',
-      headerStyle: { backgroundColor: '#CCC' },
       cellStyle: (_, rowData) => {
         return {
           backgroundColor:
@@ -623,7 +614,6 @@ const Frequencies: React.FC = () => {
         );
       },
       align: 'center',
-      headerStyle: { backgroundColor: '#CCC' },
       cellStyle: (_, rowData) => {
         return {
           backgroundColor:
@@ -636,7 +626,6 @@ const Frequencies: React.FC = () => {
       field: 'june.totalLast12Months',
       width: 100,
       align: 'center',
-      headerStyle: { backgroundColor: '#CCC' },
       cellStyle: (_, rowData) => {
         return {
           backgroundColor:
@@ -657,7 +646,6 @@ const Frequencies: React.FC = () => {
         );
       },
       align: 'center',
-      headerStyle: { backgroundColor: '#CCC' },
       cellStyle: (_, rowData) => {
         return {
           backgroundColor:
@@ -734,7 +722,6 @@ const Frequencies: React.FC = () => {
       field: 'august.totalMonth',
       width: 100,
       align: 'center',
-      headerStyle: { backgroundColor: '#CCC' },
       cellStyle: (_, rowData) => {
         return {
           backgroundColor:
@@ -755,7 +742,6 @@ const Frequencies: React.FC = () => {
         );
       },
       align: 'center',
-      headerStyle: { backgroundColor: '#CCC' },
       cellStyle: (_, rowData) => {
         return {
           backgroundColor:
@@ -768,7 +754,6 @@ const Frequencies: React.FC = () => {
       field: 'august.totalLast12Months',
       width: 100,
       align: 'center',
-      headerStyle: { backgroundColor: '#CCC' },
       cellStyle: (_, rowData) => {
         return {
           backgroundColor:
@@ -789,7 +774,6 @@ const Frequencies: React.FC = () => {
         );
       },
       align: 'center',
-      headerStyle: { backgroundColor: '#CCC' },
       cellStyle: (_, rowData) => {
         return {
           backgroundColor:
@@ -868,7 +852,6 @@ const Frequencies: React.FC = () => {
       field: 'october.totalMonth',
       width: 100,
       align: 'center',
-      headerStyle: { backgroundColor: '#CCC' },
       cellStyle: (_, rowData) => {
         return {
           backgroundColor:
@@ -889,7 +872,6 @@ const Frequencies: React.FC = () => {
         );
       },
       align: 'center',
-      headerStyle: { backgroundColor: '#CCC' },
       cellStyle: (_, rowData) => {
         return {
           backgroundColor:
@@ -902,7 +884,6 @@ const Frequencies: React.FC = () => {
       field: 'october.totalLast12Months',
       width: 100,
       align: 'center',
-      headerStyle: { backgroundColor: '#CCC' },
       cellStyle: (_, rowData) => {
         return {
           backgroundColor:
@@ -925,7 +906,6 @@ const Frequencies: React.FC = () => {
         );
       },
       align: 'center',
-      headerStyle: { backgroundColor: '#CCC' },
       cellStyle: (_, rowData) => {
         return {
           backgroundColor:
@@ -1038,7 +1018,6 @@ const Frequencies: React.FC = () => {
       field: 'december.totalLast12Months',
       width: 100,
       align: 'center',
-      headerStyle: { backgroundColor: '#CCC' },
       cellStyle: (_, rowData) => {
         return {
           backgroundColor:
@@ -1061,7 +1040,6 @@ const Frequencies: React.FC = () => {
         );
       },
       align: 'center',
-      headerStyle: { backgroundColor: '#CCC' },
       cellStyle: (_, rowData) => {
         return {
           backgroundColor:
@@ -1959,6 +1937,7 @@ const Frequencies: React.FC = () => {
                   zIndex: 0,
                   position: 'sticky',
                   top: 0,
+                  backgroundColor: '#6b9ec7',
                 },
                 fixedColumns: {
                   left: 3,
