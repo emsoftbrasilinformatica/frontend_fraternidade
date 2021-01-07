@@ -25,7 +25,7 @@ import {
 import Switch, { SwitchClassKey, SwitchProps } from '@material-ui/core/Switch';
 
 import { BsGraphDown, BsGraphUp } from 'react-icons/bs';
-import { FaExclamationTriangle } from 'react-icons/fa';
+import { FaExclamationTriangle, FaMoneyCheckAlt } from 'react-icons/fa';
 import { FiInfo } from 'react-icons/fi';
 
 import {
@@ -593,6 +593,10 @@ const FinancialPostings: React.FC = () => {
     history.push('lancamento');
   }, [history]);
 
+  const handleAddMonthlyPaymentPosting = useCallback(() => {
+    history.push('carne');
+  }, [history]);
+
   const editFinancialPosting = useCallback(
     rowData => {
       history.push(`lancamento/${rowData.id}`);
@@ -681,6 +685,15 @@ const FinancialPostings: React.FC = () => {
                 <ButtonNew type="button" onClick={handleDrawerOpen}>
                   Filtrar
                   <ImFilter style={{ color: '#0f5e9e' }} />
+                </ButtonNew>
+              </Grid>
+              <Grid item xs={12} md={4} style={{ display: 'flex' }}>
+                <ButtonNew
+                  type="button"
+                  onClick={handleAddMonthlyPaymentPosting}
+                >
+                  Lançar Carnê
+                  <FaMoneyCheckAlt style={{ color: '#0f5e9e' }} />
                 </ButtonNew>
               </Grid>
               <Grid item xs={12} md={4} style={{ display: 'flex' }}>
@@ -847,21 +860,6 @@ const FinancialPostings: React.FC = () => {
                     />
                   </div>
                 </Grid>
-
-                {/* <Grid item xs={12}>
-                  <div>
-                    <Label>Caixa</Label>
-                    <SelectContainer
-                      name="teller_id"
-                      placeholder="Selecione..."
-                      defaultValue={selectedTeller}
-                      onChange={setSelectedTeller}
-                      options={tellers}
-                      classNamePrefix="react-select"
-                      isClearable
-                    />
-                  </div>
-                </Grid> */}
 
                 <Grid item xs={12}>
                   <div>

@@ -50,6 +50,7 @@ import CostCenter from '../pages/CostCenters/CostCenter';
 
 import FinancialPostings from '../pages/FinancialPostings';
 import FinancialPosting from '../pages/FinancialPostings/FinancialPosting';
+import MonthlyPaymentPosting from '../pages/FinancialPostings/MonthlyPaymentPosting';
 
 import Tellers from '../pages/Tellers';
 import Teller from '../pages/Tellers/Teller';
@@ -262,6 +263,12 @@ const Routes: React.FC = () => (
     <Route
       path="/app/financeiro/lancamento/:id?"
       component={FinancialPosting}
+      allowed={['Venerável', 'Tesoureiro']}
+      isPrivate
+    />
+    <Route
+      path="/app/financeiro/carne"
+      component={MonthlyPaymentPosting}
       allowed={['Venerável', 'Tesoureiro']}
       isPrivate
     />
