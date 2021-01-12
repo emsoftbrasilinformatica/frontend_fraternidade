@@ -7,7 +7,7 @@ import { FormHandles } from '@unform/core';
 import * as Yup from 'yup';
 import { format } from 'date-fns';
 
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import {
   FaCalendarDay,
@@ -90,7 +90,6 @@ const SessionVisit: React.FC = () => {
   );
   const [obreiros, setObreiros] = useState<Obreiro[]>([]);
   const { addToast } = useToast();
-  const history = useHistory();
   const [ufsOriente, setUfsOriente] = useState<UFData[]>([]);
   const [citiesOriente, setCitiesOriente] = useState<CityData[]>([]);
 
@@ -280,7 +279,9 @@ const SessionVisit: React.FC = () => {
         }
 
         setSaveLoading(false);
-        history.push('/app/cad/visitas');
+        // history.push('/app/cad/visitas');
+
+        formRef.current?.setFieldValue('obreiro_id', undefined);
         addToast({
           type: 'success',
           title: 'Visita realizada com sucesso',
@@ -304,7 +305,7 @@ const SessionVisit: React.FC = () => {
         });
       }
     },
-    [addToast, params.id, history, citiesOriente, ufsOriente],
+    [addToast, params.id, citiesOriente, ufsOriente],
   );
 
   return (
