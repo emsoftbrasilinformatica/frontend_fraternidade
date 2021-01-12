@@ -132,6 +132,15 @@ export const CardInfo = styled.div`
     }
   }
 
+  .itemTesoureiro {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 60%;
+  }
+
   .divider {
     border-top: 5px solid #0f5e9e;
     border-radius: 5px;

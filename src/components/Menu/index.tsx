@@ -29,7 +29,7 @@ import { VscLibrary } from 'react-icons/vsc';
 import { FiType } from 'react-icons/fi';
 import { AiOutlineAreaChart } from 'react-icons/ai';
 import { BiDonateHeart } from 'react-icons/bi';
-import { GiMoneyStack } from 'react-icons/gi';
+import { GiMoneyStack, GiThreeFriends } from 'react-icons/gi';
 import ListItemLink from '../ListItemLink';
 
 interface MenuProps {
@@ -95,8 +95,8 @@ const Menu: React.FC<MenuProps> = ({ administrativeFunction, ...rest }) => {
 
   const itemsCadastros: ItemMenu[] = [
     {
-      description: 'Usuários',
-      link: '/app/cad/usuarios',
+      description: 'Obreiros',
+      link: '/app/cad/obreiros',
       icon: <SupervisedUserCircle />,
       collapse: false,
     },
@@ -163,6 +163,12 @@ const Menu: React.FC<MenuProps> = ({ administrativeFunction, ...rest }) => {
               to="/app/cad/tipos-sessao"
               primary="Tipos de Sessões"
             />
+            <ListItemLink
+              className={classes.nestedThird}
+              icon={<GiThreeFriends style={{ fontSize: '1.5rem' }} />}
+              to="/app/cad/visitas"
+              primary="Visitas"
+            />
           </List>
         </Collapse>
       ),
@@ -171,8 +177,8 @@ const Menu: React.FC<MenuProps> = ({ administrativeFunction, ...rest }) => {
 
   const itemsCadastrosChanceler: ItemMenu[] = [
     {
-      description: 'Usuários',
-      link: '/app/cad/usuarios',
+      description: 'Obreiros',
+      link: '/app/cad/obreiros',
       icon: <SupervisedUserCircle />,
       collapse: false,
     },
@@ -208,6 +214,12 @@ const Menu: React.FC<MenuProps> = ({ administrativeFunction, ...rest }) => {
               icon={<FiType style={{ fontSize: '1.5rem' }} />}
               to="/app/cad/tipos-sessao"
               primary="Tipos de Sessões"
+            />
+            <ListItemLink
+              className={classes.nestedThird}
+              icon={<GiThreeFriends style={{ fontSize: '1.5rem' }} />}
+              to="/app/cad/visitas"
+              primary="Visitas"
             />
           </List>
         </Collapse>

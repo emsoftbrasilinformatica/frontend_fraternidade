@@ -121,7 +121,7 @@ export const ContainerProgress = styled.div`
   }
 
   .data {
-    padding: 16px;
+    padding-bottom: 16px;
   }
 
   .content {

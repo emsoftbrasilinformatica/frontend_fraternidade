@@ -350,7 +350,7 @@ const Management: React.FC = () => {
                         lookup: administrativeFunctionsLookup,
                       },
                       {
-                        title: 'Usuário',
+                        title: 'Obreiro',
                         field: 'user_id',
                         editable: 'onUpdate',
                         lookup: usersLookup,
@@ -444,7 +444,7 @@ const Management: React.FC = () => {
                         lookup: notAdministrativeFunctionsLookup,
                       },
                       {
-                        title: 'Usuário',
+                        title: 'Obreiro',
                         field: 'user_id',
                         editable: 'onUpdate',
                         lookup: usersLookup,

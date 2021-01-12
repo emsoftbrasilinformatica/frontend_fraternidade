@@ -102,3 +102,26 @@ export const Chip = styled.div<ChipProps>`
       color: ${props.color};
     `}
 `;
+
+export const TotalSessions = styled.div`
+  height: 100px;
+  background-color: #fff;
+  border-radius: 6px;
+  padding: 16px;
+  border: 3px solid #0f5e9e;
+
+  .title {
+    display: flex;
+    justify-content: center;
+    font-weight: bold;
+    padding-bottom: 8px;
+    font-size: 18px;
+  }
+
+  .content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+  }
+`;

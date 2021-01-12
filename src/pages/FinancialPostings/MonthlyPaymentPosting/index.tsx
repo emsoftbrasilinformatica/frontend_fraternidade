@@ -213,7 +213,7 @@ const MonthlyPaymentPosting: React.FC = () => {
           addToast({
             type: 'error',
             title: 'Atenção!',
-            description: 'Selecione ao menos um usuário.',
+            description: 'Selecione ao menos um obreiro.',
           });
 
           return;
@@ -380,7 +380,7 @@ const MonthlyPaymentPosting: React.FC = () => {
                 title=""
                 columns={[
                   {
-                    title: 'Usuário',
+                    title: 'Obreiro',
                     field: 'name',
                   },
                   {

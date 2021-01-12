@@ -360,22 +360,20 @@ const User: React.FC = () => {
           dependents: dependentsToBeCreate,
         };
 
-        console.log(user.date_of_birth);
-
         if (params.id) {
           await api.put(`/users/${params.id}`, user);
         } else {
           await api.post('/users', user);
         }
         setSaveLoading(false);
-        history.push('/app/cad/usuarios');
+        history.push('/app/cad/obreiros');
 
         addToast({
           type: 'success',
-          title: `Usuário ${
+          title: `Obreiro ${
             params.id ? 'atualizado' : 'cadastrado'
           } com sucesso.`,
-          description: `O usuário ${user.name} foi ${
+          description: `O obreiro ${user.name} foi ${
             params.id ? 'atualizado' : 'cadastrado'
           } com sucesso!`,
         });
@@ -939,8 +937,8 @@ const User: React.FC = () => {
   return (
     <ThemeProvider theme={theme}>
       <BasePage
-        title={params.id ? 'Editar Usuário' : 'Novo Usuário'}
-        backLink="/app/cad/usuarios"
+        title={params.id ? 'Editar Obreiro' : 'Novo Obreiro'}
+        backLink="/app/cad/obreiros"
       >
         <Container>
           <Form ref={formRef} initialData={editUser} onSubmit={handleSubmit}>

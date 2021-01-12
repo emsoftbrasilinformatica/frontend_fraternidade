@@ -44,7 +44,7 @@ const Users: React.FC = () => {
 
   const editUser = useCallback(
     rowData => {
-      history.push(`usuario/${rowData.id}`);
+      history.push(`obreiro/${rowData.id}`);
     },
     [history],
   );
@@ -68,23 +68,23 @@ const Users: React.FC = () => {
   );
 
   const handleAddUser = useCallback(() => {
-    history.push('usuario');
+    history.push('obreiro');
   }, [history]);
 
   return (
-    <BasePage title="Usuários">
+    <BasePage title="Obreiros">
       {loading ? (
         <Loading />
       ) : (
         <Container>
           <ArroundButton>
             <Button type="button" onClick={handleAddUser}>
-              Adicionar Usuário
+              Adicionar Obreiro
               <AddCircle style={{ color: '#0f5e9e' }} />
             </Button>
           </ArroundButton>
           <MaterialTable
-            title="Listagem de Usuários"
+            title="Listagem de Obreiros"
             localization={labels.materialTable.localization}
             columns={[
               {

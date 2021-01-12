@@ -9,7 +9,6 @@ import {
   intervalToDuration,
   eachMonthOfInterval,
   addDays,
-  toDate,
 } from 'date-fns';
 
 import LoadingLocale from '../LoadingLocale';
@@ -169,7 +168,6 @@ const Birthdays: React.FC = () => {
     }
 
     const usersBirthdayFormatted: Data[] = birthdaysUsers.map(el => {
-      console.log(toDate(new Date(el.date_of_birth)));
       const dateCreated = new Date(
         `${el.date_of_birth.split('T')[0]}T03:00:00.000Z`,
       );

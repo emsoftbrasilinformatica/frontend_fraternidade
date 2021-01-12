@@ -27,6 +27,8 @@ import Sessions from '../pages/Sessions';
 import Session from '../pages/Sessions/Session';
 import Presences from '../pages/Sessions/Presences';
 import Frequencies from '../pages/Frequencies';
+import SessionVisits from '../pages/SessionVisits';
+import SessionVisit from '../pages/SessionVisits/SessionVisit';
 
 import Statutes from '../pages/Statutes';
 import Statute from '../pages/Statutes/Statute';
@@ -160,6 +162,20 @@ const Routes: React.FC = () => (
     <Route
       path="/app/cad/frequencias"
       component={Frequencies}
+      allowed={['Venerável', 'Chanceler']}
+      isPrivate
+    />
+
+    <Route
+      path="/app/cad/visitas"
+      component={SessionVisits}
+      allowed={['Venerável', 'Chanceler']}
+      isPrivate
+    />
+
+    <Route
+      path="/app/cad/visita/:id?"
+      component={SessionVisit}
       allowed={['Venerável', 'Chanceler']}
       isPrivate
     />
@@ -354,13 +370,13 @@ const Routes: React.FC = () => (
 
     {/** users */}
     <Route
-      path="/app/cad/usuarios"
+      path="/app/cad/obreiros"
       component={Users}
       allowed={['Venerável', 'Chanceler']}
       isPrivate
     />
     <Route
-      path="/app/cad/usuario/:id?"
+      path="/app/cad/obreiro/:id?"
       component={User}
       allowed={['Venerável', 'Chanceler']}
       isPrivate

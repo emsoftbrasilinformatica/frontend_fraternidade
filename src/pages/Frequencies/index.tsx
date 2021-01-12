@@ -9,7 +9,13 @@ import MaterialTable, { Column } from 'material-table';
 import { format, isBefore, isAfter, isEqual } from 'date-fns';
 import api from '../../services/api';
 import BasePage from '../../components/BasePage';
-import { Button, DateRangePickerContent, Label, Chip } from './styles';
+import {
+  Button,
+  DateRangePickerContent,
+  Label,
+  Chip,
+  TotalSessions,
+} from './styles';
 import Loading from '../../components/Loading';
 import labels from '../../utils/labels';
 
@@ -113,13 +119,22 @@ interface TotalNumbersSessions {
   october: NumberSessions;
   november: NumberSessions;
   december: NumberSessions;
-  total: NumberSessions;
+  total: NumberSessionsTotal;
 }
 
 interface NumberSessions {
   totalGrauI: number;
   totalGrauII: number;
   totalGrauIII: number;
+}
+
+interface NumberSessionsTotal {
+  totalGrauI: number;
+  totalGrauII: number;
+  totalGrauIII: number;
+  totalAprendiz: number;
+  totalCompanheiro: number;
+  totalMestre: number;
 }
 
 interface ShootDown {
@@ -984,7 +999,6 @@ const Frequencies: React.FC = () => {
       field: 'december.totalMonth',
       width: 100,
       align: 'center',
-      headerStyle: { backgroundColor: '#CCC' },
       cellStyle: (_, rowData) => {
         return {
           backgroundColor:
@@ -1005,7 +1019,6 @@ const Frequencies: React.FC = () => {
         );
       },
       align: 'center',
-      headerStyle: { backgroundColor: '#CCC' },
       cellStyle: (_, rowData) => {
         return {
           backgroundColor:
@@ -1274,6 +1287,9 @@ const Frequencies: React.FC = () => {
         totalGrauI: 0,
         totalGrauII: 0,
         totalGrauIII: 0,
+        totalAprendiz: 0,
+        totalCompanheiro: 0,
+        totalMestre: 0,
       },
     };
 
@@ -1285,11 +1301,14 @@ const Frequencies: React.FC = () => {
           total.total.totalGrauI += Number(session.total);
           total.total.totalGrauII += Number(session.total);
           total.total.totalGrauIII += Number(session.total);
+          total.total.totalAprendiz += Number(session.total);
         } else if (session.order === 2) {
           total.total.totalGrauII += Number(session.total);
           total.total.totalGrauIII += Number(session.total);
+          total.total.totalCompanheiro += Number(session.total);
         } else if (session.order === 3) {
           total.total.totalGrauIII += Number(session.total);
+          total.total.totalMestre += Number(session.total);
         }
 
         if (month) {
@@ -1900,7 +1919,6 @@ const Frequencies: React.FC = () => {
       ) : (
         <>
           <Container>
-            {/* {console.log(finalData)} */}
             <Grid container spacing={2} style={{ marginTop: 16 }}>
               <Grid item xs={12} md={3}>
                 <DateRangePickerContent>
@@ -1917,11 +1935,22 @@ const Frequencies: React.FC = () => {
                   />
                 </DateRangePickerContent>
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12} md={3}>
                 <Button type="button" onClick={handleSearchFrequencies}>
                   Buscar
                   <Search />
                 </Button>
+              </Grid>
+
+              <Grid item xs={12} md={6}>
+                <TotalSessions>
+                  <div className="title">Total de Sessões (Ano)</div>
+                  <div className="content">
+                    Aprendiz: {totalNumbersSessions.total.totalAprendiz} |
+                    Companheiro: {totalNumbersSessions.total.totalCompanheiro} |
+                    Mestre: {totalNumbersSessions.total.totalMestre}
+                  </div>
+                </TotalSessions>
               </Grid>
             </Grid>
 

@@ -188,9 +188,6 @@ const Demonstrations: React.FC = () => {
       let startValue = 0;
       startValue = totalValue - valueMonth;
       return startValue;
-      // console.log('menor');
-      // startValue = totalValue + valueMonth;
-      // return startValue;
     }
     return 0;
   }, [viewData, totalValue]);
@@ -408,6 +405,7 @@ const Demonstrations: React.FC = () => {
                   pageSize: 10,
                   headerStyle: {
                     zIndex: 0,
+                    backgroundColor: '#6b9ec7',
                   },
                 }}
               />
@@ -417,7 +415,7 @@ const Demonstrations: React.FC = () => {
                   <CardInfo>
                     <div className="title">Saldo Loja</div>
                     <div className="item">
-                      Total débito Loja:
+                      Total recebimentos Loja:
                       <span>
                         <Chip color="#FFF" backgroundColor="#12a454">
                           {formatValue(debitLoja)}
@@ -425,7 +423,7 @@ const Demonstrations: React.FC = () => {
                       </span>
                     </div>
                     <div className="item">
-                      Total crédito Loja:
+                      Total pagamentos Loja:
                       <span>
                         <Chip color="#FFF" backgroundColor="#c53030">
                           {formatValue(creditLoja)}
@@ -452,7 +450,7 @@ const Demonstrations: React.FC = () => {
                   <CardInfo>
                     <div className="title">Saldo Liga</div>
                     <div className="item">
-                      Total débito Liga:
+                      Total recebimentos Liga:
                       <span>
                         <Chip color="#FFF" backgroundColor="#12a454">
                           {formatValue(debitLiga)}
@@ -460,7 +458,7 @@ const Demonstrations: React.FC = () => {
                       </span>
                     </div>
                     <div className="item">
-                      Total crédito Liga:
+                      Total pagamentos Liga:
                       <span>
                         <Chip color="#FFF" backgroundColor="#c53030">
                           {formatValue(creditLiga)}
@@ -533,9 +531,7 @@ const Demonstrations: React.FC = () => {
                   <span>
                     <Chip
                       color="#FFF"
-                      backgroundColor={
-                        totalValue > valueInitial ? '#12a454' : '#c53030'
-                      }
+                      backgroundColor={totalValue > 0 ? '#12a454' : '#c53030'}
                     >
                       {formatValue(totalValue)}
                     </Chip>
@@ -563,7 +559,7 @@ const Demonstrations: React.FC = () => {
                               </span>
                             </div>
                             <div className="item">
-                              Valor em investimento:
+                              Valor em aplicação:
                               <span>
                                 <Chip color="#FFF" backgroundColor="#12a454">
                                   {formatValue(
@@ -595,25 +591,7 @@ const Demonstrations: React.FC = () => {
                 <Grid item xs={12} md={4}>
                   <CardInfo>
                     <div className="title">Saldo Tesoureiro</div>
-                    <div className="item">
-                      Valor Final:
-                      <span>
-                        <Chip color="#FFF" backgroundColor="#12a454">
-                          {formatValue(totalValue)}
-                        </Chip>
-                      </span>
-                    </div>
-                    <div className="item">
-                      Total Bancos:
-                      <span>
-                        <Chip color="#FFF" backgroundColor="#12a454">
-                          {formatValue(totalValueBanks)}
-                        </Chip>
-                      </span>
-                    </div>
-                    <hr className="divider" />
-                    <div className="item">
-                      Saldo:
+                    <div className="itemTesoureiro">
                       <span>
                         <Chip
                           color="#FFF"
@@ -683,9 +661,9 @@ const Demonstrations: React.FC = () => {
                 </Grid>
                 <Grid item xs={12} md={4}>
                   <CardInfo>
-                    <div className="title">Saldo Total S/ Tronco</div>
+                    <div className="title">Resumo Final</div>
                     <div className="item">
-                      Valor Final:
+                      Saldo Total:
                       <span>
                         <Chip color="#FFF" backgroundColor="#12a454">
                           {formatValue(totalValue)}
@@ -703,7 +681,7 @@ const Demonstrations: React.FC = () => {
                     </div>
                     <hr className="divider" />
                     <div className="item">
-                      Total:
+                      Saldo da Loja:
                       <span>
                         <Chip
                           color="#FFF"

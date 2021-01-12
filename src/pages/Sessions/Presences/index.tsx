@@ -186,7 +186,7 @@ const Presences: React.FC = () => {
               title="Lista de presença"
               columns={[
                 {
-                  title: 'Usuário',
+                  title: 'Obreiro',
                   field: 'name',
                 },
                 {

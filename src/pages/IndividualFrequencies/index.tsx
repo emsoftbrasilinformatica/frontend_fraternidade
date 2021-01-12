@@ -43,6 +43,12 @@ interface Session {
   };
 }
 
+interface SessionVisit {
+  total: number;
+  name: string;
+  date: string;
+}
+
 interface ShootDown {
   name: string;
   january: ShootDownMonth;
@@ -169,6 +175,7 @@ const IndividualFrequencies: React.FC = () => {
   const [userData, setUserData] = useState<UserData[]>([]);
   const [sessions, setSessions] = useState<Session[]>([]);
   const [totalSessions, setTotalSessions] = useState<SessionData[]>([]);
+  const [sessionVisits, setSessionVisits] = useState<SessionVisit[]>([]);
   const { user } = useAuth();
 
   const handleChangeStartDate = useCallback((date: Date) => {
@@ -221,11 +228,13 @@ const IndividualFrequencies: React.FC = () => {
       api.get<UserData[]>(`/frequencies/frequencies-user/${user.id}`),
       api.get<SessionData[]>('/frequencies/total-sessions'),
       api.get<Session[]>('/sessions'),
+      api.get<SessionVisit[]>(`/session-visits-reports/${user.id}`),
     ])
       .then(res => {
         setUserData(res[0].data);
         setTotalSessions(res[1].data);
         setSessions(res[2].data);
+        setSessionVisits(res[3].data);
       })
       .finally(() => {
         setLoading(false);
@@ -1035,6 +1044,65 @@ const IndividualFrequencies: React.FC = () => {
     shootDown12Months,
   ]);
 
+  const totalSessionVisitsMonth = useMemo(() => {
+    const sessionVisitFind = sessionVisits.find(sessionVisit =>
+      isEqual(startDate, new Date(sessionVisit.date)),
+    );
+
+    return sessionVisitFind ? sessionVisitFind.total : 0;
+  }, [sessionVisits, startDate]);
+
+  const totalSessionVisitsYear = useMemo(() => {
+    const firstDate = new Date(startDate.getFullYear(), 0, 1);
+    const lastDate = new Date(startDate.getFullYear(), 11 + 1, 0);
+
+    const total = sessionVisits.reduce(
+      (acc: number, sessionVisit: SessionVisit) => {
+        const date = new Date(sessionVisit.date);
+        if (
+          (isEqual(date, firstDate) || isAfter(date, firstDate)) &&
+          (isEqual(date, lastDate) || isBefore(date, lastDate))
+        ) {
+          acc += Number(sessionVisit.total);
+        }
+
+        return acc;
+      },
+      0,
+    );
+    return total;
+  }, [startDate, sessionVisits]);
+
+  const totalSessionVisits12Months = useMemo(() => {
+    const pastDate = new Date(
+      startDate.getFullYear() - 1,
+      startDate.getMonth() + 1,
+      0,
+    );
+    const todayDate = new Date(
+      startDate.getFullYear(),
+      startDate.getMonth() + 1,
+      0,
+    );
+
+    const total = sessionVisits.reduce(
+      (acc: number, sessionVisit: SessionVisit) => {
+        const date = new Date(sessionVisit.date);
+        if (
+          isAfter(date, pastDate) &&
+          (isEqual(date, todayDate) || isBefore(date, todayDate))
+        ) {
+          acc += Number(sessionVisit.total);
+        }
+
+        return acc;
+      },
+      0,
+    );
+
+    return total;
+  }, [startDate, sessionVisits]);
+
   return (
     <BasePage title="Frequência">
       {loading ? (
@@ -1077,6 +1145,9 @@ const IndividualFrequencies: React.FC = () => {
                       Presentes: {monthData.totalMonth} | Total:{' '}
                       {monthData.totalSessionsMonth}
                     </div>
+                    <div className="data">
+                      Visitas: {totalSessionVisitsMonth}
+                    </div>
                     <div className="content">
                       <CircularProgressbar
                         value={monthData.percentMonth}
@@ -1097,6 +1168,9 @@ const IndividualFrequencies: React.FC = () => {
                       Presentes: {monthData.totalYear} | Total:
                       {monthData.totalSessionsYear}
                     </div>
+                    <div className="data">
+                      Visitas: {totalSessionVisitsYear}
+                    </div>
                     <div className="content">
                       <CircularProgressbar
                         value={monthData.percentYear}
@@ -1116,6 +1190,9 @@ const IndividualFrequencies: React.FC = () => {
                     <div className="data">
                       Presentes: {monthData.total12Months} | Total:
                       {monthData.totalSessions12Months}
+                    </div>
+                    <div className="data">
+                      Visitas: {totalSessionVisits12Months}
                     </div>
                     <div className="content">
                       <CircularProgressbar
