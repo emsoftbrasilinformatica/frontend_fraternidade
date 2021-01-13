@@ -282,6 +282,7 @@ const SessionVisit: React.FC = () => {
         // history.push('/app/cad/visitas');
 
         formRef.current?.setFieldValue('obreiro_id', undefined);
+        formRef.current?.getFieldRef('obreiro_id').focus();
         addToast({
           type: 'success',
           title: 'Visita realizada com sucesso',

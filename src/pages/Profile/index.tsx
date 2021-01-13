@@ -364,6 +364,18 @@ const Profile: React.FC = () => {
           wedding_date:
             data.wedding_date &&
             format(new Date(data.wedding_date), 'yyyy-MM-dd'),
+          iniciacao_date:
+            data.iniciacao_date &&
+            format(new Date(data.iniciacao_date), 'yyyy-MM-dd'),
+          exaltacao_date:
+            data.exaltacao_date &&
+            format(new Date(data.exaltacao_date), 'yyyy-MM-dd'),
+          elevacao_date:
+            data.elevacao_date &&
+            format(new Date(data.elevacao_date), 'yyyy-MM-dd'),
+          instalacao_date:
+            data.instalacao_date &&
+            format(new Date(data.instalacao_date), 'yyyy-MM-dd'),
         };
 
         const res = await api.put(`/users/${user.id}`, userCreated);
@@ -590,6 +602,18 @@ const Profile: React.FC = () => {
               : '',
           wedding_date: userEdited.wedding_date
             ? new Date(userEdited.wedding_date)
+            : null,
+          iniciacao_date: userEdited.iniciacao_date
+            ? new Date(userEdited.iniciacao_date)
+            : null,
+          exaltacao_date: userEdited.exaltacao_date
+            ? new Date(userEdited.exaltacao_date)
+            : null,
+          elevacao_date: userEdited.elevacao_date
+            ? new Date(userEdited.elevacao_date)
+            : null,
+          instalacao_date: userEdited.instalacao_date
+            ? new Date(userEdited.instalacao_date)
             : null,
           number_sessions_aprendiz: userEdited.number_sessions_aprendiz,
           number_sessions_companheiro: userEdited.number_sessions_companheiro,
@@ -1184,6 +1208,44 @@ const Profile: React.FC = () => {
                       icon={FiCalendar}
                       label="Data do Casamento"
                       placeholderText="Insira a data do casamento"
+                    />
+                  </Grid>
+                </Grid>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={3}>
+                    <DatePicker
+                      name="iniciacao_date"
+                      icon={FiCalendar}
+                      label="Data de Iniciação"
+                      placeholderText="Insira a data de iniciação"
+                      justRead
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={3}>
+                    <DatePicker
+                      name="elevacao_date"
+                      icon={FiCalendar}
+                      label="Data de Elevação"
+                      placeholderText="Insira a data de elevação"
+                      justRead
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={3}>
+                    <DatePicker
+                      name="exaltacao_date"
+                      icon={FiCalendar}
+                      label="Data de Exaltação"
+                      placeholderText="Insira a data de exaltação"
+                      justRead
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={3}>
+                    <DatePicker
+                      name="instalacao_date"
+                      icon={FiCalendar}
+                      label="Data de Instalação"
+                      placeholderText="Insira a data de instalação"
+                      justRead
                     />
                   </Grid>
                 </Grid>

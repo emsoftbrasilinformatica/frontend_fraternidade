@@ -13,6 +13,9 @@ export default {
         searchTooltip: 'Pesquisar',
         searchPlaceholder: 'Pesquisar',
         nRowsSelected: '{0} linha(s) selecionada(s)',
+        exportTitle: 'Exportar',
+        exportCSVName: 'Exportar para CSV',
+        exportPDFName: 'Exportar para PDF',
       },
       header: {
         actions: 'Ações',

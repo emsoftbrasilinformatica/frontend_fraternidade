@@ -21,20 +21,17 @@ import {
   DialogContent,
   DialogContentText,
   Button as ButtonMT,
+  FormControl,
+  FormLabel,
+  RadioGroup,
+  Radio,
 } from '@material-ui/core';
-import Switch, { SwitchClassKey, SwitchProps } from '@material-ui/core/Switch';
 
 import { BsGraphDown, BsGraphUp } from 'react-icons/bs';
 import { FaExclamationTriangle, FaMoneyCheckAlt } from 'react-icons/fa';
 import { FiInfo } from 'react-icons/fi';
 
-import {
-  makeStyles,
-  useTheme,
-  withStyles,
-  Theme,
-  createStyles,
-} from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 
 import {
   Edit,
@@ -73,6 +70,7 @@ import {
 } from './styles';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
+import { useFinancialPostingsFilters } from '../../hooks/financialPostingsFilters';
 
 interface FinancialPosting {
   id?: string;
@@ -93,17 +91,14 @@ interface FinancialPosting {
     description: string;
   };
   date: string;
+  date_formatted?: string;
   mov: string;
   value: number;
   value_formatted?: string;
   due_date?: string;
+  due_date_formatted?: string;
   payday?: string;
-}
-
-interface CheckboxOption {
-  id: string;
-  value: string;
-  label: string;
+  payday_formatted?: string;
 }
 
 interface OptionsData {
@@ -121,19 +116,6 @@ interface Obreiro {
   label: string;
 }
 
-interface Option {
-  id: string;
-  value: string;
-}
-
-interface Styles extends Partial<Record<SwitchClassKey, string>> {
-  focusVisible?: string;
-}
-
-interface Props extends SwitchProps {
-  classes: Styles;
-}
-
 interface Payment {
   value: number;
   payment_amount?: number;
@@ -147,7 +129,7 @@ interface QueryParams {
   end_due_date?: string;
   type_financial_posting_id?: string;
   cost_center_id?: string;
-  only_pays?: boolean;
+  only_pays?: string;
   obreiro_id?: string;
   mov?: string;
 }
@@ -193,93 +175,39 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const IOSSwitch = withStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      width: 42,
-      height: 26,
-      padding: 0,
-      margin: theme.spacing(1),
-    },
-    switchBase: {
-      padding: 1,
-      '&$checked': {
-        transform: 'translateX(16px)',
-        color: theme.palette.common.white,
-        '& + $track': {
-          backgroundColor: '#52d869',
-          opacity: 1,
-          border: 'none',
-        },
-      },
-      '&$focusVisible $thumb': {
-        color: '#52d869',
-        border: '6px solid #fff',
-      },
-    },
-    thumb: {
-      width: 24,
-      height: 24,
-    },
-    track: {
-      borderRadius: 26 / 2,
-      border: `1px solid ${theme.palette.grey[400]}`,
-      backgroundColor: theme.palette.grey[50],
-      opacity: 1,
-      transition: theme.transitions.create(['background-color', 'border']),
-    },
-    checked: {},
-    focusVisible: {},
-  }),
-)(({ classes, ...props }: Props) => {
-  return (
-    <Switch
-      focusVisibleClassName={classes.focusVisible}
-      disableRipple
-      classes={{
-        root: classes.root,
-        switchBase: classes.switchBase,
-        thumb: classes.thumb,
-        track: classes.track,
-        checked: classes.checked,
-      }}
-      {...props}
-    />
-  );
-});
-
 const FinancialPostings: React.FC = () => {
-  const dateAux = new Date();
+  const {
+    startDate,
+    setSDate,
+    endDate,
+    setEDate,
+    startDueDate,
+    setSDueDate,
+    endDueDate,
+    setEDueDate,
+    onlyPays,
+    setOnlyPaysItem,
+    selectedCostCenter,
+    setCostCenter,
+    selectedMov,
+    setMov,
+    selectedObreiro,
+    setObreiro,
+    selectedTypeFinancialPosting,
+    setTypeFinancialPosting,
+  } = useFinancialPostingsFilters();
   const [data, setData] = useState<FinancialPosting[]>([]);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const history = useHistory();
   const classes = useStyles();
   const theme = useTheme();
-  const [startDate, setStartDate] = useState(
-    new Date(dateAux.getFullYear(), dateAux.getMonth(), 1),
-  );
-  const [endDate, setEndDate] = useState(
-    new Date(dateAux.getFullYear(), dateAux.getMonth() + 1, 0),
-  );
-  const [startDueDate, setStartDueDate] = useState<Date | null>(null);
-  const [endDueDate, setEndDueDate] = useState<Date | null>(null);
   const [typesFinancialPostings, setTypesFinancialPostings] = useState<
     OptionsData[]
   >([]);
   const [costCenters, setCostCenters] = useState<OptionsData[]>([]);
-  // const [tellers, setTellers] = useState<OptionsData[]>([]);
   const [obreiros, setObreiros] = useState<Obreiro[]>([]);
-  const [onlyPays, setOnlyPays] = useState(false);
   const [searchLoading, setSearchLoading] = useState(false);
-  const [selectedObreiro, setSelectedObreiro] = useState<Option>();
-  // const [selectedTeller, setSelectedTeller] = useState<Option>();
-  const [
-    selectedTypeFinancialPosting,
-    setSelectedTypeFinancialPosting,
-  ] = useState<Option>();
-  const [selectedCostCenter, setSelectedCostCenter] = useState<Option>();
-  const [selectedMov, setSelectedMov] = useState<Option>();
   const movs = [
     { label: 'C', value: 'C' },
     { label: 'D', value: 'D' },
@@ -327,10 +255,6 @@ const FinancialPostings: React.FC = () => {
     }
   }, [idToBeDeleted, addToast, data]);
 
-  const handleChangeOnlyPays = useCallback(() => {
-    setOnlyPays(!onlyPays);
-  }, [onlyPays]);
-
   const handleSubmit = useCallback(async () => {
     const params: QueryParams = {};
 
@@ -360,9 +284,7 @@ const FinancialPostings: React.FC = () => {
       params.start_due_date = format(startDueDate, 'yyyy-MM-dd');
     }
 
-    if (onlyPays) {
-      params.only_pays = onlyPays;
-    }
+    params.only_pays = onlyPays;
 
     setSearchLoading(true);
     api
@@ -374,6 +296,13 @@ const FinancialPostings: React.FC = () => {
           response.data.map(result => {
             return {
               value_formatted: formatValue(result.value),
+              date_formatted: format(new Date(result.date), 'dd/MM/yyyy'),
+              due_date_formatted: result.due_date
+                ? format(new Date(result.due_date), 'dd/MM/yyyy')
+                : undefined,
+              payday_formatted: result.payday
+                ? format(new Date(result.payday), 'dd/MM/yyyy')
+                : undefined,
               ...result,
             };
           }),
@@ -395,33 +324,45 @@ const FinancialPostings: React.FC = () => {
     selectedMov,
   ]);
 
-  const handleChangeStartDate = useCallback((date: Date) => {
-    if (date) {
-      setStartDate(date);
-    }
-  }, []);
+  const handleChangeStartDate = useCallback(
+    (date: Date) => {
+      if (date) {
+        setSDate(date);
+      }
+    },
+    [setSDate],
+  );
 
-  const handleChangeEndDate = useCallback((date: Date) => {
-    if (date) {
-      setEndDate(date);
-    }
-  }, []);
+  const handleChangeEndDate = useCallback(
+    (date: Date) => {
+      if (date) {
+        setEDate(date);
+      }
+    },
+    [setEDate],
+  );
 
-  const handleChangeStartDueDate = useCallback((date: Date) => {
-    if (date) {
-      setStartDueDate(date);
-    } else {
-      setStartDueDate(null);
-    }
-  }, []);
+  const handleChangeStartDueDate = useCallback(
+    (date: Date) => {
+      if (date) {
+        setSDueDate(date);
+      } else {
+        setSDueDate(null);
+      }
+    },
+    [setSDueDate],
+  );
 
-  const handleChangeEndDueDate = useCallback((date: Date) => {
-    if (date) {
-      setEndDueDate(date);
-    } else {
-      setEndDueDate(null);
-    }
-  }, []);
+  const handleChangeEndDueDate = useCallback(
+    (date: Date) => {
+      if (date) {
+        setEDueDate(date);
+      } else {
+        setEDueDate(null);
+      }
+    },
+    [setEDueDate],
+  );
 
   useEffect(() => {
     api.get('/types-financial-postings').then(response => {
@@ -474,21 +415,6 @@ const FinancialPostings: React.FC = () => {
     },
     [toPay, handleSubmit],
   );
-
-  // useEffect(() => {
-  //   setSelectedTeller(undefined);
-  //   api.get(`/tellers/cost-center/${selectedCostCenter?.id}`).then(response => {
-  //     setTellers(
-  //       response.data.map((option: OptionsData) => {
-  //         return {
-  //           ...option,
-  //           label: option.description,
-  //           value: option.id,
-  //         };
-  //       }),
-  //     );
-  //   });
-  // }, [selectedCostCenter]);
 
   useEffect(() => {
     api.get('/cost-centers').then(response => {
@@ -544,25 +470,52 @@ const FinancialPostings: React.FC = () => {
 
   const loadFinancialPostings = useCallback(() => {
     setLoading(true);
-    const today = new Date();
+    const params: QueryParams = {};
+
+    if (startDate && endDate) {
+      params.start_date = format(startDate, 'yyyy-MM-dd');
+      params.end_date = format(endDate, 'yyyy-MM-dd');
+    }
+
+    if (selectedTypeFinancialPosting) {
+      params.type_financial_posting_id = selectedTypeFinancialPosting.id;
+    }
+
+    if (selectedObreiro) {
+      params.obreiro_id = selectedObreiro.id;
+    }
+
+    if (selectedCostCenter) {
+      params.cost_center_id = selectedCostCenter.id;
+    }
+
+    if (selectedMov) {
+      params.mov = selectedMov.value;
+    }
+
+    if (endDueDate && startDueDate) {
+      params.end_due_date = format(endDueDate, 'yyyy-MM-dd');
+      params.start_due_date = format(startDueDate, 'yyyy-MM-dd');
+    }
+
+    params.only_pays = onlyPays;
+
     api
       .get<FinancialPosting[]>('/financial-postings', {
-        params: {
-          start_date: format(
-            new Date(today.getFullYear(), today.getMonth(), 1),
-            'yyyy-MM-dd',
-          ),
-          end_date: format(
-            new Date(today.getFullYear(), today.getMonth() + 1, 0),
-            'yyyy-MM-dd',
-          ),
-        },
+        params,
       })
       .then(response => {
         setData(
           response.data.map(result => {
             return {
               value_formatted: formatValue(result.value),
+              date_formatted: format(new Date(result.date), 'dd/MM/yyyy'),
+              due_date_formatted: result.due_date
+                ? format(new Date(result.due_date), 'dd/MM/yyyy')
+                : undefined,
+              payday_formatted: result.payday
+                ? format(new Date(result.payday), 'dd/MM/yyyy')
+                : undefined,
               ...result,
             };
           }),
@@ -571,6 +524,7 @@ const FinancialPostings: React.FC = () => {
       .finally(() => {
         setLoading(false);
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -708,15 +662,19 @@ const FinancialPostings: React.FC = () => {
               title="Listagem Lançamentos Finan."
               localization={labels.materialTable.localization}
               columns={[
-                { title: 'Pago', field: 'payday', type: 'boolean' },
-                { title: 'Data', field: 'date', type: 'date' },
+                { title: 'Pago', field: 'payday_formatted', type: 'boolean' },
+                { title: 'Data', field: 'date_formatted', type: 'date' },
                 { title: 'Tipo', field: 'typeFinancialPosting.description' },
                 { title: 'Valor', field: 'value_formatted' },
                 { title: 'C.C.', field: 'costCenter.description' },
                 { title: 'Caixa', field: 'teller.description' },
                 { title: 'Mov.', field: 'mov' },
                 { title: 'Obreiro', field: 'obreiro.name' },
-                { title: 'Data Venc.', field: 'due_date', type: 'date' },
+                {
+                  title: 'Data Venc.',
+                  field: 'due_date_formatted',
+                  type: 'date',
+                },
               ]}
               data={[...dataTable]}
               style={{ marginTop: 16, border: '2px solid #0f5e9e' }}
@@ -725,6 +683,8 @@ const FinancialPostings: React.FC = () => {
                 headerStyle: {
                   zIndex: 0,
                 },
+                exportButton: true,
+                exportAllData: true,
               }}
               actions={[
                 rowData => ({
@@ -780,25 +740,42 @@ const FinancialPostings: React.FC = () => {
                   item
                   xs={12}
                   style={{
-                    backgroundColor: '#6b9ec7',
+                    border: '3px solid #6b9ec7',
                     borderRadius: 10,
-                    color: 'white',
-                    display: 'flex',
-                    justifyContent: 'center',
                     fontWeight: 'bold',
+                    padding: 16,
                   }}
                 >
-                  <FormControlLabel
-                    control={
-                      // eslint-disable-next-line react/jsx-wrap-multilines
-                      <IOSSwitch
-                        checked={onlyPays}
-                        onChange={handleChangeOnlyPays}
-                        name="checkedB"
+                  <FormControl component="fieldset">
+                    <FormLabel
+                      component="legend"
+                      style={{ fontWeight: 'bold' }}
+                    >
+                      Status
+                    </FormLabel>
+                    <RadioGroup
+                      aria-label="onlyPays"
+                      name="only_pays"
+                      value={onlyPays}
+                      onChange={setOnlyPaysItem}
+                    >
+                      <FormControlLabel
+                        value="all"
+                        control={<Radio />}
+                        label="Todos"
                       />
-                    }
-                    label="Somente Pagos"
-                  />
+                      <FormControlLabel
+                        value="payment"
+                        control={<Radio />}
+                        label="Pagos"
+                      />
+                      <FormControlLabel
+                        value="non_payment"
+                        control={<Radio />}
+                        label="Não Pagos"
+                      />
+                    </RadioGroup>
+                  </FormControl>
                 </Grid>
                 <Grid item xs={12}>
                   <DateRangePickerContent>
@@ -835,7 +812,7 @@ const FinancialPostings: React.FC = () => {
                       name="type_financial_posting_id"
                       classNamePrefix="react-select"
                       defaultValue={selectedTypeFinancialPosting}
-                      onChange={setSelectedTypeFinancialPosting}
+                      onChange={setTypeFinancialPosting}
                       placeholder="Selecione..."
                       options={typesFinancialPostings}
                       isClearable
@@ -852,7 +829,7 @@ const FinancialPostings: React.FC = () => {
                       label="Centro de Custo"
                       placeholder="Selecione..."
                       defaultValue={selectedCostCenter}
-                      onChange={setSelectedCostCenter}
+                      onChange={setCostCenter}
                       options={costCenters}
                       classNamePrefix="react-select"
                       isClearable
@@ -867,7 +844,7 @@ const FinancialPostings: React.FC = () => {
                     <SelectContainer
                       name="mov"
                       placeholder="Selecione..."
-                      onChange={setSelectedMov}
+                      onChange={setMov}
                       defaultValue={selectedMov}
                       options={movs}
                       classNamePrefix="react-select"
@@ -884,7 +861,7 @@ const FinancialPostings: React.FC = () => {
                       name="obreiro_id"
                       label="Obreiro"
                       placeholder="Selecione..."
-                      onChange={setSelectedObreiro}
+                      onChange={setObreiro}
                       defaultValue={selectedObreiro}
                       options={obreiros}
                       classNamePrefix="react-select"
