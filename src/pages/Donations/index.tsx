@@ -42,6 +42,7 @@ import Loading from '../../components/Loading';
 
 import formatValue from '../../utils/formatValue';
 import { useToast } from '../../hooks/toast';
+import { useDonationsFilters } from '../../hooks/donationsFilters';
 
 import {
   Button as ButtonNew,
@@ -119,19 +120,13 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Donations: React.FC = () => {
-  const dateAux = new Date();
+  const { startDate, setSDate, endDate, setEDate } = useDonationsFilters();
   const [data, setData] = useState<Donation[]>([]);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const history = useHistory();
   const classes = useStyles();
   const theme = useTheme();
-  const [startDate, setStartDate] = useState(
-    new Date(dateAux.getFullYear(), dateAux.getMonth(), 1),
-  );
-  const [endDate, setEndDate] = useState(
-    new Date(dateAux.getFullYear(), dateAux.getMonth() + 1, 0),
-  );
   const [searchLoading, setSearchLoading] = useState(false);
   const [openDialogDelete, setOpenDialogDelete] = useState(false);
   const [idToBeDeleted, setIdToBeDeleted] = useState('');
@@ -196,17 +191,23 @@ const Donations: React.FC = () => {
       });
   }, [startDate, endDate]);
 
-  const handleChangeStartDate = useCallback((date: Date) => {
-    if (date) {
-      setStartDate(date);
-    }
-  }, []);
+  const handleChangeStartDate = useCallback(
+    (date: Date) => {
+      if (date) {
+        setSDate(date);
+      }
+    },
+    [setSDate],
+  );
 
-  const handleChangeEndDate = useCallback((date: Date) => {
-    if (date) {
-      setEndDate(date);
-    }
-  }, []);
+  const handleChangeEndDate = useCallback(
+    (date: Date) => {
+      if (date) {
+        setEDate(date);
+      }
+    },
+    [setEDate],
+  );
 
   const deleteFinancialPosting = useCallback((rowData: any): void => {
     setIdToBeDeleted(rowData.id);
@@ -239,19 +240,15 @@ const Donations: React.FC = () => {
 
   const loadFinancialPostings = useCallback(() => {
     setLoading(true);
-    const today = new Date();
+    const params: QueryParams = {};
+
+    if (startDate && endDate) {
+      params.start_date = format(startDate, 'yyyy-MM-dd');
+      params.end_date = format(endDate, 'yyyy-MM-dd');
+    }
     api
       .get<Donation[]>('/donations', {
-        params: {
-          start_date: format(
-            new Date(today.getFullYear(), today.getMonth(), 1),
-            'yyyy-MM-dd',
-          ),
-          end_date: format(
-            new Date(today.getFullYear(), today.getMonth() + 1, 0),
-            'yyyy-MM-dd',
-          ),
-        },
+        params,
       })
       .then(response => {
         setData(
@@ -266,6 +263,7 @@ const Donations: React.FC = () => {
       .finally(() => {
         setLoading(false);
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
