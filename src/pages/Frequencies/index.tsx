@@ -1,23 +1,26 @@
 /* eslint-disable array-callback-return */
 import React, { useState, useCallback, useMemo } from 'react';
 
-import { Container, Grid } from '@material-ui/core';
+import {
+  Container,
+  Grid,
+  FormControl,
+  FormLabel,
+  RadioGroup,
+  Radio,
+  FormControlLabel,
+} from '@material-ui/core';
 import DatePicker from 'react-datepicker';
 import { Search } from '@material-ui/icons';
-import MaterialTable, { Column } from 'material-table';
+import MaterialTable from 'material-table';
 
 import { format, isBefore, isAfter, isEqual } from 'date-fns';
 import api from '../../services/api';
 import BasePage from '../../components/BasePage';
-import {
-  Button,
-  DateRangePickerContent,
-  Label,
-  Chip,
-  TotalSessions,
-} from './styles';
+import { Button, DateRangePickerContent, Label, TotalSessions } from './styles';
 import Loading from '../../components/Loading';
 import labels from '../../utils/labels';
+import { columns12Months, columns24Months } from '../../utils/columnsFrequency';
 
 interface UserData {
   total: number;
@@ -81,6 +84,8 @@ interface MonthFrequency {
   percentMonth: number;
   totalLast12Months: number;
   percentLast12Months: number;
+  totalLast24Months: number;
+  percentLast24Months: number;
   selectorBackground: number;
 }
 
@@ -89,19 +94,19 @@ interface TotalFrequency {
   percent: number;
 }
 
-interface NumberSessions12Months {
+interface NumberSessionsPastDate {
   date: Date;
   totalGrauI: number;
   totalGrauII: number;
   totalGrauIII: number;
 }
 
-interface User12Months {
+interface UserPastDate {
   name: string;
-  months: UserSessions12Months[];
+  months: UserSessionsPastDate[];
 }
 
-interface UserSessions12Months {
+interface UserSessionsPastDate {
   date: Date;
   total: number;
 }
@@ -164,25 +169,20 @@ interface ShootDownMonth {
   totalGrauIII: number;
 }
 
-interface ShootDown12Months {
+interface ShootDownPastDate {
   name: string;
   iniciacao_date: string;
   elevacao_date: string;
   exaltacao_date: string;
   instalacao_date: string;
-  data: DataShootDown12Months[];
+  data: DataShootDownPastDate[];
 }
 
-interface DataShootDown12Months {
+interface DataShootDownPastDate {
   date: Date;
   totalGrauI: number;
   totalGrauII: number;
   totalGrauIII: number;
-}
-
-interface ColorsChip {
-  background: string;
-  color: string;
 }
 
 const Frequencies: React.FC = () => {
@@ -192,6 +192,7 @@ const Frequencies: React.FC = () => {
   const [totalSessions, setTotalSessions] = useState<SessionData[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [sessions, setSessions] = useState<Session[]>([]);
+  const [refMonths, setRefMonths] = useState('12_months');
 
   const handleChangeStartDate = useCallback((date: Date) => {
     if (date) {
@@ -201,26 +202,6 @@ const Frequencies: React.FC = () => {
     setUsers([]);
     setTotalSessions([]);
     setSessions([]);
-  }, []);
-
-  const verifyColorByPercent = useCallback((percent: number): ColorsChip => {
-    if (percent === 100) {
-      return { background: '#12a454', color: '#FFF' };
-    }
-    if (percent >= 85 && percent < 100) {
-      return { background: '#0c4b7e', color: '#FFF' };
-    }
-    if (percent >= 60 && percent < 85) {
-      return { background: '#518fc2', color: '#FFF' };
-    }
-    if (percent >= 50 && percent < 60) {
-      return { background: '#ffa726', color: '#FFF' };
-    }
-    if (percent < 50) {
-      return { background: '#c53030', color: '#FFF' };
-    }
-
-    return { background: '', color: '' };
   }, []);
 
   const getMonth = useCallback((date: Date):
@@ -258,830 +239,6 @@ const Frequencies: React.FC = () => {
     return undefined;
   }, []);
 
-  const columns: Column<Frequency>[] = [
-    {
-      title: 'Nome',
-      field: 'name',
-      width: 350,
-      headerStyle: { zIndex: 0 },
-      cellStyle: { zIndex: 0 },
-    },
-    {
-      title: 'CIM',
-      field: 'cim',
-      width: 100,
-      headerStyle: { zIndex: 0 },
-      cellStyle: { zIndex: 0 },
-    },
-    {
-      title: 'Grau',
-      field: 'degree',
-      width: 100,
-      headerStyle: { zIndex: 0 },
-      cellStyle: { zIndex: 0 },
-    },
-    {
-      title: 'Jan',
-      field: 'january.totalMonth',
-      width: 100,
-      align: 'center',
-      cellStyle: (_, rowData) => {
-        return {
-          backgroundColor:
-            rowData.january.selectorBackground === 0 ? '#FFF' : '#CCC',
-        };
-      },
-    },
-    {
-      title: '% Jan',
-      field: 'january.percentMonth',
-      width: 100,
-      render: rowData => {
-        const colors = verifyColorByPercent(rowData.january.percentMonth);
-        return (
-          <Chip backgroundColor={colors.background} color={colors.color}>
-            {`${rowData.january.percentMonth}%`}
-          </Chip>
-        );
-      },
-      cellStyle: (_, rowData) => {
-        return {
-          backgroundColor:
-            rowData.january.selectorBackground === 0 ? '#FFF' : '#CCC',
-        };
-      },
-      align: 'center',
-    },
-    {
-      title: '12 Meses',
-      field: 'january.totalLast12Months',
-      width: 100,
-      align: 'center',
-      cellStyle: (_, rowData) => {
-        return {
-          backgroundColor:
-            rowData.january.selectorBackground === 0 ? '#FFF' : '#CCC',
-        };
-      },
-    },
-    {
-      title: '% 12 Meses',
-      field: 'january.percentLast12Months',
-      width: 100,
-      render: rowData => {
-        const colors = verifyColorByPercent(
-          rowData.january.percentLast12Months,
-        );
-        return (
-          <Chip backgroundColor={colors.background} color={colors.color}>
-            {`${rowData.january.percentLast12Months}%`}
-          </Chip>
-        );
-      },
-      cellStyle: (_, rowData) => {
-        return {
-          backgroundColor:
-            rowData.january.selectorBackground === 0 ? '#FFF' : '#CCC',
-        };
-      },
-      align: 'center',
-    },
-    {
-      title: 'Fev',
-      field: 'february.totalMonth',
-      width: 100,
-      align: 'center',
-      cellStyle: (_, rowData) => {
-        return {
-          backgroundColor:
-            rowData.february.selectorBackground === 0 ? '#FFF' : '#CCC',
-        };
-      },
-    },
-    {
-      title: '% Fev',
-      field: 'february.percentMonth',
-      width: 100,
-      render: rowData => {
-        const colors = verifyColorByPercent(rowData.february.percentMonth);
-        return (
-          <Chip backgroundColor={colors.background} color={colors.color}>
-            {`${rowData.february.percentMonth}%`}
-          </Chip>
-        );
-      },
-      align: 'center',
-      cellStyle: (_, rowData) => {
-        return {
-          backgroundColor:
-            rowData.february.selectorBackground === 0 ? '#FFF' : '#CCC',
-        };
-      },
-    },
-    {
-      title: '12 Meses',
-      field: 'february.totalLast12Months',
-      width: 100,
-      align: 'center',
-      cellStyle: (_, rowData) => {
-        return {
-          backgroundColor:
-            rowData.february.selectorBackground === 0 ? '#FFF' : '#CCC',
-        };
-      },
-    },
-    {
-      title: '% 12 Meses',
-      field: 'february.percentLast12Months',
-      width: 100,
-      render: rowData => {
-        const colors = verifyColorByPercent(
-          rowData.february.percentLast12Months,
-        );
-        return (
-          <Chip backgroundColor={colors.background} color={colors.color}>
-            {`${rowData.february.percentLast12Months}%`}
-          </Chip>
-        );
-      },
-      align: 'center',
-      cellStyle: (_, rowData) => {
-        return {
-          backgroundColor:
-            rowData.february.selectorBackground === 0 ? '#FFF' : '#CCC',
-        };
-      },
-    },
-    {
-      title: 'Mar',
-      field: 'march.totalMonth',
-      width: 100,
-      align: 'center',
-      cellStyle: (_, rowData) => {
-        return {
-          backgroundColor:
-            rowData.march.selectorBackground === 0 ? '#FFF' : '#CCC',
-        };
-      },
-    },
-    {
-      title: '% Mar',
-      field: 'march.percentMonth',
-      width: 100,
-      render: rowData => {
-        const colors = verifyColorByPercent(rowData.march.percentMonth);
-        return (
-          <Chip backgroundColor={colors.background} color={colors.color}>
-            {`${rowData.march.percentMonth}%`}
-          </Chip>
-        );
-      },
-      align: 'center',
-      cellStyle: (_, rowData) => {
-        return {
-          backgroundColor:
-            rowData.march.selectorBackground === 0 ? '#FFF' : '#CCC',
-        };
-      },
-    },
-    {
-      title: '12 Meses',
-      field: 'march.totalLast12Months',
-      width: 100,
-      align: 'center',
-      cellStyle: (_, rowData) => {
-        return {
-          backgroundColor:
-            rowData.march.selectorBackground === 0 ? '#FFF' : '#CCC',
-        };
-      },
-    },
-    {
-      title: '% 12 Meses',
-      field: 'march.percentLast12Months',
-      width: 100,
-      render: rowData => {
-        const colors = verifyColorByPercent(rowData.march.percentLast12Months);
-        return (
-          <Chip backgroundColor={colors.background} color={colors.color}>
-            {`${rowData.march.percentLast12Months}%`}
-          </Chip>
-        );
-      },
-      align: 'center',
-      cellStyle: (_, rowData) => {
-        return {
-          backgroundColor:
-            rowData.march.selectorBackground === 0 ? '#FFF' : '#CCC',
-        };
-      },
-    },
-    {
-      title: 'Abr',
-      field: 'april.totalMonth',
-      width: 100,
-      align: 'center',
-      cellStyle: (_, rowData) => {
-        return {
-          backgroundColor:
-            rowData.april.selectorBackground === 0 ? '#FFF' : '#CCC',
-        };
-      },
-    },
-    {
-      title: '% Abr',
-      field: 'april.percentMonth',
-      width: 100,
-      render: rowData => {
-        const colors = verifyColorByPercent(rowData.april.percentMonth);
-        return (
-          <Chip backgroundColor={colors.background} color={colors.color}>
-            {`${rowData.april.percentMonth}%`}
-          </Chip>
-        );
-      },
-      align: 'center',
-      cellStyle: (_, rowData) => {
-        return {
-          backgroundColor:
-            rowData.april.selectorBackground === 0 ? '#FFF' : '#CCC',
-        };
-      },
-    },
-    {
-      title: '12 Meses',
-      field: 'april.totalLast12Months',
-      width: 100,
-      align: 'center',
-      cellStyle: (_, rowData) => {
-        return {
-          backgroundColor:
-            rowData.april.selectorBackground === 0 ? '#FFF' : '#CCC',
-        };
-      },
-    },
-    {
-      title: '% 12 Meses',
-      field: 'april.percentLast12Months',
-      width: 100,
-      render: rowData => {
-        const colors = verifyColorByPercent(rowData.april.percentLast12Months);
-        return (
-          <Chip backgroundColor={colors.background} color={colors.color}>
-            {`${rowData.april.percentLast12Months}%`}
-          </Chip>
-        );
-      },
-      align: 'center',
-      cellStyle: (_, rowData) => {
-        return {
-          backgroundColor:
-            rowData.april.selectorBackground === 0 ? '#FFF' : '#CCC',
-        };
-      },
-    },
-    {
-      title: 'Mai',
-      field: 'may.totalMonth',
-      width: 100,
-      align: 'center',
-      cellStyle: (_, rowData) => {
-        return {
-          backgroundColor:
-            rowData.may.selectorBackground === 0 ? '#FFF' : '#CCC',
-        };
-      },
-    },
-    {
-      title: '% Mai',
-      field: 'may.percentMonth',
-      width: 100,
-      render: rowData => {
-        const colors = verifyColorByPercent(rowData.may.percentMonth);
-        return (
-          <Chip backgroundColor={colors.background} color={colors.color}>
-            {`${rowData.may.percentMonth}%`}
-          </Chip>
-        );
-      },
-      align: 'center',
-      cellStyle: (_, rowData) => {
-        return {
-          backgroundColor:
-            rowData.may.selectorBackground === 0 ? '#FFF' : '#CCC',
-        };
-      },
-    },
-    {
-      title: '12 Meses',
-      field: 'may.totalLast12Months',
-      width: 100,
-      align: 'center',
-      cellStyle: (_, rowData) => {
-        return {
-          backgroundColor:
-            rowData.may.selectorBackground === 0 ? '#FFF' : '#CCC',
-        };
-      },
-    },
-    {
-      title: '% 12 Meses',
-      field: 'may.percentLast12Months',
-      width: 100,
-      render: rowData => {
-        const colors = verifyColorByPercent(rowData.may.percentLast12Months);
-        return (
-          <Chip backgroundColor={colors.background} color={colors.color}>
-            {`${rowData.may.percentLast12Months}%`}
-          </Chip>
-        );
-      },
-      align: 'center',
-      cellStyle: (_, rowData) => {
-        return {
-          backgroundColor:
-            rowData.may.selectorBackground === 0 ? '#FFF' : '#CCC',
-        };
-      },
-    },
-    {
-      title: 'Jun',
-      field: 'june.totalMonth',
-      width: 100,
-      align: 'center',
-      cellStyle: (_, rowData) => {
-        return {
-          backgroundColor:
-            rowData.june.selectorBackground === 0 ? '#FFF' : '#CCC',
-        };
-      },
-    },
-    {
-      title: '% Jun',
-      field: 'june.percentMonth',
-      width: 100,
-      render: rowData => {
-        const colors = verifyColorByPercent(rowData.june.percentMonth);
-        return (
-          <Chip backgroundColor={colors.background} color={colors.color}>
-            {`${rowData.june.percentMonth}%`}
-          </Chip>
-        );
-      },
-      align: 'center',
-      cellStyle: (_, rowData) => {
-        return {
-          backgroundColor:
-            rowData.june.selectorBackground === 0 ? '#FFF' : '#CCC',
-        };
-      },
-    },
-    {
-      title: '12 Meses',
-      field: 'june.totalLast12Months',
-      width: 100,
-      align: 'center',
-      cellStyle: (_, rowData) => {
-        return {
-          backgroundColor:
-            rowData.june.selectorBackground === 0 ? '#FFF' : '#CCC',
-        };
-      },
-    },
-    {
-      title: '% 12 Meses',
-      field: 'june.percentLast12Months',
-      width: 100,
-      render: rowData => {
-        const colors = verifyColorByPercent(rowData.june.percentLast12Months);
-        return (
-          <Chip backgroundColor={colors.background} color={colors.color}>
-            {`${rowData.june.percentLast12Months}%`}
-          </Chip>
-        );
-      },
-      align: 'center',
-      cellStyle: (_, rowData) => {
-        return {
-          backgroundColor:
-            rowData.june.selectorBackground === 0 ? '#FFF' : '#CCC',
-        };
-      },
-    },
-    {
-      title: 'Jul',
-      field: 'july.totalMonth',
-      width: 100,
-      align: 'center',
-      cellStyle: (_, rowData) => {
-        return {
-          backgroundColor:
-            rowData.july.selectorBackground === 0 ? '#FFF' : '#CCC',
-        };
-      },
-    },
-    {
-      title: '% Jul',
-      field: 'july.percentMonth',
-      width: 100,
-      render: rowData => {
-        const colors = verifyColorByPercent(rowData.july.percentMonth);
-        return (
-          <Chip backgroundColor={colors.background} color={colors.color}>
-            {`${rowData.july.percentMonth}%`}
-          </Chip>
-        );
-      },
-      align: 'center',
-      cellStyle: (_, rowData) => {
-        return {
-          backgroundColor:
-            rowData.july.selectorBackground === 0 ? '#FFF' : '#CCC',
-        };
-      },
-    },
-    {
-      title: '12 Meses',
-      field: 'july.totalLast12Months',
-      width: 100,
-      align: 'center',
-      cellStyle: (_, rowData) => {
-        return {
-          backgroundColor:
-            rowData.july.selectorBackground === 0 ? '#FFF' : '#CCC',
-        };
-      },
-    },
-    {
-      title: '% 12 Meses',
-      field: 'july.percentLast12Months',
-      width: 100,
-      render: rowData => {
-        const colors = verifyColorByPercent(rowData.july.percentLast12Months);
-        return (
-          <Chip backgroundColor={colors.background} color={colors.color}>
-            {`${rowData.july.percentLast12Months}%`}
-          </Chip>
-        );
-      },
-      align: 'center',
-      cellStyle: (_, rowData) => {
-        return {
-          backgroundColor:
-            rowData.july.selectorBackground === 0 ? '#FFF' : '#CCC',
-        };
-      },
-    },
-    {
-      title: 'Ago',
-      field: 'august.totalMonth',
-      width: 100,
-      align: 'center',
-      cellStyle: (_, rowData) => {
-        return {
-          backgroundColor:
-            rowData.august.selectorBackground === 0 ? '#FFF' : '#CCC',
-        };
-      },
-    },
-    {
-      title: '% Ago',
-      field: 'august.percentMonth',
-      width: 100,
-      render: rowData => {
-        const colors = verifyColorByPercent(rowData.august.percentMonth);
-        return (
-          <Chip backgroundColor={colors.background} color={colors.color}>
-            {`${rowData.august.percentMonth}%`}
-          </Chip>
-        );
-      },
-      align: 'center',
-      cellStyle: (_, rowData) => {
-        return {
-          backgroundColor:
-            rowData.august.selectorBackground === 0 ? '#FFF' : '#CCC',
-        };
-      },
-    },
-    {
-      title: '12 Meses',
-      field: 'august.totalLast12Months',
-      width: 100,
-      align: 'center',
-      cellStyle: (_, rowData) => {
-        return {
-          backgroundColor:
-            rowData.august.selectorBackground === 0 ? '#FFF' : '#CCC',
-        };
-      },
-    },
-    {
-      title: '% 12 Meses',
-      field: 'august.percentLast12Months',
-      width: 100,
-      render: rowData => {
-        const colors = verifyColorByPercent(rowData.august.percentLast12Months);
-        return (
-          <Chip backgroundColor={colors.background} color={colors.color}>
-            {`${rowData.august.percentLast12Months}%`}
-          </Chip>
-        );
-      },
-      align: 'center',
-      cellStyle: (_, rowData) => {
-        return {
-          backgroundColor:
-            rowData.august.selectorBackground === 0 ? '#FFF' : '#CCC',
-        };
-      },
-    },
-    {
-      title: 'Set',
-      field: 'september.totalMonth',
-      width: 100,
-      align: 'center',
-      cellStyle: (_, rowData) => {
-        return {
-          backgroundColor:
-            rowData.september.selectorBackground === 0 ? '#FFF' : '#CCC',
-        };
-      },
-    },
-    {
-      title: '% Set',
-      field: 'september.percentMonth',
-      width: 100,
-      render: rowData => {
-        const colors = verifyColorByPercent(rowData.september.percentMonth);
-        return (
-          <Chip backgroundColor={colors.background} color={colors.color}>
-            {`${rowData.september.percentMonth}%`}
-          </Chip>
-        );
-      },
-      align: 'center',
-      cellStyle: (_, rowData) => {
-        return {
-          backgroundColor:
-            rowData.september.selectorBackground === 0 ? '#FFF' : '#CCC',
-        };
-      },
-    },
-    {
-      title: '12 Meses',
-      field: 'september.totalLast12Months',
-      width: 100,
-      align: 'center',
-      cellStyle: (_, rowData) => {
-        return {
-          backgroundColor:
-            rowData.september.selectorBackground === 0 ? '#FFF' : '#CCC',
-        };
-      },
-    },
-    {
-      title: '% 12 Meses',
-      field: 'september.percentLast12Months',
-      width: 100,
-      render: rowData => {
-        const colors = verifyColorByPercent(
-          rowData.september.percentLast12Months,
-        );
-        return (
-          <Chip backgroundColor={colors.background} color={colors.color}>
-            {`${rowData.september.percentLast12Months}%`}
-          </Chip>
-        );
-      },
-      align: 'center',
-      cellStyle: (_, rowData) => {
-        return {
-          backgroundColor:
-            rowData.september.selectorBackground === 0 ? '#FFF' : '#CCC',
-        };
-      },
-    },
-    {
-      title: 'Out',
-      field: 'october.totalMonth',
-      width: 100,
-      align: 'center',
-      cellStyle: (_, rowData) => {
-        return {
-          backgroundColor:
-            rowData.october.selectorBackground === 0 ? '#FFF' : '#CCC',
-        };
-      },
-    },
-    {
-      title: '% Out',
-      field: 'october.percentMonth',
-      width: 100,
-      render: rowData => {
-        const colors = verifyColorByPercent(rowData.october.percentMonth);
-        return (
-          <Chip backgroundColor={colors.background} color={colors.color}>
-            {`${rowData.october.percentMonth}%`}
-          </Chip>
-        );
-      },
-      align: 'center',
-      cellStyle: (_, rowData) => {
-        return {
-          backgroundColor:
-            rowData.october.selectorBackground === 0 ? '#FFF' : '#CCC',
-        };
-      },
-    },
-    {
-      title: '12 Meses',
-      field: 'october.totalLast12Months',
-      width: 100,
-      align: 'center',
-      cellStyle: (_, rowData) => {
-        return {
-          backgroundColor:
-            rowData.october.selectorBackground === 0 ? '#FFF' : '#CCC',
-        };
-      },
-    },
-    {
-      title: '% 12 Meses',
-      field: 'october.percentLast12Months',
-      width: 100,
-      render: rowData => {
-        const colors = verifyColorByPercent(
-          rowData.october.percentLast12Months,
-        );
-        return (
-          <Chip backgroundColor={colors.background} color={colors.color}>
-            {`${rowData.october.percentLast12Months}%`}
-          </Chip>
-        );
-      },
-      align: 'center',
-      cellStyle: (_, rowData) => {
-        return {
-          backgroundColor:
-            rowData.october.selectorBackground === 0 ? '#FFF' : '#CCC',
-        };
-      },
-    },
-    {
-      title: 'Nov',
-      field: 'november.totalMonth',
-      width: 100,
-      align: 'center',
-      cellStyle: (_, rowData) => {
-        return {
-          backgroundColor:
-            rowData.november.selectorBackground === 0 ? '#FFF' : '#CCC',
-        };
-      },
-    },
-    {
-      title: '% Nov',
-      field: 'november.percentMonth',
-      width: 100,
-      render: rowData => {
-        const colors = verifyColorByPercent(rowData.november.percentMonth);
-        return (
-          <Chip backgroundColor={colors.background} color={colors.color}>
-            {`${rowData.november.percentMonth}%`}
-          </Chip>
-        );
-      },
-      align: 'center',
-      cellStyle: (_, rowData) => {
-        return {
-          backgroundColor:
-            rowData.november.selectorBackground === 0 ? '#FFF' : '#CCC',
-        };
-      },
-    },
-    {
-      title: '12 Meses',
-      field: 'november.totalLast12Months',
-      width: 100,
-      align: 'center',
-      cellStyle: (_, rowData) => {
-        return {
-          backgroundColor:
-            rowData.november.selectorBackground === 0 ? '#FFF' : '#CCC',
-        };
-      },
-    },
-    {
-      title: '% 12 Meses',
-      field: 'november.percentLast12Months',
-      width: 100,
-      render: rowData => {
-        const colors = verifyColorByPercent(
-          rowData.november.percentLast12Months,
-        );
-        return (
-          <Chip backgroundColor={colors.background} color={colors.color}>
-            {`${rowData.november.percentLast12Months}%`}
-          </Chip>
-        );
-      },
-      align: 'center',
-      cellStyle: (_, rowData) => {
-        return {
-          backgroundColor:
-            rowData.november.selectorBackground === 0 ? '#FFF' : '#CCC',
-        };
-      },
-    },
-    {
-      title: 'Dez',
-      field: 'december.totalMonth',
-      width: 100,
-      align: 'center',
-      cellStyle: (_, rowData) => {
-        return {
-          backgroundColor:
-            rowData.december.selectorBackground === 0 ? '#FFF' : '#CCC',
-        };
-      },
-    },
-    {
-      title: '% Dez',
-      field: 'december.percentMonth',
-      width: 100,
-      render: rowData => {
-        const colors = verifyColorByPercent(rowData.december.percentMonth);
-        return (
-          <Chip backgroundColor={colors.background} color={colors.color}>
-            {`${rowData.december.percentMonth}%`}
-          </Chip>
-        );
-      },
-      align: 'center',
-      cellStyle: (_, rowData) => {
-        return {
-          backgroundColor:
-            rowData.december.selectorBackground === 0 ? '#FFF' : '#CCC',
-        };
-      },
-    },
-    {
-      title: '12 Meses',
-      field: 'december.totalLast12Months',
-      width: 100,
-      align: 'center',
-      cellStyle: (_, rowData) => {
-        return {
-          backgroundColor:
-            rowData.december.selectorBackground === 0 ? '#FFF' : '#CCC',
-        };
-      },
-    },
-    {
-      title: '% 12 Meses',
-      field: 'december.percentLast12Months',
-      width: 100,
-      render: rowData => {
-        const colors = verifyColorByPercent(
-          rowData.december.percentLast12Months,
-        );
-        return (
-          <Chip backgroundColor={colors.background} color={colors.color}>
-            {`${rowData.december.percentLast12Months}%`}
-          </Chip>
-        );
-      },
-      align: 'center',
-      cellStyle: (_, rowData) => {
-        return {
-          backgroundColor:
-            rowData.december.selectorBackground === 0 ? '#FFF' : '#CCC',
-        };
-      },
-    },
-    {
-      title: 'Total Ano',
-      field: 'total.value',
-      width: 120,
-      align: 'center',
-    },
-    {
-      title: '% Total Ano',
-      field: 'total.percent',
-      width: 150,
-      render: rowData => {
-        const colors = verifyColorByPercent(rowData.total.percent);
-        return (
-          <Chip backgroundColor={colors.background} color={colors.color}>
-            {`${rowData.total.percent}%`}
-          </Chip>
-        );
-      },
-      align: 'center',
-    },
-  ];
-
   const handleSearchFrequencies = useCallback(() => {
     setLoading(true);
     Promise.all([
@@ -1101,8 +258,20 @@ const Frequencies: React.FC = () => {
       });
   }, []);
 
-  const totalNumbersSessions12Months: NumberSessions12Months[] = useMemo(() => {
-    const total: NumberSessions12Months[] = [
+  const handleChangeRefMonths = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>, newValue: string) => {
+      setLoading(true);
+      setRefMonths(newValue);
+
+      setTimeout(() => {
+        setLoading(false);
+      }, 3000);
+    },
+    [],
+  );
+
+  const totalNumbersSessions12Months: NumberSessionsPastDate[] = useMemo(() => {
+    const total: NumberSessionsPastDate[] = [
       {
         date: new Date(startDate.getFullYear(), 0, 1),
         totalGrauI: 0,
@@ -1202,19 +371,113 @@ const Frequencies: React.FC = () => {
             item.totalGrauIII += Number(session.total);
           }
         }
+      });
+    });
 
-        // if (isEqual(pastDate, dateSession)) {
-        //   if (session.order === 1) {
-        //     item.totalGrauI -= Number(session.total);
-        //     item.totalGrauII -= Number(session.total);
-        //     item.totalGrauIII -= Number(session.total);
-        //   } else if (session.order === 2) {
-        //     item.totalGrauII -= Number(session.total);
-        //     item.totalGrauIII -= Number(session.total);
-        //   } else if (session.order === 3) {
-        //     item.totalGrauIII -= Number(session.total);
-        //   }
-        // }
+    return total;
+  }, [startDate, totalSessions]);
+
+  const totalNumbersSessions24Months: NumberSessionsPastDate[] = useMemo(() => {
+    const total: NumberSessionsPastDate[] = [
+      {
+        date: new Date(startDate.getFullYear(), 0, 1),
+        totalGrauI: 0,
+        totalGrauII: 0,
+        totalGrauIII: 0,
+      },
+      {
+        date: new Date(startDate.getFullYear(), 1, 1),
+        totalGrauI: 0,
+        totalGrauII: 0,
+        totalGrauIII: 0,
+      },
+      {
+        date: new Date(startDate.getFullYear(), 2, 1),
+        totalGrauI: 0,
+        totalGrauII: 0,
+        totalGrauIII: 0,
+      },
+      {
+        date: new Date(startDate.getFullYear(), 3, 1),
+        totalGrauI: 0,
+        totalGrauII: 0,
+        totalGrauIII: 0,
+      },
+      {
+        date: new Date(startDate.getFullYear(), 4, 1),
+        totalGrauI: 0,
+        totalGrauII: 0,
+        totalGrauIII: 0,
+      },
+      {
+        date: new Date(startDate.getFullYear(), 5, 1),
+        totalGrauI: 0,
+        totalGrauII: 0,
+        totalGrauIII: 0,
+      },
+      {
+        date: new Date(startDate.getFullYear(), 6, 1),
+        totalGrauI: 0,
+        totalGrauII: 0,
+        totalGrauIII: 0,
+      },
+      {
+        date: new Date(startDate.getFullYear(), 7, 1),
+        totalGrauI: 0,
+        totalGrauII: 0,
+        totalGrauIII: 0,
+      },
+      {
+        date: new Date(startDate.getFullYear(), 8, 1),
+        totalGrauI: 0,
+        totalGrauII: 0,
+        totalGrauIII: 0,
+      },
+      {
+        date: new Date(startDate.getFullYear(), 9, 1),
+        totalGrauI: 0,
+        totalGrauII: 0,
+        totalGrauIII: 0,
+      },
+      {
+        date: new Date(startDate.getFullYear(), 10, 1),
+        totalGrauI: 0,
+        totalGrauII: 0,
+        totalGrauIII: 0,
+      },
+      {
+        date: new Date(startDate.getFullYear(), 11, 1),
+        totalGrauI: 0,
+        totalGrauII: 0,
+        totalGrauIII: 0,
+      },
+    ];
+
+    total.map(item => {
+      const date = new Date(item.date);
+      const pastDate = new Date(
+        date.getFullYear() - 2,
+        date.getMonth(),
+        date.getDate(),
+      );
+
+      totalSessions.map(session => {
+        const dateSession = new Date(session.date);
+        if (
+          (isAfter(dateSession, pastDate) && isBefore(dateSession, date)) ||
+          isEqual(date, dateSession)
+        ) {
+          if (session.order === 1) {
+            item.totalGrauI += Number(session.total);
+            item.totalGrauII += Number(session.total);
+            item.totalGrauIII += Number(session.total);
+          } else if (session.order === 2) {
+            item.totalGrauII += Number(session.total);
+            item.totalGrauIII += Number(session.total);
+          } else if (session.order === 3) {
+            item.totalGrauIII += Number(session.total);
+          }
+        }
       });
     });
 
@@ -1329,8 +592,8 @@ const Frequencies: React.FC = () => {
     return total;
   }, [startDate, totalSessions, getMonth]);
 
-  const totalUserSessions12Months: User12Months[] = useMemo(() => {
-    const total: User12Months[] = users.map(user => {
+  const totalUserSessions12Months: UserPastDate[] = useMemo(() => {
+    const total: UserPastDate[] = users.map(user => {
       return {
         name: user.name,
         months: [
@@ -1374,6 +637,55 @@ const Frequencies: React.FC = () => {
             // if (isEqual(pastDate, dateToCompare)) {
             //   month.total -= Number(userData.total);
             // }
+          }
+        });
+      });
+    });
+
+    return total;
+  }, [users, startDate, usersData]);
+
+  const totalUserSessions24Months: UserPastDate[] = useMemo(() => {
+    const total: UserPastDate[] = users.map(user => {
+      return {
+        name: user.name,
+        months: [
+          { date: new Date(startDate.getFullYear(), 0, 1), total: 0 },
+          { date: new Date(startDate.getFullYear(), 1, 1), total: 0 },
+          { date: new Date(startDate.getFullYear(), 2, 1), total: 0 },
+          { date: new Date(startDate.getFullYear(), 3, 1), total: 0 },
+          { date: new Date(startDate.getFullYear(), 4, 1), total: 0 },
+          { date: new Date(startDate.getFullYear(), 5, 1), total: 0 },
+          { date: new Date(startDate.getFullYear(), 6, 1), total: 0 },
+          { date: new Date(startDate.getFullYear(), 7, 1), total: 0 },
+          { date: new Date(startDate.getFullYear(), 8, 1), total: 0 },
+          { date: new Date(startDate.getFullYear(), 9, 1), total: 0 },
+          { date: new Date(startDate.getFullYear(), 10, 1), total: 0 },
+          { date: new Date(startDate.getFullYear(), 11, 1), total: 0 },
+        ],
+      };
+    });
+
+    total.map(item => {
+      item.months.map(month => {
+        const date = new Date(month.date);
+        const pastDate = new Date(
+          date.getFullYear() - 2,
+          date.getMonth(),
+          date.getDate(),
+        );
+
+        usersData.map(userData => {
+          if (userData.name === item.name) {
+            const dateToCompare = new Date(userData.date);
+
+            if (
+              (isAfter(dateToCompare, pastDate) &&
+                isBefore(dateToCompare, date)) ||
+              isEqual(date, dateToCompare)
+            ) {
+              month.total += Number(userData.total);
+            }
           }
         });
       });
@@ -1483,8 +795,8 @@ const Frequencies: React.FC = () => {
     return datasShootDown;
   }, [users, getMonth, sessions, startDate]);
 
-  const shootDown12Months: ShootDown12Months[] = useMemo(() => {
-    const total: ShootDown12Months[] = users.map(user => {
+  const shootDown12Months: ShootDownPastDate[] = useMemo(() => {
+    const total: ShootDownPastDate[] = users.map(user => {
       return {
         name: user.name,
         iniciacao_date: user.iniciacao_date,
@@ -1625,6 +937,148 @@ const Frequencies: React.FC = () => {
     return total;
   }, [users, startDate, sessions]);
 
+  const shootDown24Months: ShootDownPastDate[] = useMemo(() => {
+    const total: ShootDownPastDate[] = users.map(user => {
+      return {
+        name: user.name,
+        iniciacao_date: user.iniciacao_date,
+        elevacao_date: user.elevacao_date,
+        exaltacao_date: user.exaltacao_date,
+        instalacao_date: user.instalacao_date,
+        data: [
+          {
+            date: new Date(startDate.getFullYear(), 0 + 1, 0),
+            totalGrauI: 0,
+            totalGrauII: 0,
+            totalGrauIII: 0,
+          },
+          {
+            date: new Date(startDate.getFullYear(), 1 + 1, 0),
+            totalGrauI: 0,
+            totalGrauII: 0,
+            totalGrauIII: 0,
+          },
+          {
+            date: new Date(startDate.getFullYear(), 2 + 1, 0),
+            totalGrauI: 0,
+            totalGrauII: 0,
+            totalGrauIII: 0,
+          },
+          {
+            date: new Date(startDate.getFullYear(), 3 + 1, 0),
+            totalGrauI: 0,
+            totalGrauII: 0,
+            totalGrauIII: 0,
+          },
+          {
+            date: new Date(startDate.getFullYear(), 4 + 1, 0),
+            totalGrauI: 0,
+            totalGrauII: 0,
+            totalGrauIII: 0,
+          },
+          {
+            date: new Date(startDate.getFullYear(), 5 + 1, 0),
+            totalGrauI: 0,
+            totalGrauII: 0,
+            totalGrauIII: 0,
+          },
+          {
+            date: new Date(startDate.getFullYear(), 6 + 1, 0),
+            totalGrauI: 0,
+            totalGrauII: 0,
+            totalGrauIII: 0,
+          },
+          {
+            date: new Date(startDate.getFullYear(), 7 + 1, 0),
+            totalGrauI: 0,
+            totalGrauII: 0,
+            totalGrauIII: 0,
+          },
+          {
+            date: new Date(startDate.getFullYear(), 8 + 1, 0),
+            totalGrauI: 0,
+            totalGrauII: 0,
+            totalGrauIII: 0,
+          },
+          {
+            date: new Date(startDate.getFullYear(), 9 + 1, 0),
+            totalGrauI: 0,
+            totalGrauII: 0,
+            totalGrauIII: 0,
+          },
+          {
+            date: new Date(startDate.getFullYear(), 10 + 1, 0),
+            totalGrauI: 0,
+            totalGrauII: 0,
+            totalGrauIII: 0,
+          },
+          {
+            date: new Date(startDate.getFullYear(), 11 + 1, 0),
+            totalGrauI: 0,
+            totalGrauII: 0,
+            totalGrauIII: 0,
+          },
+        ],
+      };
+    });
+
+    total.map(dataTotal => {
+      dataTotal.data.map(item => {
+        const date = new Date(item.date);
+        const pastDate = new Date(
+          date.getFullYear() - 2,
+          date.getMonth(),
+          date.getDate(),
+        );
+
+        sessions.map(session => {
+          const dateSession = new Date(session.date);
+
+          if (dataTotal.iniciacao_date) {
+            const iniciacaoDate = new Date(dataTotal.iniciacao_date);
+            if (
+              ((isAfter(dateSession, pastDate) &&
+                isBefore(dateSession, date)) ||
+                isEqual(date, dateSession)) &&
+              isBefore(dateSession, iniciacaoDate) &&
+              session.session_type.degree.order === 1
+            ) {
+              item.totalGrauI += 1;
+            }
+          }
+
+          if (dataTotal.elevacao_date) {
+            const elevacaoDate = new Date(dataTotal.elevacao_date);
+            if (
+              ((isAfter(dateSession, pastDate) &&
+                isBefore(dateSession, date)) ||
+                isEqual(date, dateSession)) &&
+              isBefore(dateSession, elevacaoDate) &&
+              session.session_type.degree.order === 2
+            ) {
+              item.totalGrauII += 1;
+            }
+          }
+
+          if (dataTotal.exaltacao_date) {
+            const exaltacaoDate = new Date(dataTotal.exaltacao_date);
+            if (
+              ((isAfter(dateSession, pastDate) &&
+                isBefore(dateSession, date)) ||
+                isEqual(date, dateSession)) &&
+              isBefore(dateSession, exaltacaoDate) &&
+              session.session_type.degree.order === 3
+            ) {
+              item.totalGrauIII += 1;
+            }
+          }
+        });
+      });
+    });
+
+    return total;
+  }, [users, startDate, sessions]);
+
   const finalData: Frequency[] | undefined = useMemo(() => {
     const frequencies: Frequency[] = users.map(user => {
       return {
@@ -1638,6 +1092,8 @@ const Frequencies: React.FC = () => {
           percentMonth: 0,
           totalLast12Months: 0,
           percentLast12Months: 0,
+          totalLast24Months: 0,
+          percentLast24Months: 0,
           selectorBackground: 0,
         },
         february: {
@@ -1645,6 +1101,8 @@ const Frequencies: React.FC = () => {
           percentMonth: 0,
           totalLast12Months: 0,
           percentLast12Months: 0,
+          totalLast24Months: 0,
+          percentLast24Months: 0,
           selectorBackground: 1,
         },
         march: {
@@ -1652,6 +1110,8 @@ const Frequencies: React.FC = () => {
           percentMonth: 0,
           totalLast12Months: 0,
           percentLast12Months: 0,
+          totalLast24Months: 0,
+          percentLast24Months: 0,
           selectorBackground: 0,
         },
         april: {
@@ -1659,6 +1119,8 @@ const Frequencies: React.FC = () => {
           percentMonth: 0,
           totalLast12Months: 0,
           percentLast12Months: 0,
+          totalLast24Months: 0,
+          percentLast24Months: 0,
           selectorBackground: 1,
         },
         may: {
@@ -1666,6 +1128,8 @@ const Frequencies: React.FC = () => {
           percentMonth: 0,
           totalLast12Months: 0,
           percentLast12Months: 0,
+          totalLast24Months: 0,
+          percentLast24Months: 0,
           selectorBackground: 0,
         },
         june: {
@@ -1673,6 +1137,8 @@ const Frequencies: React.FC = () => {
           percentMonth: 0,
           totalLast12Months: 0,
           percentLast12Months: 0,
+          totalLast24Months: 0,
+          percentLast24Months: 0,
           selectorBackground: 1,
         },
         july: {
@@ -1680,6 +1146,8 @@ const Frequencies: React.FC = () => {
           percentMonth: 0,
           totalLast12Months: 0,
           percentLast12Months: 0,
+          totalLast24Months: 0,
+          percentLast24Months: 0,
           selectorBackground: 0,
         },
         august: {
@@ -1687,6 +1155,8 @@ const Frequencies: React.FC = () => {
           percentMonth: 0,
           totalLast12Months: 0,
           percentLast12Months: 0,
+          totalLast24Months: 0,
+          percentLast24Months: 0,
           selectorBackground: 1,
         },
         september: {
@@ -1694,6 +1164,8 @@ const Frequencies: React.FC = () => {
           percentMonth: 0,
           totalLast12Months: 0,
           percentLast12Months: 0,
+          totalLast24Months: 0,
+          percentLast24Months: 0,
           selectorBackground: 0,
         },
         october: {
@@ -1701,6 +1173,8 @@ const Frequencies: React.FC = () => {
           percentMonth: 0,
           totalLast12Months: 0,
           percentLast12Months: 0,
+          totalLast24Months: 0,
+          percentLast24Months: 0,
           selectorBackground: 1,
         },
         november: {
@@ -1708,6 +1182,8 @@ const Frequencies: React.FC = () => {
           percentMonth: 0,
           totalLast12Months: 0,
           percentLast12Months: 0,
+          totalLast24Months: 0,
+          percentLast24Months: 0,
           selectorBackground: 0,
         },
         december: {
@@ -1715,6 +1191,8 @@ const Frequencies: React.FC = () => {
           percentMonth: 0,
           totalLast12Months: 0,
           percentLast12Months: 0,
+          totalLast24Months: 0,
+          percentLast24Months: 0,
           selectorBackground: 1,
         },
       };
@@ -1899,6 +1377,91 @@ const Frequencies: React.FC = () => {
       }
     });
 
+    totalUserSessions24Months.map(item => {
+      const frequencyFind = frequencies.find(
+        frequency => frequency.name === item.name,
+      );
+
+      const shootDown24MonthsFind = shootDown24Months.find(
+        dataShootDown => dataShootDown.name === item.name,
+      );
+
+      if (frequencyFind && shootDown24MonthsFind) {
+        item.months.map(month => {
+          const monthE = getMonth(month.date);
+          const totalSessionsMonth = totalNumbersSessions24Months.find(total =>
+            isEqual(total.date, month.date),
+          ) || {
+            date: new Date(),
+            totalGrauI: 0,
+            totalGrauII: 0,
+            totalGrauIII: 0,
+          };
+
+          const totalShootDown24Months = shootDown24MonthsFind.data.find(
+            total =>
+              isEqual(
+                new Date(total.date.getFullYear(), total.date.getMonth(), 1),
+                month.date,
+              ),
+          ) || {
+            date: new Date(),
+            totalGrauI: 0,
+            totalGrauII: 0,
+            totalGrauIII: 0,
+          };
+
+          if (monthE) {
+            frequencyFind[monthE].totalLast24Months =
+              Number(month.total) > 0 ? Number(month.total) : 0;
+            switch (frequencyFind.order) {
+              case 1:
+                if (totalSessionsMonth.totalGrauI > 0) {
+                  frequencyFind[monthE].percentLast24Months = Math.round(
+                    (frequencyFind[monthE].totalLast24Months /
+                      (totalSessionsMonth.totalGrauI -
+                        totalShootDown24Months.totalGrauI)) *
+                      100,
+                  );
+                }
+                break;
+              case 2:
+                if (totalSessionsMonth.totalGrauII > 0) {
+                  frequencyFind[monthE].percentLast24Months = Math.round(
+                    (frequencyFind[monthE].totalLast24Months /
+                      (totalSessionsMonth.totalGrauII -
+                        totalShootDown24Months.totalGrauII)) *
+                      100,
+                  );
+                }
+                break;
+              case 3:
+                if (totalSessionsMonth.totalGrauIII > 0) {
+                  frequencyFind[monthE].percentLast24Months = Math.round(
+                    (frequencyFind[monthE].totalLast24Months /
+                      (totalSessionsMonth.totalGrauIII -
+                        totalShootDown24Months.totalGrauIII)) *
+                      100,
+                  );
+                }
+                break;
+              case 4:
+                if (totalSessionsMonth.totalGrauIII > 0) {
+                  frequencyFind[monthE].percentLast24Months = Math.round(
+                    (frequencyFind[monthE].totalLast24Months /
+                      (totalSessionsMonth.totalGrauIII -
+                        totalShootDown24Months.totalGrauIII)) *
+                      100,
+                  );
+                }
+                break;
+              default:
+            }
+          }
+        });
+      }
+    });
+
     return frequencies;
   }, [
     users,
@@ -1910,6 +1473,9 @@ const Frequencies: React.FC = () => {
     getMonth,
     shootDown,
     shootDown12Months,
+    shootDown24Months,
+    totalNumbersSessions24Months,
+    totalUserSessions24Months,
   ]);
 
   return (
@@ -1935,14 +1501,52 @@ const Frequencies: React.FC = () => {
                   />
                 </DateRangePickerContent>
               </Grid>
+              <Grid
+                item
+                xs={12}
+                md={3}
+                style={{
+                  border: '3px solid #0f5e9e',
+                  borderRadius: 10,
+                  fontWeight: 'bold',
+                  padding: 16,
+                  backgroundColor: '#FFF',
+                }}
+              >
+                <FormControl component="fieldset">
+                  <FormLabel component="legend" style={{ fontWeight: 'bold' }}>
+                    Referência de Meses
+                  </FormLabel>
+                  <RadioGroup
+                    aria-label="ref_month"
+                    name="ref_month"
+                    value={refMonths}
+                    onChange={handleChangeRefMonths}
+                    style={{ flexDirection: 'row' }}
+                  >
+                    <FormControlLabel
+                      value="12_months"
+                      control={<Radio />}
+                      label="12 Meses"
+                    />
+                    <FormControlLabel
+                      value="24_months"
+                      control={<Radio />}
+                      label="24 Meses"
+                    />
+                  </RadioGroup>
+                </FormControl>
+              </Grid>
               <Grid item xs={12} md={3}>
                 <Button type="button" onClick={handleSearchFrequencies}>
                   Buscar
                   <Search />
                 </Button>
               </Grid>
+            </Grid>
 
-              <Grid item xs={12} md={6}>
+            <Grid container spacing={2} style={{ marginTop: 16 }}>
+              <Grid item xs={12} md={12}>
                 <TotalSessions>
                   <div className="title">Total de Sessões (Ano)</div>
                   <div className="content">
@@ -1957,7 +1561,9 @@ const Frequencies: React.FC = () => {
             <MaterialTable
               title=""
               localization={labels.materialTable.localization}
-              columns={columns}
+              columns={
+                refMonths === '12_months' ? columns12Months : columns24Months
+              }
               data={[...finalData]}
               options={{
                 pageSize: 41,
