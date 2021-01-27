@@ -64,6 +64,7 @@ interface FinancialPosting {
   due_date?: string;
   payday?: string;
   donation: boolean;
+  payment_amount: number;
 }
 
 interface BankAccountData {
@@ -149,7 +150,7 @@ const Demonstrations: React.FC = () => {
 
   const dataToBeUsed = useMemo(() => {
     const data = financialPostings.concat(donations);
-
+    // console.log('2021-1', data);
     return data
       .filter(posting => {
         if (posting.donation) {
@@ -195,7 +196,8 @@ const Demonstrations: React.FC = () => {
   const debitLoja = useMemo(() => {
     return dataToBeUsed.reduce((acc, posting) => {
       if (posting.mov === 'D' && posting.costCenter.description === 'Loja') {
-        return acc + posting.value;
+        // return acc + posting.value;
+        return acc + posting.payment_amount;
       }
 
       return acc;
@@ -209,7 +211,8 @@ const Demonstrations: React.FC = () => {
         posting.obreiro === null &&
         posting.costCenter.description === 'Loja'
       ) {
-        return acc + posting.value;
+        // return acc + posting.value;
+        return acc + posting.payment_amount;
       }
 
       return acc;
@@ -223,7 +226,8 @@ const Demonstrations: React.FC = () => {
   const debitLiga = useMemo(() => {
     return dataToBeUsed.reduce((acc, posting) => {
       if (posting.mov === 'D' && posting.costCenter.description === 'Liga') {
-        return acc + posting.value;
+        // return acc + posting.value;
+        return acc + posting.payment_amount;
       }
 
       return acc;
@@ -237,7 +241,8 @@ const Demonstrations: React.FC = () => {
         posting.obreiro === null &&
         posting.costCenter.description === 'Liga'
       ) {
-        return acc + posting.value;
+        // return acc + posting.value;
+        return acc + posting.payment_amount;
       }
 
       return acc;
@@ -379,7 +384,8 @@ const Demonstrations: React.FC = () => {
                             row.mov === 'D' ? '#12a454' : '#c53030'
                           }
                         >
-                          {formatValue(row.value)}
+                          {/* {formatValue(row.value)} */}
+                          {formatValue(row.payment_amount)}
                         </Chip>
                       ),
                   },
@@ -394,7 +400,8 @@ const Demonstrations: React.FC = () => {
                             row.mov === 'D' ? '#12a454' : '#c53030'
                           }
                         >
-                          {formatValue(row.value)}
+                          {/* {formatValue(row.value)} */}
+                          {formatValue(row.payment_amount)}
                         </Chip>
                       ),
                   },
