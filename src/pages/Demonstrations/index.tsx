@@ -406,7 +406,9 @@ const Demonstrations: React.FC = () => {
                       ),
                   },
                 ]}
-                data={[...dataToBeUsed]}
+                data={[...dataToBeUsed].filter(cv => {
+                  return cv.payment_amount > 0;
+                })}
                 style={{ marginTop: 16, border: '2px solid #0f5e9e' }}
                 options={{
                   pageSize: 10,
