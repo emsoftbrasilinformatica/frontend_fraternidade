@@ -120,7 +120,7 @@ const Historic: React.FC = () => {
         },
         {
           type: 'Elevação',
-          degree: 'Mestre',
+          degree: 'Companheiro',
           date: userDates.elevacao_date
             ? format(new Date(userDates.elevacao_date), 'dd/MM/yyyy')
             : ' ---- ',
@@ -136,7 +136,7 @@ const Historic: React.FC = () => {
         },
         {
           type: 'Exaltação',
-          degree: 'Companheiro',
+          degree: 'Mestre',
           date: userDates.exaltacao_date
             ? format(new Date(userDates.exaltacao_date), 'dd/MM/yyyy')
             : ' ---- ',
