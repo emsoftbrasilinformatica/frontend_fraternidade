@@ -65,6 +65,7 @@ interface FinancialPosting {
   payday?: string;
   donation: boolean;
   payment_amount: number;
+  ref_financial_posting_id?: string;
 }
 
 interface BankAccountData {
@@ -107,14 +108,14 @@ const Demonstrations: React.FC = () => {
       }),
       api.get('/financial-postings', {
         params: {
-          start_date: format(
+          start_payday_date: format(
             new Date(startDate.getFullYear(), startDate.getMonth(), 1),
             'yyyy-MM-dd',
           ),
-          end_date: format(
+          end_payday_date: `${format(
             new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0),
             'yyyy-MM-dd',
-          ),
+          )}`,
         },
       }),
       api.get('/bank-accounts'),
@@ -149,9 +150,30 @@ const Demonstrations: React.FC = () => {
   }, [startDate]);
 
   const dataToBeUsed = useMemo(() => {
-    const data = financialPostings.concat(donations);
-    // console.log('2021-1', data);
-    return data
+    let data = financialPostings.concat(donations);
+
+    // console.table(
+    //   data.map(cv => ({
+    //     ...cv,
+    //     date: new Date(cv.date).toLocaleDateString(),
+    //     due_date: cv?.due_date
+    //       ? new Date(cv.due_date).toLocaleDateString()
+    //       : 'undefined',
+    //     payday: cv?.payday
+    //       ? new Date(cv.payday).toLocaleDateString()
+    //       : 'undefined',
+    //   })),
+    //   [
+    //     'obs',
+    //     'obs_payment',
+    //     'date',
+    //     'due_date',
+    //     'payday',
+    //     'payment_amount',
+    //     'mov',
+    //   ],
+    // );
+    data = data
       .filter(posting => {
         if (posting.donation) {
           if (posting.mov === 'D') {
@@ -159,7 +181,10 @@ const Demonstrations: React.FC = () => {
           }
           return null;
         }
-        return posting;
+        if (posting?.ref_financial_posting_id === null) {
+          return posting;
+        }
+        // return posting;
       })
       .sort((a, b) => {
         if (a.date > b.date) {
@@ -170,9 +195,14 @@ const Demonstrations: React.FC = () => {
         }
         return 0;
       });
+
+    // console.log(data);
+    return data;
   }, [financialPostings, donations]);
 
   const totalValue = useMemo(() => {
+    // ANCHOR totalValue
+    // console.log(viewData);
     return viewData.reduce((acc, data, index) => {
       if (index === 0) {
         acc = data.value_bank + data.total_month;
@@ -184,6 +214,7 @@ const Demonstrations: React.FC = () => {
   }, [viewData]);
 
   const valueInitial = useMemo(() => {
+    // ANCHOR valueInitial
     if (viewData.length > 0) {
       const valueMonth = viewData[viewData.length - 1].total_month;
       let startValue = 0;
@@ -366,7 +397,12 @@ const Demonstrations: React.FC = () => {
                 title="Demonstrativo"
                 localization={labels.materialTable.localization}
                 columns={[
-                  { title: 'Data', field: 'date', type: 'date', width: '15%' },
+                  {
+                    title: 'Data',
+                    field: 'payday',
+                    type: 'date',
+                    width: '15%',
+                  },
                   { title: 'Obs.', field: 'obs', width: '40%' },
                   {
                     title: 'Tipo',

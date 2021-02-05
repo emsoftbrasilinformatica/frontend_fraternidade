@@ -216,6 +216,9 @@ const FinancialPostings: React.FC = () => {
   const [idToBeDeleted, setIdToBeDeleted] = useState('');
   const { addToast } = useToast();
   const [openDialogPayment, setOpenDialogPayment] = useState(false);
+  const [paymentPayday, setPaymentPayday] = useState<Date | null | undefined>(
+    new Date(),
+  );
   const [toPay, setToPay] = useState<FinancialPosting>();
   const [valuesPayment, setValuesPayment] = useState<Payment>();
   const formRef = useRef<FormHandles>(null);
@@ -396,12 +399,24 @@ const FinancialPostings: React.FC = () => {
     [addToast],
   );
 
+  const handleChangePaymentPayday = useCallback(
+    (date: Date) => {
+      if (date) {
+        setPaymentPayday(date);
+      } else {
+        setPaymentPayday(null);
+      }
+    },
+    [setPaymentPayday],
+  );
+
   const handleSubmitPayment = useCallback(
     async dataForm => {
       setPaymentLoading(true);
       api
         .patch('/financial-postings', {
           id: toPay?.id,
+          payday: format(paymentPayday ?? new Date(), 'yyyy-MM-dd'),
           payment_amount: dataForm.payment_amount,
           obs_payment: dataForm.obs_payment,
         })
@@ -413,7 +428,7 @@ const FinancialPostings: React.FC = () => {
           setOpenDialogPayment(false);
         });
     },
-    [toPay, handleSubmit],
+    [toPay, handleSubmit, paymentPayday],
   );
 
   useEffect(() => {
@@ -964,6 +979,19 @@ const FinancialPostings: React.FC = () => {
               </DialogTitle>
               <Divider />
               <DialogContent>
+                <DateRangePickerContent>
+                  <Label>Data de Vencimento</Label>
+                  <DatePicker
+                    name="payday"
+                    selected={paymentPayday}
+                    onChange={handleChangePaymentPayday}
+                    placeholderText="Selecione a data"
+                    dateFormat="dd/MM/yyyy"
+                    locale="pt-BR"
+                    selectsStart
+                    required
+                  />
+                </DateRangePickerContent>
                 <Input
                   label="Valor"
                   type="number"
