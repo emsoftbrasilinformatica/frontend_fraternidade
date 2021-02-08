@@ -191,7 +191,7 @@ const Teller: React.FC = () => {
                 <Grid item xs={12} md={3}>
                   <Select
                     name="trunk"
-                    label="Tronco de Solidariedade?"
+                    label="Tronco de Beneficência?"
                     placeholder="Selecione o centro de custo"
                     options={trunkOptions}
                     defaultValue={
