@@ -28,6 +28,7 @@ interface TellerData {
   id?: string;
   description: string;
   cost_center: SelectData;
+  trunk: boolean;
 }
 
 export interface SelectData {
@@ -38,6 +39,7 @@ export interface SelectData {
 interface Data {
   description: string;
   cost_center_id: string;
+  trunk: boolean;
 }
 
 interface OptionsData {
@@ -46,6 +48,11 @@ interface OptionsData {
   value: string;
   label: string;
 }
+
+const trunkOptions = [
+  { value: '0', label: 'Não' },
+  { value: '1', label: 'Sim' },
+];
 
 const Teller: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -65,6 +72,7 @@ const Teller: React.FC = () => {
         const schema = Yup.object().shape({
           description: Yup.string().required('Descrição obrigatória'),
           cost_center: Yup.string().required('Grau é obrigatório'),
+          trunk: Yup.string().required('Tronco é obrigatório'),
         });
 
         await schema.validate(data, {
@@ -76,6 +84,7 @@ const Teller: React.FC = () => {
         const formData: Data = {
           description: data.description,
           cost_center_id: data.cost_center,
+          trunk: data.trunk !== '0',
         };
 
         if (params.id) {
@@ -122,6 +131,7 @@ const Teller: React.FC = () => {
               label: res.data.costCenter.description,
             },
             description: res.data.description,
+            trunk: res.data.trunk,
           });
         })
         .finally(() => {
@@ -162,20 +172,31 @@ const Teller: React.FC = () => {
             </ArroundButton>
             <Card title="Caixa">
               <Grid container spacing={2}>
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12} md={4}>
                   <Input
                     name="description"
                     label="Descrição"
                     placeholder="Digite a descrição"
                   />
                 </Grid>
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12} md={5}>
                   <Select
                     name="cost_center"
                     label="Centro de custo"
                     placeholder="Selecione o centro de custo"
                     options={costCenters}
                     isClearable
+                  />
+                </Grid>
+                <Grid item xs={12} md={3}>
+                  <Select
+                    name="trunk"
+                    label="Tronco de Solidariedade?"
+                    placeholder="Selecione o centro de custo"
+                    options={trunkOptions}
+                    defaultValue={
+                      tellerEdit?.trunk ? trunkOptions[1] : trunkOptions[0]
+                    }
                   />
                 </Grid>
               </Grid>
