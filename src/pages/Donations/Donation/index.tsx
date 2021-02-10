@@ -113,13 +113,15 @@ const FinancialPosting: React.FC = () => {
     formRef.current?.setFieldValue('teller_id', '');
     api.get(`/tellers/cost-center/${data.id}`).then(response => {
       setTellers(
-        response.data.map((option: OptionsData) => {
-          return {
-            ...option,
-            label: option.description,
-            value: option.id,
-          };
-        }),
+        response.data
+          .map((option: OptionsData) => {
+            return {
+              ...option,
+              label: option.description,
+              value: option.id,
+            };
+          })
+          .filter((cv: any) => cv?.trunk),
       );
     });
   }, []);
