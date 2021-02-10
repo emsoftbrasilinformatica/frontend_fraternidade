@@ -41,7 +41,7 @@ const Sessions: React.FC = () => {
     }
   }, []);
 
-  useEffect(() => {
+  const sessionsDay = useCallback(() => {
     api
       .get('/sessions/day', {
         params: {
@@ -56,6 +56,10 @@ const Sessions: React.FC = () => {
   }, [selectedDate]);
 
   useEffect(() => {
+    sessionsDay();
+  }, [selectedDate, sessionsDay]);
+
+  const sessionsMonth = useCallback(() => {
     api
       .get('/sessions/month', {
         params: {
@@ -68,6 +72,10 @@ const Sessions: React.FC = () => {
       });
   }, [currentMonth]);
 
+  useEffect(() => {
+    sessionsMonth();
+  }, [currentMonth, sessionsMonth]);
+
   const sessionsInMonth: Date[] = useMemo(() => {
     return monthSessions.map(session => {
       return new Date(session.date);
@@ -75,7 +83,7 @@ const Sessions: React.FC = () => {
   }, [monthSessions]);
 
   const handleAddSession = useCallback(() => {
-    history.push('sessao');
+    history.push('/app/cad/sessao');
   }, [history]);
 
   return (
@@ -130,6 +138,10 @@ const Sessions: React.FC = () => {
                   )} - ${session.session_type.description}`}
                   number={session.number}
                   id={session.id}
+                  deleteCallback={() => {
+                    sessionsDay();
+                    sessionsMonth();
+                  }}
                 />
               ))}
             </Grid>
