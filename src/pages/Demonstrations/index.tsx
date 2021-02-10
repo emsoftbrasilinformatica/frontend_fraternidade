@@ -184,7 +184,7 @@ const Demonstrations: React.FC = () => {
         if (posting?.ref_financial_posting_id === null) {
           return posting;
         }
-        // return posting;
+        return null;
       })
       .sort((a, b) => {
         if (a.date > b.date) {
@@ -401,7 +401,7 @@ const Demonstrations: React.FC = () => {
                     title: 'Data',
                     field: 'payday',
                     type: 'date',
-                    width: '15%',
+                    width: '10%',
                   },
                   { title: 'Obs.', field: 'obs', width: '40%' },
                   {
