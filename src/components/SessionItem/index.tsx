@@ -78,7 +78,7 @@ const SessionItem: React.FC<Props> = ({
           style={{ marginRight: 16 }}
           arrow
         >
-          <Link to="/app/cad/sessoes/#" onClick={handleDeleteSession}>
+          <Link to="/app/cad/sessoes" onClick={handleDeleteSession}>
             <FiDelete size={40} />
           </Link>
         </Tooltip>
