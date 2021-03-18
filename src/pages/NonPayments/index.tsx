@@ -13,11 +13,12 @@ import labels from '../../utils/labels';
 import api from '../../services/api';
 import formatValue from '../../utils/formatValue';
 
-interface FinancialPosting {
+export interface FinancialPosting {
   id?: string;
   obreiro?: {
     id: string;
     name: string;
+    cim: string;
   };
   costCenter: {
     id: string;
