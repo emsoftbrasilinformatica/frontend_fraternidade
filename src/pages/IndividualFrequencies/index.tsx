@@ -124,7 +124,7 @@ export interface SessionPresencesSummary {
 }
 
 const IndividualFrequencies: React.FC = () => {
-  const formRef = useRef<FormHandles>(null);
+  // const formRef = useRef<FormHandles>(null);
   const [totalSessions, setTotalSessions] = useState<SessionData[]>([]);
   const [startDate, setStartDate] = useState(new Date());
   const handleChangeStartDate = useCallback((date: Date) => {

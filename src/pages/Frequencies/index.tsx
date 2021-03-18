@@ -3,7 +3,7 @@ import React, {
   useState,
   useCallback,
   useMemo,
-  useEffect,
+  // useEffect,
   useRef,
   // ReactElement,
 } from 'react';
@@ -20,12 +20,12 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  CircularProgress,
-  createMuiTheme,
+  // CircularProgress,
+  // createMuiTheme,
   makeStyles,
   Theme,
   createStyles,
-  TextField,
+  // TextField,
 } from '@material-ui/core';
 import DatePicker from 'react-datepicker';
 import { Search, Print, HourglassEmpty } from '@material-ui/icons';
@@ -36,8 +36,8 @@ import { pdf } from '@react-pdf/renderer';
 import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
 
-import { Autocomplete } from '@material-ui/lab';
-import { startOfMonth } from 'date-fns';
+// import { Autocomplete } from '@material-ui/lab';
+// import { startOfMonth } from 'date-fns';
 import api from '../../services/api';
 import BasePage from '../../components/BasePage';
 import { Button, DateRangePickerContent, Label, TotalSessions } from './styles';
@@ -214,7 +214,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const Frequencies: React.FC = () => {
-  const classes = useStyles();
+  // const classes = useStyles();
   const formRef = useRef<FormHandles>(null);
   const [totalSessions, setTotalSessions] = useState<SessionData[]>([]);
   const [startDate, setStartDate] = useState(new Date());
