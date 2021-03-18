@@ -3,7 +3,7 @@ import React, {
   useState,
   useCallback,
   useMemo,
-  useRef,
+  // useRef,
   // ReactElement,
 } from 'react';
 
@@ -21,7 +21,7 @@ import { Search } from '@material-ui/icons';
 import MaterialTable from 'material-table';
 import _ from 'underscore';
 import { format } from 'date-fns';
-import { FormHandles } from '@unform/core';
+// import { FormHandles } from '@unform/core';
 
 import api from '../../services/api';
 import BasePage from '../../components/BasePage';

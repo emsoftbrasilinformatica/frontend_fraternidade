@@ -203,15 +203,15 @@ export interface SessionPresencesSummary {
   presences_twenty_four_months: number;
 }
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    dialog: {
-      '& .MuiPaper-root': {
-        overflow: 'visible',
-      },
-    },
-  }),
-);
+// const useStyles = makeStyles((theme: Theme) =>
+//   createStyles({
+//     dialog: {
+//       '& .MuiPaper-root': {
+//         overflow: 'visible',
+//       },
+//     },
+//   }),
+// );
 
 const Frequencies: React.FC = () => {
   // const classes = useStyles();
