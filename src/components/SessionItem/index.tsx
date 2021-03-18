@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { format, isBefore } from 'date-fns';
 import { FiCheckCircle, FiEdit, FiTrash as FiDelete } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
@@ -6,8 +6,16 @@ import { Link } from 'react-router-dom';
 import Tooltip from '@material-ui/core/Tooltip';
 
 import { FaCalendarDay, FaClock } from 'react-icons/fa';
+import {
+  Button,
+  colors,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from '@material-ui/core';
 import { Container } from './styles';
-
 import api from '../../services/api';
 import { useToast } from '../../hooks/toast';
 
@@ -29,6 +37,8 @@ const SessionItem: React.FC<Props> = ({
   deleteCallback,
 }) => {
   const { addToast } = useToast();
+  const [stateDialog, setStateDialog] = useState<boolean>(false);
+
   const hourFormatted = useMemo(() => {
     return format(new Date(date), 'HH:mm');
   }, [date]);
@@ -41,7 +51,11 @@ const SessionItem: React.FC<Props> = ({
     return isBefore(new Date(date), new Date());
   }, [date]);
 
-  const handleDeleteSession = async (): Promise<void> => {
+  const handleDeleteSession = useCallback(async (): Promise<void> => {
+    setStateDialog(true);
+  }, []);
+
+  const deleteSession = useCallback(async () => {
     await api
       .delete(`/sessions/${id}`)
       .then(resp => {
@@ -57,7 +71,7 @@ const SessionItem: React.FC<Props> = ({
           title: 'Não é possível excluir sessões que possuem presença',
         });
       });
-  };
+  }, [addToast, deleteCallback, id]);
 
   return (
     <Container>
@@ -100,6 +114,41 @@ const SessionItem: React.FC<Props> = ({
           </Tooltip>
         )}
       </div>
+      <Dialog
+        open={stateDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">Excluir sessão</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            {`Tem certeza que deseja excluir a sessão número ${number}?`}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              setStateDialog(false);
+              deleteSession();
+            }}
+            color="primary"
+            variant="contained"
+            style={{ backgroundColor: colors.red[500] }}
+          >
+            Excluir
+          </Button>
+          <Button
+            onClick={() => {
+              setStateDialog(false);
+            }}
+            color="primary"
+            variant="contained"
+            autoFocus
+          >
+            Cancelar
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 };

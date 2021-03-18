@@ -15,12 +15,14 @@ registerLocale('pt-BR', ptBR);
 interface Props extends Omit<ReactDatePickerProps, 'onChange'> {
   name: string;
   icon?: React.ComponentType<IconBaseProps>;
+  changeHandler?: Function;
   label: string;
   justRead?: boolean;
 }
 const DatePicker: React.FC<Props> = ({
   name,
   label,
+  changeHandler,
   icon: Icon,
   justRead = false,
   ...rest
@@ -30,6 +32,16 @@ const DatePicker: React.FC<Props> = ({
   const [date, setDate] = useState(defaultValue || null);
   const [isFocused, setIsFocused] = useState(false);
   const [isFilled, setIsFilled] = useState(false);
+
+  const handleSetDate = useCallback(
+    value => {
+      setDate(value);
+      if (changeHandler) {
+        changeHandler(value);
+      }
+    },
+    [changeHandler],
+  );
 
   const handleInputFocus = useCallback(() => {
     setIsFocused(true);
@@ -71,7 +83,7 @@ const DatePicker: React.FC<Props> = ({
           onBlur={handleInputBlur}
           ref={datepickerRef}
           selected={date}
-          onChange={setDate}
+          onChange={handleSetDate}
           onCalendarClose={handleInputBlur}
           dateFormat="dd/MM/yyyy"
           locale="pt-BR"

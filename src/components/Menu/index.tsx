@@ -533,7 +533,7 @@ const Menu: React.FC<MenuProps> = ({ administrativeFunction, ...rest }) => {
       <ListItemLink
         icon={<BiDonateHeart style={{ fontSize: '1.5rem' }} />}
         to="/app/doacoes"
-        primary="Doações"
+        primary="Tronco de Beneficência"
       />
     ),
     uploads: (
@@ -561,6 +561,7 @@ const Menu: React.FC<MenuProps> = ({ administrativeFunction, ...rest }) => {
     return (
       <>
         {menus.financeiro}
+        {menus.doacao}
         {menus.uploads}
       </>
     );

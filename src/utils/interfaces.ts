@@ -109,6 +109,7 @@ export interface CreateUserFormData {
   adresses?: AddressFormData[];
   contacts?: ContactFormData[];
   dependents?: DependentFormData[];
+  initial_session_date?: string | null | undefined;
 }
 
 export interface UserFormData {
@@ -144,6 +145,7 @@ export interface UserFormData {
   exaltacao_date?: Date | null;
   instalacao_date?: Date | null;
   iniciacao_date?: Date | null;
+  initial_session_date?: Date | null;
 }
 
 export interface SelectData {

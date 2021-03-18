@@ -215,6 +215,7 @@ const User: React.FC = () => {
 
   const handleSubmit = useCallback(
     async (data: CreateUserFormData) => {
+      console.log(data);
       try {
         formRef.current?.setErrors({});
 
@@ -358,6 +359,9 @@ const User: React.FC = () => {
           contacts,
           adresses: adressesToBeCreate,
           dependents: dependentsToBeCreate,
+          initial_session_date:
+            data.initial_session_date &&
+            format(new Date(data.initial_session_date), 'yyyy-MM-dd'),
         };
 
         if (params.id) {
@@ -604,6 +608,9 @@ const User: React.FC = () => {
               : null,
             instalacao_date: user.instalacao_date
               ? new Date(user.instalacao_date)
+              : null,
+            initial_session_date: user.initial_session_date
+              ? new Date(user.initial_session_date)
               : null,
           };
 
@@ -1233,7 +1240,7 @@ const User: React.FC = () => {
                       placeholderText="Insira a data de iniciação"
                     />
                   </Grid>
-                  <Grid item xs={12} sm={3}>
+                  <Grid item xs={12} sm={2}>
                     <DatePicker
                       name="elevacao_date"
                       icon={FiCalendar}
@@ -1241,7 +1248,7 @@ const User: React.FC = () => {
                       placeholderText="Insira a data de elevação"
                     />
                   </Grid>
-                  <Grid item xs={12} sm={3}>
+                  <Grid item xs={12} sm={2}>
                     <DatePicker
                       name="exaltacao_date"
                       icon={FiCalendar}
@@ -1249,12 +1256,20 @@ const User: React.FC = () => {
                       placeholderText="Insira a data de exaltação"
                     />
                   </Grid>
-                  <Grid item xs={12} sm={3}>
+                  <Grid item xs={12} sm={2}>
                     <DatePicker
                       name="instalacao_date"
                       icon={FiCalendar}
                       label="Data de Instalação"
                       placeholderText="Insira a data de instalação"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={3}>
+                    <DatePicker
+                      name="initial_session_date"
+                      icon={FiCalendar}
+                      label="Data da 1ª Sessão"
+                      placeholderText="Insira a data da 1ª sessão"
                     />
                   </Grid>
                 </Grid>
