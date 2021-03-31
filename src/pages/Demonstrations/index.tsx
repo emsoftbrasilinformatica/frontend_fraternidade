@@ -138,6 +138,7 @@ const Demonstrations: React.FC = () => {
       }),
     ])
       .then(res => {
+        // console.log(res[0].data, res[1].data);
         setViewData(res[0].data);
         setFinancialPostings(res[1].data);
         setBankAccounts(res[2].data);
@@ -152,27 +153,6 @@ const Demonstrations: React.FC = () => {
   const dataToBeUsed = useMemo(() => {
     let data = financialPostings.concat(donations);
 
-    // console.table(
-    //   data.map(cv => ({
-    //     ...cv,
-    //     date: new Date(cv.date).toLocaleDateString(),
-    //     due_date: cv?.due_date
-    //       ? new Date(cv.due_date).toLocaleDateString()
-    //       : 'undefined',
-    //     payday: cv?.payday
-    //       ? new Date(cv.payday).toLocaleDateString()
-    //       : 'undefined',
-    //   })),
-    //   [
-    //     'obs',
-    //     'obs_payment',
-    //     'date',
-    //     'due_date',
-    //     'payday',
-    //     'payment_amount',
-    //     'mov',
-    //   ],
-    // );
     data = data
       .filter(posting => {
         if (posting.donation) {
@@ -202,7 +182,7 @@ const Demonstrations: React.FC = () => {
 
   const totalValue = useMemo(() => {
     // ANCHOR totalValue
-    // console.log(viewData);
+    // console.log('view', viewData);
     return viewData.reduce((acc, data, index) => {
       if (index === 0) {
         acc = data.value_bank + data.total_month;
@@ -304,20 +284,35 @@ const Demonstrations: React.FC = () => {
   }, [bankAccounts, startDate]);
 
   const totalValueBanks = useMemo(() => {
-    let totalValues = 0;
-    bankAccounts.map(bank => {
-      bank.bank_account_values.map(value => {
-        if (
-          format(new Date(value.date), 'MM/yyyy') ===
-          format(startDate, 'MM/yyyy')
-        ) {
-          totalValues += value.amount_account + value.amount_invested;
-        }
+    // const totalValues = 0;
 
-        return value;
-      });
-      return bank;
-    });
+    const totalValues = bankAccounts.reduce((acc, bank) => {
+      return (
+        acc +
+        bank.bank_account_values.reduce((ac, value) => {
+          if (
+            format(new Date(value.date), 'MM/yyyy') ===
+            format(startDate, 'MM/yyyy')
+          ) {
+            acc += value.amount_account + value.amount_invested;
+          }
+          return acc;
+        }, 0)
+      );
+    }, 0);
+    // bankAccounts.map(bank => {
+    //   bank.bank_account_values.map(value => {
+    //     if (
+    //       format(new Date(value.date), 'MM/yyyy') ===
+    //       format(startDate, 'MM/yyyy')
+    //     ) {
+    //       totalValues += value.amount_account + value.amount_invested;
+    //     }
+
+    //     return value;
+    //   });
+    //   return bank;
+    // });
 
     return totalValues;
   }, [bankAccounts, startDate]);

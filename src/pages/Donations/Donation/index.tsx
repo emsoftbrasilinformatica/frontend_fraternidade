@@ -12,6 +12,7 @@ import { FaCalendarDay, FaSort, FaWallet } from 'react-icons/fa';
 import { HiCurrencyDollar } from 'react-icons/hi';
 import { FiInfo, FiType } from 'react-icons/fi';
 import { RiBankLine } from 'react-icons/ri';
+import { MdGroupWork } from 'react-icons/md';
 import BasePage from '../../../components/BasePage';
 import Card from '../../../components/Card';
 import Button from '../../../components/Button';
@@ -50,6 +51,7 @@ interface DataForm {
   value: number;
   cost_center_id: string;
   teller_id: string;
+  session_id?: string;
   obs?: string;
 }
 
@@ -74,6 +76,13 @@ const FinancialPosting: React.FC = () => {
   >([]);
   const [costCenters, setCostCenters] = useState<OptionsData[]>([]);
   const [tellers, setTellers] = useState<OptionsData[]>([]);
+  const [sessions, setSessions] = useState<OptionsData[]>([]);
+  const [
+    selectedTypeFinancial,
+    setSelectedTypeFinancial,
+  ] = useState<OptionsData | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [selectedSession, setSelectedSession] = useState<OptionsData | null>();
   const { addToast } = useToast();
   const history = useHistory();
   const movs = [
@@ -109,6 +118,60 @@ const FinancialPosting: React.FC = () => {
     });
   }, []);
 
+  useEffect(() => {
+    api
+      .get('/sessions/day', {
+        params: {
+          year: selectedDate.getFullYear(),
+          month: selectedDate.getMonth() + 1,
+          day: selectedDate.getDate(),
+        },
+      })
+      .then(response => {
+        setSelectedSession(null);
+        setSessions(
+          response.data.map((option: any) => {
+            return {
+              ...option,
+              label: `${option.number} - ${option.session_type.description}`,
+              value: option.id,
+            };
+          }),
+        );
+      });
+  }, [selectedDate]);
+
+  useEffect(() => {
+    const type_post = formRef.current?.getFieldRef('type_financial_posting_id')
+      ?.state?.value;
+    const date = formRef.current?.getFieldValue('date') as Date;
+    const session = formRef.current?.getFieldRef('session_id')?.state?.value;
+    let obs = ``;
+
+    if (type_post) {
+      obs += `${type_post.label} `;
+    }
+    if (date) {
+      obs += `${date.toLocaleDateString()} `;
+    }
+    if (session) {
+      obs += `Sessão ${session.label} `;
+    }
+
+    formRef.current?.setFieldValue('obs', obs);
+  }, [selectedTypeFinancial, selectedDate, selectedSession]);
+
+  const handleChangeSelectedDate = useCallback(
+    (date: Date) => {
+      if (date) {
+        setSelectedDate(date);
+        formRef.current?.setFieldValue('session_id', null);
+        setSelectedSession(null);
+      }
+    },
+    [setSelectedDate, setSelectedSession],
+  );
+
   const handleChangeCostCenter = useCallback(data => {
     formRef.current?.setFieldValue('teller_id', '');
     api.get(`/tellers/cost-center/${data.id}`).then(response => {
@@ -128,8 +191,10 @@ const FinancialPosting: React.FC = () => {
 
   const handleChangeTypeFinancialPosting = useCallback(
     data => {
-      const typeFind = typesFinancialPostings.find(type => type.id === data.id)
-        ?.type;
+      setSelectedTypeFinancial(data);
+      const typeFind = typesFinancialPostings.find(
+        type => type?.id === data?.id,
+      )?.type;
 
       formRef.current?.setFieldValue('mov', {
         label: typeFind,
@@ -138,6 +203,11 @@ const FinancialPosting: React.FC = () => {
     },
     [typesFinancialPostings],
   );
+
+  // ANCHOR handleSelectSession
+  const handleSelectSession = useCallback((value: any) => {
+    setSelectedSession(value);
+  }, []);
 
   useEffect(() => {
     if (params.id) {
@@ -191,8 +261,11 @@ const FinancialPosting: React.FC = () => {
     }
   }, [params.id]);
 
+  // ANCHOR handleSubmit
   const handleSubmit = useCallback(
     async data => {
+      // console.log(data);
+
       try {
         formRef.current?.setErrors({});
 
@@ -224,6 +297,7 @@ const FinancialPosting: React.FC = () => {
           value,
           cost_center_id,
           teller_id,
+          session_id,
           obs,
         } = data;
 
@@ -234,9 +308,11 @@ const FinancialPosting: React.FC = () => {
           value,
           cost_center_id,
           teller_id,
+          session_id,
           obs,
         };
 
+        // console.log(dataForm);
         if (params.id) {
           await api.put(`/donations/${params.id}`, dataForm);
         } else {
@@ -247,7 +323,7 @@ const FinancialPosting: React.FC = () => {
         history.push('/app/doacoes');
         addToast({
           type: 'success',
-          title: 'Doação realizado com sucesso',
+          title: 'Beneficência realizado com sucesso',
         });
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
@@ -259,7 +335,6 @@ const FinancialPosting: React.FC = () => {
         }
         setSaveLoading(false);
 
-        console.log(err);
         // disparar toast
         addToast({
           type: 'error',
@@ -271,9 +346,10 @@ const FinancialPosting: React.FC = () => {
     [addToast, params.id, history],
   );
 
+  // ANCHOR Form
   return (
     <BasePage
-      title={params.id ? 'Editar Doação' : 'Nova Doação'}
+      title={params.id ? 'Editar Beneficência' : 'Nova Beneficência'}
       backLink="/app/doacoes"
     >
       {loading ? (
@@ -295,7 +371,7 @@ const FinancialPosting: React.FC = () => {
               </Button>
             </ArroundButton>
 
-            <Card title="Doação">
+            <Card title="Beneficência">
               <Grid container spacing={2}>
                 <Grid item xs={12} md={4}>
                   <Select
@@ -326,6 +402,8 @@ const FinancialPosting: React.FC = () => {
                     timeCaption="Horário"
                     icon={FaCalendarDay}
                     placeholderText="Selecione a data"
+                    selected={selectedDate}
+                    changeHandler={handleChangeSelectedDate}
                   />
                 </Grid>
                 <Grid item xs={12} md={3}>
@@ -359,6 +437,18 @@ const FinancialPosting: React.FC = () => {
                     placeholder="Selecione o caixa"
                     icon={FaWallet}
                     options={tellers}
+                    isClearable
+                  />
+                </Grid>
+                <Grid item xs={12} md={4}>
+                  <Select
+                    name="session_id"
+                    label="Sessão"
+                    placeholder="Selecione a sessão"
+                    icon={MdGroupWork}
+                    options={sessions}
+                    value={selectedSession}
+                    onChange={handleSelectSession}
                     isClearable
                   />
                 </Grid>

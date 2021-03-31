@@ -309,7 +309,7 @@ const Donations: React.FC = () => {
   }, [debit, credit]);
 
   return (
-    <BasePage title="Doações">
+    <BasePage title="Beneficências">
       {loading ? (
         <Loading />
       ) : (
@@ -366,14 +366,14 @@ const Donations: React.FC = () => {
               </Grid>
               <Grid item xs={12} md={4} style={{ display: 'flex' }}>
                 <ButtonNew type="button" onClick={handleAddFinancialPosting}>
-                  Adicionar Doação
+                  Adicionar Beneficência
                   <AddCircle style={{ color: '#0f5e9e' }} />
                 </ButtonNew>
               </Grid>
             </Grid>
 
             <MaterialTable
-              title="Listagem Doações"
+              title="Listagem Beneficências"
               localization={labels.materialTable.localization}
               columns={[
                 { title: 'Data', field: 'date', type: 'date' },
@@ -485,7 +485,7 @@ const Donations: React.FC = () => {
                 className={classes.modalContent}
                 id="dialog-delete-description"
               >
-                Deseja realmente excluir a doação?
+                Deseja realmente excluir a beneficência?
               </DialogContentText>
             </DialogContent>
             <Divider />
