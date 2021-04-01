@@ -729,6 +729,11 @@ const FinancialPostings: React.FC = () => {
                   field: 'due_date_formatted',
                   type: 'date',
                 },
+                {
+                  title: 'Data Pag.',
+                  field: 'payday_formatted',
+                  type: 'date',
+                },
               ]}
               data={[...dataTable]}
               style={{ marginTop: 16, border: '2px solid #0f5e9e' }}
