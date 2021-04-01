@@ -127,6 +127,8 @@ interface QueryParams {
   end_date?: string;
   start_due_date?: string;
   end_due_date?: string;
+  start_payday_date?: string;
+  end_payday_date?: string;
   type_financial_posting_id?: string;
   cost_center_id?: string;
   only_pays?: string;
@@ -195,6 +197,10 @@ const FinancialPostings: React.FC = () => {
     setObreiro,
     selectedTypeFinancialPosting,
     setTypeFinancialPosting,
+    startPaydayDate,
+    setSPaydayDate,
+    endPaydayDate,
+    setEPaydayDate,
   } = useFinancialPostingsFilters();
   const [data, setData] = useState<FinancialPosting[]>([]);
   const [loading, setLoading] = useState(false);
@@ -287,6 +293,11 @@ const FinancialPostings: React.FC = () => {
       params.start_due_date = format(startDueDate, 'yyyy-MM-dd');
     }
 
+    if (endPaydayDate && startPaydayDate) {
+      params.end_payday_date = format(endPaydayDate, 'yyyy-MM-dd');
+      params.start_payday_date = format(startPaydayDate, 'yyyy-MM-dd');
+    }
+
     params.only_pays = onlyPays;
 
     setSearchLoading(true);
@@ -318,19 +329,23 @@ const FinancialPostings: React.FC = () => {
   }, [
     startDate,
     endDate,
-    startDueDate,
-    endDueDate,
-    onlyPays,
-    selectedObreiro,
     selectedTypeFinancialPosting,
+    selectedObreiro,
     selectedCostCenter,
     selectedMov,
+    endDueDate,
+    startDueDate,
+    endPaydayDate,
+    startPaydayDate,
+    onlyPays,
   ]);
 
   const handleChangeStartDate = useCallback(
     (date: Date) => {
       if (date) {
         setSDate(date);
+      } else {
+        setSDate(null);
       }
     },
     [setSDate],
@@ -340,6 +355,8 @@ const FinancialPostings: React.FC = () => {
     (date: Date) => {
       if (date) {
         setEDate(date);
+      } else {
+        setEDate(null);
       }
     },
     [setEDate],
@@ -365,6 +382,28 @@ const FinancialPostings: React.FC = () => {
       }
     },
     [setEDueDate],
+  );
+
+  const handleChangeStartPaydayDate = useCallback(
+    (date: Date) => {
+      if (date) {
+        setSPaydayDate(date);
+      } else {
+        setSPaydayDate(null);
+      }
+    },
+    [setSPaydayDate],
+  );
+
+  const handleChangeEndPaydayDate = useCallback(
+    (date: Date) => {
+      if (date) {
+        setEPaydayDate(date);
+      } else {
+        setEPaydayDate(null);
+      }
+    },
+    [setEPaydayDate],
   );
 
   useEffect(() => {
@@ -906,6 +945,34 @@ const FinancialPostings: React.FC = () => {
                       startDate={startDueDate}
                       endDate={endDueDate}
                       minDate={startDueDate}
+                      dateFormat="dd/MM/yyyy"
+                      locale="pt-BR"
+                      selectsEnd
+                    />
+                  </DateRangePickerContent>
+                </Grid>
+
+                <Grid item xs={12}>
+                  <DateRangePickerContent>
+                    <Label>Data de Pagamento</Label>
+                    <DatePicker
+                      name="initial_payday_date"
+                      selected={startPaydayDate}
+                      onChange={handleChangeStartPaydayDate}
+                      placeholderText="Selecione a data"
+                      startDate={startPaydayDate}
+                      dateFormat="dd/MM/yyyy"
+                      locale="pt-BR"
+                      selectsStart
+                    />
+                    <DatePicker
+                      name="final_payday_date"
+                      selected={endPaydayDate}
+                      placeholderText="Selecione a data"
+                      onChange={handleChangeEndPaydayDate}
+                      startDate={startPaydayDate}
+                      endDate={endPaydayDate}
+                      minDate={startPaydayDate}
                       dateFormat="dd/MM/yyyy"
                       locale="pt-BR"
                       selectsEnd

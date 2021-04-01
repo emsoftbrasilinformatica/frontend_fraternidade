@@ -6,10 +6,10 @@ interface Option {
 }
 
 interface FinancialPostingsFiltersData {
-  startDate: Date;
-  setSDate(newValue: Date): void;
-  endDate: Date;
-  setEDate(newValue: Date): void;
+  startDate: Date | null;
+  setSDate(newValue: Date | null): void;
+  endDate: Date | null;
+  setEDate(newValue: Date | null): void;
   selectedTypeFinancialPosting: Option | undefined;
   setTypeFinancialPosting(newValue: Option): void;
   selectedObreiro: Option | undefined;
@@ -27,6 +27,10 @@ interface FinancialPostingsFiltersData {
     event: React.ChangeEvent<HTMLInputElement>,
     newValue: string,
   ): void;
+  endPaydayDate: Date | null;
+  setEPaydayDate(newValue: Date | null): void;
+  startPaydayDate: Date | null;
+  setSPaydayDate(newValue: Date | null): void;
 }
 
 const FinancialPostingsFiltersContext = createContext<
@@ -35,14 +39,18 @@ const FinancialPostingsFiltersContext = createContext<
 
 const FinancialPostingsFiltersProvider: React.FC = ({ children }) => {
   const dateAux = new Date();
-  const [startDate, setStartDate] = useState(
+  const [startDate, setStartDate] = useState<Date | null>(
     new Date(dateAux.getFullYear(), dateAux.getMonth(), 1),
   );
-  const [endDate, setEndDate] = useState(
+  const [endDate, setEndDate] = useState<Date | null>(
     new Date(dateAux.getFullYear(), dateAux.getMonth() + 1, 0),
   );
   const [startDueDate, setStartDueDate] = useState<Date | null>(null);
   const [endDueDate, setEndDueDate] = useState<Date | null>(null);
+
+  const [startPaydayDate, setStartPaydayDate] = useState<Date | null>(null);
+  const [endPaydayDate, setEndPaydayDate] = useState<Date | null>(null);
+
   const [selectedObreiro, setSelectedObreiro] = useState<Option>();
   const [
     selectedTypeFinancialPosting,
@@ -66,6 +74,14 @@ const FinancialPostingsFiltersProvider: React.FC = ({ children }) => {
 
   const setEDueDate = useCallback((newValue: Date) => {
     setEndDueDate(newValue);
+  }, []);
+
+  const setSPaydayDate = useCallback((newValue: Date) => {
+    setStartPaydayDate(newValue);
+  }, []);
+
+  const setEPaydayDate = useCallback((newValue: Date) => {
+    setEndPaydayDate(newValue);
   }, []);
 
   const setObreiro = useCallback((newValue: Option) => {
@@ -112,6 +128,10 @@ const FinancialPostingsFiltersProvider: React.FC = ({ children }) => {
         setMov,
         onlyPays,
         setOnlyPaysItem,
+        startPaydayDate,
+        setSPaydayDate,
+        endPaydayDate,
+        setEPaydayDate,
       }}
     >
       {children}
