@@ -40,6 +40,7 @@ interface FinancialPostingFormData {
   cost_center_id: SelectData;
   teller_id: SelectData;
   value: number;
+  value_after_due: number;
   date: Date | null;
   due_date: Date | null;
   payment_amount: number;
@@ -53,6 +54,7 @@ interface DataForm {
   mov: string;
   date: string;
   value: number;
+  value_after_due: number;
   cost_center_id: string;
   teller_id: string;
   due_date: string;
@@ -200,6 +202,7 @@ const FinancialPosting: React.FC = () => {
             obs: res.data.obs,
             obs_payment: res.data.obs_payment,
             value: res.data.value,
+            value_after_due: res.data.value_after_due,
             payday: res.data.payday ? new Date(res.data.payday) : null,
             payment_amount: res.data.payment_amount,
             obreiro_id: res.data.obreiro
@@ -246,6 +249,9 @@ const FinancialPosting: React.FC = () => {
             .transform((v, o) => (o === '' ? null : v))
             .nullable()
             .required('Valor é obrigatório'),
+          value_after_due: Yup.number()
+            .transform((v, o) => (o === '' ? null : v))
+            .nullable(),
           cost_center_id: Yup.string().required(
             'Centro de Custo é obrigatório',
           ),
@@ -263,6 +269,7 @@ const FinancialPosting: React.FC = () => {
           mov,
           date,
           value,
+          value_after_due,
           cost_center_id,
           teller_id,
           due_date,
@@ -278,6 +285,7 @@ const FinancialPosting: React.FC = () => {
           mov,
           date: format(new Date(date), 'yyyy-MM-dd'),
           value,
+          value_after_due: value_after_due || value,
           cost_center_id,
           teller_id,
           due_date: format(new Date(due_date), 'yyyy-MM-dd'),
@@ -392,7 +400,7 @@ const FinancialPosting: React.FC = () => {
               </Grid>
 
               <Grid container spacing={2}>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={3}>
                   <Select
                     name="cost_center_id"
                     label="Centro de Custo"
@@ -403,7 +411,7 @@ const FinancialPosting: React.FC = () => {
                     isClearable
                   />
                 </Grid>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={3}>
                   <Select
                     name="teller_id"
                     label="Caixa"
@@ -413,8 +421,7 @@ const FinancialPosting: React.FC = () => {
                     isClearable
                   />
                 </Grid>
-
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={3}>
                   <DatePicker
                     name="due_date"
                     label="Data de Vencimento"
@@ -422,6 +429,16 @@ const FinancialPosting: React.FC = () => {
                     timeCaption="Horário"
                     icon={FaCalendarDay}
                     placeholderText="Selecione a data"
+                  />
+                </Grid>
+                <Grid item xs={12} md={3}>
+                  <Input
+                    name="value_after_due"
+                    label="Valor após Vencimento"
+                    icon={HiCurrencyDollar}
+                    placeholder="Digite o valor"
+                    type="number"
+                    step={0.01}
                   />
                 </Grid>
               </Grid>

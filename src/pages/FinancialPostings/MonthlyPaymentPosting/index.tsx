@@ -55,6 +55,7 @@ interface DataForm {
   initial_date: string;
   final_date: string;
   value: number;
+  value_after_due: number;
   cost_center_id: string;
   teller_id: string;
   obs?: string;
@@ -176,6 +177,9 @@ const MonthlyPaymentPosting: React.FC = () => {
             .transform((v, o) => (o === '' ? null : v))
             .nullable()
             .required('Valor é obrigatório'),
+          value_after_due: Yup.number()
+            .transform((v, o) => (o === '' ? null : v))
+            .nullable(),
           cost_center_id: Yup.string().required(
             'Centro de Custo é obrigatório',
           ),
@@ -192,6 +196,7 @@ const MonthlyPaymentPosting: React.FC = () => {
           initial_date,
           final_date,
           value,
+          value_after_due,
           cost_center_id,
           teller_id,
           obs,
@@ -225,6 +230,7 @@ const MonthlyPaymentPosting: React.FC = () => {
           type_financial_posting_id,
           mov,
           value,
+          value_after_due: value_after_due || value,
           cost_center_id,
           teller_id,
           initial_date: format(new Date(initial_date), 'yyyy-MM-dd'),
@@ -366,12 +372,22 @@ const MonthlyPaymentPosting: React.FC = () => {
                     isClearable
                   />
                 </Grid>
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12} md={3}>
                   <Input
                     name="obs"
                     label="Observação"
                     placeholder="Digite a observação"
                     icon={FiInfo}
+                  />
+                </Grid>
+                <Grid item xs={12} md={3}>
+                  <Input
+                    name="value_after_due"
+                    label="Valor após Vencimento"
+                    icon={HiCurrencyDollar}
+                    placeholder="Digite o valor"
+                    type="number"
+                    step={0.01}
                   />
                 </Grid>
               </Grid>

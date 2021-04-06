@@ -95,6 +95,7 @@ interface FinancialPosting {
   mov: string;
   value: number;
   value_formatted?: string;
+  value_after_due: number;
   due_date?: string;
   due_date_formatted?: string;
   payday?: string;
@@ -431,9 +432,17 @@ const FinancialPostings: React.FC = () => {
         addToast({ type: 'info', title: 'Baixa já realizada!' });
         return;
       }
+      let valor = rowData.value;
+      const today = new Date();
+      if (
+        new Date(today.getFullYear(), today.getMonth(), today.getDate()) >
+        new Date(rowData.due_date)
+      ) {
+        valor = rowData.value_after_due;
+      }
       setToPay(rowData);
       setOpenDialogPayment(true);
-      setValuesPayment({ value: rowData.value });
+      setValuesPayment({ value: valor });
     },
     [addToast],
   );
@@ -442,11 +451,25 @@ const FinancialPostings: React.FC = () => {
     (date: Date) => {
       if (date) {
         setPaymentPayday(date);
+        if (
+          typeof toPay !== 'undefined' &&
+          toPay.due_date &&
+          toPay.value_after_due
+        ) {
+          let valor = toPay.value;
+          if (date > new Date(toPay.due_date)) {
+            valor = toPay.value_after_due;
+          }
+          if (formRef && formRef !== null) {
+            formRef?.current?.setFieldValue('value', valor);
+          }
+          setValuesPayment({ value: valor });
+        }
       } else {
         setPaymentPayday(null);
       }
     },
-    [setPaymentPayday],
+    [setPaymentPayday, toPay, setValuesPayment],
   );
 
   const handleSubmitPayment = useCallback(
@@ -1052,7 +1075,7 @@ const FinancialPostings: React.FC = () => {
               <Divider />
               <DialogContent>
                 <DateRangePickerContent>
-                  <Label>Data de Vencimento</Label>
+                  <Label>Data de Pagamento</Label>
                   <DatePicker
                     name="payday"
                     selected={paymentPayday}

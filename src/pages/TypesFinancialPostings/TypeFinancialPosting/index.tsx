@@ -26,6 +26,7 @@ interface params {
 interface DataForm {
   description: string;
   default_value: string;
+  default_value_after_due: string;
   type: string;
   user_id: string;
 }
@@ -67,12 +68,22 @@ const TypeFinancialPosting: React.FC = () => {
 
         setSaveLoading(true);
 
-        const { description, default_value, type } = data;
+        const {
+          description,
+          default_value,
+          type,
+          default_value_after_due,
+        } = data;
 
         const dataForm: DataForm = {
           description,
           default_value,
           type,
+          default_value_after_due:
+            default_value_after_due !== '' &&
+            typeof default_value_after_due !== 'undefined'
+              ? default_value_after_due
+              : default_value,
           user_id: user.id,
         };
 
@@ -120,6 +131,7 @@ const TypeFinancialPosting: React.FC = () => {
             label: res.data.type,
           },
           default_value: res.data.default_value,
+          default_value_after_due: res.data.default_value_after_due,
         });
       });
     }
@@ -150,14 +162,14 @@ const TypeFinancialPosting: React.FC = () => {
             </ArroundButton>
             <Card title="Tipo de Lançamento Finan.">
               <Grid container spacing={2}>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={3}>
                   <Input
                     name="description"
                     label="Descrição"
                     placeholder="Digite a descrição"
                   />
                 </Grid>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={3}>
                   <Select
                     name="type"
                     label="Tipo"
@@ -166,11 +178,20 @@ const TypeFinancialPosting: React.FC = () => {
                     isClearable
                   />
                 </Grid>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={3}>
                   <Input
                     name="default_value"
                     label="Valor Padrão"
                     placeholder="Digite o valor padrão"
+                    type="number"
+                    step={0.01}
+                  />
+                </Grid>
+                <Grid item xs={12} md={3}>
+                  <Input
+                    name="default_value_after_due"
+                    label="Valor Padrão após Vencimento"
+                    placeholder="Digite o valor"
                     type="number"
                     step={0.01}
                   />
