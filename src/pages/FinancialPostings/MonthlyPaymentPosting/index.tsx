@@ -278,6 +278,14 @@ const MonthlyPaymentPosting: React.FC = () => {
     return typesFinancialPostings.filter(type => type.type === 'D');
   }, [typesFinancialPostings]);
 
+  const handleChangeValue = useCallback(
+    evt => {
+      const { value } = evt.target;
+      formRef.current?.setFieldValue('value_after_due', value);
+    },
+    [formRef],
+  );
+
   return (
     <BasePage
       title="Carnê de Mensalidade"
@@ -351,6 +359,7 @@ const MonthlyPaymentPosting: React.FC = () => {
                     placeholder="Digite o valor"
                     type="number"
                     step={0.01}
+                    onChange={handleChangeValue}
                   />
                 </Grid>
               </Grid>

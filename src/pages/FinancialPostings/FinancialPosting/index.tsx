@@ -335,6 +335,14 @@ const FinancialPosting: React.FC = () => {
     [addToast, params.id, history],
   );
 
+  const handleChangeValue = useCallback(
+    evt => {
+      const { value } = evt.target;
+      formRef.current?.setFieldValue('value_after_due', value);
+    },
+    [formRef],
+  );
+
   return (
     <BasePage
       title={params.id ? 'Editar Lançamento Finan.' : 'Nova Lançamento Finan.'}
@@ -400,6 +408,7 @@ const FinancialPosting: React.FC = () => {
                     placeholder="Digite o valor"
                     type="number"
                     step={0.01}
+                    onChange={handleChangeValue}
                   />
                 </Grid>
               </Grid>
