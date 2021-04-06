@@ -70,6 +70,7 @@ interface OptionsData {
   description: string;
   type: string;
   default_value?: number;
+  default_value_after_due?: number;
   value: string;
   label: string;
 }
@@ -169,6 +170,11 @@ const FinancialPosting: React.FC = () => {
           value: typeFind.type,
         });
         formRef.current?.setFieldValue('value', typeFind?.default_value);
+        // ANCHOR default_value
+        formRef.current?.setFieldValue(
+          'value_after_due',
+          typeFind?.default_value_after_due || typeFind?.default_value,
+        );
       }
     },
     [typesFinancialPostings],
