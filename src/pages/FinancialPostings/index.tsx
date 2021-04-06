@@ -742,7 +742,18 @@ const FinancialPostings: React.FC = () => {
                 { title: 'Pago', field: 'payday_formatted', type: 'boolean' },
                 { title: 'Data', field: 'date_formatted', type: 'date' },
                 { title: 'Tipo', field: 'typeFinancialPosting.description' },
-                { title: 'Valor', field: 'value_formatted' },
+                {
+                  title: 'Valor',
+                  // field: 'value_formatted',
+                  render: rowData => {
+                    if (rowData?.due_date) {
+                      if (new Date() > new Date(rowData?.due_date)) {
+                        return formatValue(rowData?.value_after_due);
+                      }
+                    }
+                    return rowData.value_formatted;
+                  },
+                },
                 { title: 'C.C.', field: 'costCenter.description' },
                 { title: 'Caixa', field: 'teller.description' },
                 { title: 'Mov.', field: 'mov' },

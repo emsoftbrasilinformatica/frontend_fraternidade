@@ -266,8 +266,10 @@ const FinancialConsultation: React.FC = () => {
                       title: 'Valor',
                       // field: 'value_formatted',
                       render: rowData => {
-                        if (startDate > new Date(rowData?.due_date ?? '')) {
-                          return formatValue(rowData.value_after_due);
+                        if (rowData?.due_date) {
+                          if (startDate > new Date(rowData?.due_date)) {
+                            return formatValue(rowData.value_after_due);
+                          }
                         }
                         return rowData.value_formatted;
                       },
