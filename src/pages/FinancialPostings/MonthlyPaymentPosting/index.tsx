@@ -67,6 +67,7 @@ interface OptionsData {
   description: string;
   type: string;
   default_value?: number;
+  default_value_after_due?: number;
   value: string;
   label: string;
 }
@@ -153,6 +154,10 @@ const MonthlyPaymentPosting: React.FC = () => {
 
       if (typeFind) {
         formRef.current?.setFieldValue('value', typeFind?.default_value);
+        formRef.current?.setFieldValue(
+          'value_after_due',
+          typeFind?.default_value_after_due,
+        );
       }
     },
     [typesFinancialPostings],

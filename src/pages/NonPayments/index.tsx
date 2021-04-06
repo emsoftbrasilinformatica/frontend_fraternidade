@@ -35,6 +35,7 @@ export interface FinancialPosting {
   date: string;
   mov: string;
   value: number;
+  value_after_due: number;
   value_formatted?: string;
   due_date?: string;
   payday?: string;
@@ -61,8 +62,14 @@ const NonPayments: React.FC = () => {
       .then(res => {
         setData(
           res.data.map(result => {
+            let { value } = result;
+            if (result?.due_date) {
+              if (startDate > new Date(result?.due_date)) {
+                value = result.value_after_due;
+              }
+            }
             return {
-              value_formatted: formatValue(result.value),
+              value_formatted: formatValue(value),
               ...result,
             };
           }),

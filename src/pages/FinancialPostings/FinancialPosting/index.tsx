@@ -170,7 +170,6 @@ const FinancialPosting: React.FC = () => {
           value: typeFind.type,
         });
         formRef.current?.setFieldValue('value', typeFind?.default_value);
-        // ANCHOR default_value
         formRef.current?.setFieldValue(
           'value_after_due',
           typeFind?.default_value_after_due || typeFind?.default_value,

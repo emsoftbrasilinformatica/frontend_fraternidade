@@ -42,6 +42,7 @@ interface FinancialPosting {
   date: string;
   mov: string;
   value: number;
+  value_after_due: number;
   value_formatted?: string;
   due_date?: string;
   payday?: string;
@@ -261,7 +262,16 @@ const FinancialConsultation: React.FC = () => {
                       title: 'Tipo',
                       field: 'typeFinancialPosting.description',
                     },
-                    { title: 'Valor', field: 'value_formatted' },
+                    {
+                      title: 'Valor',
+                      // field: 'value_formatted',
+                      render: rowData => {
+                        if (startDate > new Date(rowData?.due_date ?? '')) {
+                          return formatValue(rowData.value_after_due);
+                        }
+                        return rowData.value_formatted;
+                      },
+                    },
                     { title: 'Data Venc.', field: 'due_date', type: 'date' },
                     { title: 'Obs.', field: 'obs' },
                   ]}
