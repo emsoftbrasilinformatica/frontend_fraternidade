@@ -61,6 +61,7 @@ import Donations from '../pages/Donations';
 import Donation from '../pages/Donations/Donation';
 
 import Demonstrations from '../pages/Demonstrations';
+import Projections from '../pages/Projections';
 
 import BankAccounts from '../pages/BankAccounts';
 import BankAccount from '../pages/BankAccounts/BankAccount';
@@ -292,6 +293,12 @@ const Routes: React.FC = () => (
     <Route
       path="/app/financeiro/demonstracao"
       component={Demonstrations}
+      allowed={['Venerável', 'Tesoureiro']}
+      isPrivate
+    />
+    <Route
+      path="/app/financeiro/projecao"
+      component={Projections}
       allowed={['Venerável', 'Tesoureiro']}
       isPrivate
     />

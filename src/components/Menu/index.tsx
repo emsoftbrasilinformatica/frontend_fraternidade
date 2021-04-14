@@ -280,6 +280,12 @@ const Menu: React.FC<MenuProps> = ({ administrativeFunction, ...rest }) => {
       collapse: false,
     },
     {
+      icon: <AttachMoney />,
+      link: '/app/financeiro/projecao',
+      description: 'Projeção',
+      collapse: false,
+    },
+    {
       icon: <AccountBalance />,
       link: '/app/financeiro/contas-bancarias',
       description: 'Contas Bancárias',
