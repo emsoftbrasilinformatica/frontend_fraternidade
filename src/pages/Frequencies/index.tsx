@@ -31,7 +31,7 @@ import DatePicker from 'react-datepicker';
 import { Search, Print, HourglassEmpty } from '@material-ui/icons';
 import MaterialTable from 'material-table';
 import _ from 'underscore';
-import { format, add, endOfMonth } from 'date-fns';
+import { format, add, endOfMonth, startOfMonth } from 'date-fns';
 import { pdf } from '@react-pdf/renderer';
 import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
@@ -458,7 +458,7 @@ const Frequencies: React.FC = () => {
       },
     };
 
-    totalSessions.forEach(session => {
+    totalSessions.forEach((session: SessionData) => {
       if (new Date(session.date).getFullYear() === startDate.getFullYear()) {
         const month = getMonth(new Date(session.date));
 
@@ -493,6 +493,116 @@ const Frequencies: React.FC = () => {
 
     return total;
   }, [startDate, totalSessions, getMonth]);
+
+  const totalNumberSessionsPeriod: TotalNumbersSessions = useMemo(() => {
+    const total: TotalNumbersSessions = {
+      january: {
+        totalGrauI: 0,
+        totalGrauII: 0,
+        totalGrauIII: 0,
+      },
+      february: {
+        totalGrauI: 0,
+        totalGrauII: 0,
+        totalGrauIII: 0,
+      },
+      march: {
+        totalGrauI: 0,
+        totalGrauII: 0,
+        totalGrauIII: 0,
+      },
+      april: {
+        totalGrauI: 0,
+        totalGrauII: 0,
+        totalGrauIII: 0,
+      },
+      may: {
+        totalGrauI: 0,
+        totalGrauII: 0,
+        totalGrauIII: 0,
+      },
+      june: {
+        totalGrauI: 0,
+        totalGrauII: 0,
+        totalGrauIII: 0,
+      },
+      july: {
+        totalGrauI: 0,
+        totalGrauII: 0,
+        totalGrauIII: 0,
+      },
+      august: {
+        totalGrauI: 0,
+        totalGrauII: 0,
+        totalGrauIII: 0,
+      },
+      september: {
+        totalGrauI: 0,
+        totalGrauII: 0,
+        totalGrauIII: 0,
+      },
+      october: {
+        totalGrauI: 0,
+        totalGrauII: 0,
+        totalGrauIII: 0,
+      },
+      november: {
+        totalGrauI: 0,
+        totalGrauII: 0,
+        totalGrauIII: 0,
+      },
+      december: {
+        totalGrauI: 0,
+        totalGrauII: 0,
+        totalGrauIII: 0,
+      },
+      total: {
+        totalGrauI: 0,
+        totalGrauII: 0,
+        totalGrauIII: 0,
+        totalAprendiz: 0,
+        totalCompanheiro: 0,
+        totalMestre: 0,
+      },
+    };
+    totalSessions.forEach((session: SessionData) => {
+      if (
+        new Date(session.date) >=
+        add(startOfMonth(startDate), {
+          months: Number.parseFloat(refMonths.split('_months')[0]) * -1,
+        })
+      ) {
+        const month = getMonth(new Date(session.date));
+        if (session.order === 1) {
+          total.total.totalGrauI += Number(session.total);
+          total.total.totalGrauII += Number(session.total);
+          total.total.totalGrauIII += Number(session.total);
+          total.total.totalAprendiz += Number(session.total);
+        } else if (session.order === 2) {
+          total.total.totalGrauII += Number(session.total);
+          total.total.totalGrauIII += Number(session.total);
+          total.total.totalCompanheiro += Number(session.total);
+        } else if (session.order === 3) {
+          total.total.totalGrauIII += Number(session.total);
+          total.total.totalMestre += Number(session.total);
+        }
+
+        if (month) {
+          if (session.order === 1) {
+            total[month].totalGrauI += Number(session.total);
+            total[month].totalGrauII += Number(session.total);
+            total[month].totalGrauIII += Number(session.total);
+          } else if (session.order === 2) {
+            total[month].totalGrauII += Number(session.total);
+            total[month].totalGrauIII += Number(session.total);
+          } else if (session.order === 3) {
+            total[month].totalGrauIII += Number(session.total);
+          }
+        }
+      }
+    });
+    return total;
+  }, [refMonths, startDate, totalSessions, getMonth]);
 
   const quantItens = useMemo(() => {
     let n = Math.floor((window.screen.availHeight - 250) / 65);
@@ -605,8 +715,8 @@ const Frequencies: React.FC = () => {
                     onChange={handleChangeStartDate}
                     placeholderText="Selecione o ano"
                     startDate={startDate}
-                    showYearPicker
-                    dateFormat="yyyy"
+                    showMonthYearPicker
+                    dateFormat="MM/yyyy"
                     locale="pt-BR"
                   />
                 </DateRangePickerContent>
@@ -660,9 +770,8 @@ const Frequencies: React.FC = () => {
                 </Button>
               </Grid>
             </Grid>
-
             <Grid container spacing={2} style={{ marginTop: 16 }}>
-              <Grid item xs={12} md={12}>
+              <Grid item xs={12} md={6}>
                 <TotalSessions>
                   <div className="title">Total de Sessões (Ano)</div>
                   <div className="content">
@@ -672,8 +781,20 @@ const Frequencies: React.FC = () => {
                   </div>
                 </TotalSessions>
               </Grid>
-            </Grid>
 
+              <Grid item xs={12} md={6}>
+                <TotalSessions>
+                  <div className="title">Total de Sessões (Período)</div>
+                  <div className="content">
+                    Aprendiz: {totalNumberSessionsPeriod.total.totalAprendiz} |
+                    Companheiro:{' '}
+                    {totalNumberSessionsPeriod.total.totalCompanheiro} | Mestre:{' '}
+                    {totalNumberSessionsPeriod.total.totalMestre}
+                  </div>
+                </TotalSessions>
+              </Grid>
+            </Grid>
+            {/* eslint-disable */}
             <MaterialTable
               title=""
               localization={labels.materialTable.localization}
@@ -694,6 +815,7 @@ const Frequencies: React.FC = () => {
               }}
               style={{ marginTop: 16, border: '2px solid #0f5e9e', zIndex: 0 }}
             />
+            {/* eslint-disable */}
           </Container>
         </>
       )}
