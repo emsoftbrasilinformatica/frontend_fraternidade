@@ -178,7 +178,11 @@ const Footer: React.FC = () => {
           </Grid>
         </Grid>
 
-        <div
+        {/* <a
+          className={classes.link}
+          href="https://www.emsoft.com.br"
+          target="_blank"
+          rel="noopener noreferrer"
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -186,29 +190,18 @@ const Footer: React.FC = () => {
             padding: 2,
           }}
         >
-          <a
-            className={classes.link}
-            href="https://www.emsoft.com.br"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              marginRight: 8, // Adiciona um espaço entre o texto e a imagem
-              fontSize: '1rem',
-            }}
-          >
-            Desenvolvido por
-          </a>
-          <div
-            style={{
-              backgroundImage: `url("${logoEmsoft}")`,
-              backgroundPosition: 'center',
-              backgroundRepeat: 'no-repeat',
-              backgroundSize: 'contain',
-              width: 80, // Ajuste de largura
-              height: 24, // Ajuste de altura para manter o texto e imagem no mesmo nível
-            }}
-          />
-        </div>
+          Desenvolvido por Emsoft Solutions.&copy;
+        </a> */}
+        <div
+          style={{
+            backgroundImage: `url("${logoEmsoft}")`,
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            backgroundSize: 'contain',
+            marginBottom: 16,
+            height: 100,
+          }}
+        />
       </Container>
     </footer>
   );
