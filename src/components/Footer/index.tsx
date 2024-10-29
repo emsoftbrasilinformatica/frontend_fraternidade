@@ -162,7 +162,7 @@ const Footer: React.FC = () => {
                   <br />
                   São Sebastião do Paraíso - MG
                   <br />
-                  CEP: 37950-000
+                  CEP: 37950-068
                 </p>
               </a>
             </div>
@@ -190,7 +190,7 @@ const Footer: React.FC = () => {
             padding: 16,
           }}
         >
-          Desenvolvido por Emsoft Brasil Informática Ltda.&copy;
+          Desenvolvido por Emsoft Solutions.&copy;
         </a>
         <div
           style={{

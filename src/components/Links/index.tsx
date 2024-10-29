@@ -68,7 +68,7 @@ const Links: React.FC = () => {
                 <div className={classes.divContainer}>
                   Filiada ao
                   <a
-                    href="https://www.gobmg.org.br/"
+                    href="https://www.gobminas.org.br/"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
