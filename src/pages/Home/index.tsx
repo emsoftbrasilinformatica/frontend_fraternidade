@@ -26,7 +26,7 @@ const Home: React.FC = () => {
         <Venerables />
         <NewsHome />
       </Container>
-
+      {/* teste */}
       <Footer />
     </>
   );
