@@ -306,13 +306,13 @@ const Routes: React.FC = () => (
     <Route
       path="/app/doacoes"
       component={Donations}
-      allowed={['Venerável', 'Hospitaleiro']}
+      allowed={['Venerável', 'Hospitaleiro', 'Tesoureiro']}
       isPrivate
     />
     <Route
       path="/app/doacao/:id?"
       component={Donation}
-      allowed={['Venerável', 'Hospitaleiro']}
+      allowed={['Venerável', 'Hospitaleiro', 'Tesoureiro']}
       isPrivate
     />
 
